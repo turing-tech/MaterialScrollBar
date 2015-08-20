@@ -9,7 +9,7 @@ How to add
 ```gradle
 maven {
     url "https://jitpack.io"
-  }
+}
 ```
 
 ```gradle
