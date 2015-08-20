@@ -25,6 +25,7 @@ import android.os.Build;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.MotionEvent;
 import android.view.View;
@@ -94,7 +95,7 @@ public class MaterialScrollBar extends RelativeLayout {
         lp.addRule(ALIGN_PARENT_RIGHT);
         background.setLayoutParams(lp);
         TypedArray attributes = getContext().getTheme().obtainStyledAttributes(attributeSet, R.styleable.MaterialScrollBar, 0, 0);
-        background.setBackgroundColor(attributes.getColor(R.styleable.MaterialScrollBar_barColor, getResources().getColor(android.R.color.darker_gray)));
+        background.setBackgroundColor(attributes.getColor(R.styleable.MaterialScrollBar_barColour, getResources().getColor(android.R.color.darker_gray)));
         com.nineoldandroids.view.ViewHelper.setAlpha(background, 0.4F);
 
         handle = new View(context);
@@ -103,9 +104,9 @@ public class MaterialScrollBar extends RelativeLayout {
         lp.addRule(ALIGN_PARENT_RIGHT);
         handle.setLayoutParams(lp);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            handle.setBackgroundColor(attributes.getColor(R.styleable.MaterialScrollBar_handleColor, fetchAccentColor(context)));
+            handle.setBackgroundColor(attributes.getColor(R.styleable.MaterialScrollBar_handleColour, fetchAccentColor(context)));
         } else {
-            handle.setBackgroundColor(attributes.getColor(R.styleable.MaterialScrollBar_handleColor, Color.parseColor("#9c9c9c")));
+            handle.setBackgroundColor(attributes.getColor(R.styleable.MaterialScrollBar_handleColour, Color.parseColor("#9c9c9c")));
         }
 
         addView(background);
@@ -134,7 +135,11 @@ public class MaterialScrollBar extends RelativeLayout {
         setOnTouchListener(new OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                recyclerView.scrollToPosition((int) (recyclerView.getAdapter().getItemCount() * (event.getY() / (getHeight() - handle.getHeight()))));
+                try{
+                    recyclerView.scrollToPosition((int) (recyclerView.getAdapter().getItemCount() * (event.getY() / (getHeight() - handle.getHeight()))));
+                } catch (NullPointerException e){
+                    Log.e("Material Scrollbar", "You failed to run setRecyclerView()! You must do this.");
+                }
 
                 if(hide){
                     fade.run = true;

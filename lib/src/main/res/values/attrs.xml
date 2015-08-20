@@ -18,8 +18,8 @@
 <resources>
 
     <declare-styleable name="MaterialScrollBar">
-        <attr name="barColor" format="color|reference" />
-        <attr name="handleColor" format="color|reference" />
+        <attr name="barColour" format="color|reference" />
+        <attr name="handleColour" format="color|reference" />
 
     </declare-styleable>
 
