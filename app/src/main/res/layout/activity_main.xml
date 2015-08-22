@@ -1,0 +1,22 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    android:layout_height="match_parent" tools:context=".MainActivity">
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/recyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <com.turingtechnologies.materialscrollbar.MaterialScrollBar
+        android:layout_alignParentRight="true"
+        android:id="@+id/materialScrollBar"
+        android:layout_width="20dp"
+        android:layout_height="match_parent"/>
+
+    <com.turingtechnologies.materialscrollbar.SectionIndicator
+        android:layout_alignParentRight="true"
+        android:id="@+id/sectionIndicator"
+        android:layout_width="100dp"
+        android:layout_height="match_parent"/>
+
+</RelativeLayout>
