@@ -53,7 +53,8 @@ How to use - Section Indicator
 --------
 Every step here is important, so make sure you've done them all.
 
-1. Add it to the xml.
+1- Add it to the xml.
+
 ```xml
 <com.turingtechnologies.materialscrollbar.SectionIndicator
   android:layout_width="100dp"
@@ -62,11 +63,13 @@ Every step here is important, so make sure you've done them all.
   android:layout_alignTop="[Id of scrollBar]"
   android:layout_height="match_parent"/>
 ```
-2. Link the scrollBar and the section indicator programatically.
+2- Link the scrollBar and the section indicator programatically.
+
 ```java
   scrollBar.setSectionIndicator((SectionIndicator) findViewById(R.id.sectionIndicator));
 ```
-3. Make the adapter for your recyclerView implement INameableAdapter and fill in the getCharacterForElement method for your adapter.
+
+3- Make the adapter for your recyclerView implement INameableAdapter and fill in the getCharacterForElement method for your adapter.
 
 License
 --------
