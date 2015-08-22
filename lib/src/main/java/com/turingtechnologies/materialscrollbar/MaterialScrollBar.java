@@ -25,7 +25,6 @@ import android.os.Build;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.MotionEvent;
 import android.view.View;
@@ -39,12 +38,14 @@ public class MaterialScrollBar extends RelativeLayout {
 
     private View background;
     private View handle;
+    protected int handleColour;
     protected Activity a;
     private ScrollListener scrollListener = new ScrollListener(this);
     private boolean hidden = true;
     private int hideDuration = 2500;
     private boolean hide = true;
-    private RecyclerView recyclerView;
+    protected RecyclerView recyclerView;
+    private SectionIndicator sectionIndicator;
 
     class BarFade extends Thread {
 
@@ -104,9 +105,11 @@ public class MaterialScrollBar extends RelativeLayout {
         lp.addRule(ALIGN_PARENT_RIGHT);
         handle.setLayoutParams(lp);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            handle.setBackgroundColor(attributes.getColor(R.styleable.MaterialScrollBar_handleColour, fetchAccentColor(context)));
+            handleColour = attributes.getColor(R.styleable.MaterialScrollBar_handleColour, fetchAccentColor(context));
+            handle.setBackgroundColor(handleColour);
         } else {
-            handle.setBackgroundColor(attributes.getColor(R.styleable.MaterialScrollBar_handleColour, Color.parseColor("#9c9c9c")));
+            handleColour = attributes.getColor(R.styleable.MaterialScrollBar_handleColour, Color.parseColor("#9c9c9c"));
+            handle.setBackgroundColor(handleColour);
         }
 
         addView(background);
@@ -131,25 +134,41 @@ public class MaterialScrollBar extends RelativeLayout {
         return this;
     }
 
+    class recyclerViewNotSetException extends RuntimeException{
+        public recyclerViewNotSetException(String message) { super(message); }
+    }
+
     private void setTouchIntercept(){
         setOnTouchListener(new OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                try{
-                    recyclerView.scrollToPosition((int) (recyclerView.getAdapter().getItemCount() * (event.getY() / (getHeight() - handle.getHeight()))));
-                } catch (NullPointerException e){
-                    Log.e("Material Scrollbar", "You failed to run setRecyclerView()! You must do this.");
-                }
+                if (event.getAction() != MotionEvent.ACTION_UP) {
+                    try {
+                        recyclerView.scrollToPosition((int) (recyclerView.getAdapter().getItemCount() * (event.getY() / (getHeight() - handle.getHeight()))));
+                        if(sectionIndicator != null && sectionIndicator.getVisibility() == INVISIBLE){
+                            sectionIndicator.setVisibility(VISIBLE);
+                        }
+                    } catch (NullPointerException e) {
+                        throw new recyclerViewNotSetException("You failed to run setRecyclerView()! You must do this.");
+                    }
 
-                if(hide){
-                    fade.run = true;
-                    fade.time = System.currentTimeMillis() + hideDuration;
-                    if (hidden) {
-                        hidden = false;
-                        TranslateAnimation anim = new TranslateAnimation(Animation.RELATIVE_TO_SELF, 1.0f, Animation.RELATIVE_TO_SELF, 0.0f, Animation.RELATIVE_TO_PARENT, 0.0f, Animation.RELATIVE_TO_PARENT, 0.0f);
-                        anim.setDuration(500);
-                        anim.setFillAfter(true);
-                        startAnimation(anim);
+                    if (hide) {
+                        if (hidden) {
+                            hidden = false;
+                            TranslateAnimation anim = new TranslateAnimation(Animation.RELATIVE_TO_SELF, 1.0f, Animation.RELATIVE_TO_SELF, 0.0f, Animation.RELATIVE_TO_PARENT, 0.0f, Animation.RELATIVE_TO_PARENT, 0.0f);
+                            anim.setDuration(500);
+                            anim.setFillAfter(true);
+                            startAnimation(anim);
+                        }
+                    }
+                } else {
+                    if(sectionIndicator != null && sectionIndicator.getVisibility() == VISIBLE){
+                        sectionIndicator.setVisibility(INVISIBLE);
+                    }
+
+                    if (hide) {
+                        fade.run = true;
+                        fade.time = System.currentTimeMillis() + hideDuration;
                     }
                 }
 
@@ -221,8 +240,25 @@ public class MaterialScrollBar extends RelativeLayout {
         return this;
     }
 
+    class adapterNotNameableException extends RuntimeException{
+        public adapterNotNameableException(String message) { super(message); }
+    }
+
+    /**
+     * Sets the section indicator which accompanies this scroll bar.
+     * @param sectionIndicator which should be paired to this scroll bar.
+     */
+    public MaterialScrollBar setSectionIndicator(SectionIndicator sectionIndicator) {
+        if(!(recyclerView.getAdapter() instanceof INameableAdapter)){
+            throw new adapterNotNameableException("In order to add a sectionIndicator, the adapter for your recyclerView MUST implement INameableAdapter.");
+        }
+        this.sectionIndicator = sectionIndicator;
+        sectionIndicator.pairScrollBar(this);
+        return this;
+    }
+
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-    private int fetchAccentColor(Context context) {
+    protected int fetchAccentColor(Context context) {
         TypedValue typedValue = new TypedValue();
 
         TypedArray a = context.obtainStyledAttributes(typedValue.data, new int[] { android.R.attr.colorAccent });
@@ -246,6 +282,9 @@ public class MaterialScrollBar extends RelativeLayout {
             super.onScrolled(recyclerView, dx, dy);
 
             ViewHelper.setY(handle, calculateScrollProgress(recyclerView) * (materialScrollBar.getHeight() - handle.getHeight()));
+            if(sectionIndicator != null && sectionIndicator.getVisibility() == VISIBLE){
+                sectionIndicator.setScroll(calculateScrollProgress(recyclerView) * (materialScrollBar.getHeight() - handle.getHeight()));
+            }
         }
 
         public float calculateScrollProgress(RecyclerView recyclerView) {
@@ -266,6 +305,13 @@ public class MaterialScrollBar extends RelativeLayout {
             int indexOfLastFullyVisibleItemInFirstSection = numItemsInList - numScrollableSectionsInList - 1;
 
             int currentSection = lastFullyVisiblePosition - indexOfLastFullyVisibleItemInFirstSection;
+            if(sectionIndicator.getVisibility() == VISIBLE){
+                if(currentSection == 0){
+                    sectionIndicator.setCharacter(((INameableAdapter)recyclerView.getAdapter()).getCharacterForElement(currentSection));
+                } else {
+                    sectionIndicator.setCharacter(((INameableAdapter)recyclerView.getAdapter()).getCharacterForElement(currentSection - 1));
+                }
+            }
 
             return (float) currentSection / numScrollableSectionsInList;
         }
