@@ -63,12 +63,12 @@ public class SectionIndicator extends RelativeLayout{
         y -= getDP(74);
         if(y < 0){
             y += getDP(98);
-            indicator.setScaleY(-1F);
-            textView.setScaleY(-1F);
+            ViewHelper.setScaleY(indicator, -1F);
+            ViewHelper.setScaleY(textView, -1F);
             ViewHelper.setY(indicator, y);
         } else {
-            indicator.setScaleY(1F);
-            textView.setScaleY(1F);
+            ViewHelper.setScaleY(indicator, 1F);
+            ViewHelper.setScaleY(textView, 1F);
             ViewHelper.setY(indicator, y);
         }
     }
