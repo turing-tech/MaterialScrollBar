@@ -305,7 +305,7 @@ public class MaterialScrollBar extends RelativeLayout {
             int indexOfLastFullyVisibleItemInFirstSection = numItemsInList - numScrollableSectionsInList - 1;
 
             int currentSection = lastFullyVisiblePosition - indexOfLastFullyVisibleItemInFirstSection;
-            if(sectionIndicator.getVisibility() == VISIBLE){
+            if(sectionIndicator != null && sectionIndicator.getVisibility() == VISIBLE){
                 if(currentSection == 0){
                     sectionIndicator.setCharacter(((INameableAdapter)recyclerView.getAdapter()).getCharacterForElement(currentSection));
                 } else {
