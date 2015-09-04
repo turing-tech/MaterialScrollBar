@@ -6,7 +6,7 @@ An Android library that brings the Material Design 5.1 sidebar to pre-5.1 device
   <img alt="Android app on Google Play" src="https://developer.android.com/images/brand/en_app_rgb_wo_45.png" />
 </a>
 
-![](https://img.shields.io/hexpm/l/plug.svg) ![](https://img.shields.io/github/release/krimin-killr21/MaterialScrollBar.svg?label=jCenter)
+![](https://img.shields.io/hexpm/l/plug.svg) ![](https://img.shields.io/github/release/krimin-killr21/MaterialScrollBar.svg?label=jCenter)![](https://img.shields.io/badge/API-7%2B-blue.svg?style=flat)
 
 Preview
 -------
