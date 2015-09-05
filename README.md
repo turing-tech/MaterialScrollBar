@@ -27,52 +27,31 @@ maven {
 
 ```gradle
 dependencies {
-    compile 'com.turingtechnologies.materialscrollbar:lib:2.+'
+    compile 'com.turingtechnologies.materialscrollbar:lib:3.+'
 }
 ```
 
 How to use - ScrollBar
 --------
-It is very important that the scroller be aligned to the right side of the screen in order to present correctly. You can manipulate the handle and bar colours through the xml or programatically. The recomended width for the view is 20dp to allow for a reasonable area for dragging on the side of the screen.
-
-```xml
-<com.turingtechnologies.materialscrollbar.MaterialScrollBar
-    android:id="@+id/material_scroller"
-    android:layout_width="20dp"
-    android:layout_height="match_parent"
-    app:handleColour="{{colour here}}" (optional)
-    app:barColour="{{colour here}}" (optional)
-    android:layout_alignParentRight="true"
-    android:layout_alignTop="@+id/recycler_view" />
-```
-
-Lastly, it also imperative that you give the materialScrollBar whatever recyclerView to which you wish to attach it. If you fail to do this, the library will spam error messages to the log until you fix it.
+For version 3.0.0 and later, all you need to add is this line of code:
 
 ```java
-materialScrollBar.setRecyclerView(recyclerView);
+MaterialScrollBar materialScrollBar = new MaterialScrollBar(this, recyclerView);
 ```
+
+where 'recyclerView' is the recyclerView to which you want to link the scrollBar.
+
+If you're updating from an older version, remove any xml from this library and rewrite your code to implement the API as above.
 
 How to use - Section Indicator
 --------
-Every step here is important, so make sure you've done them all.
-
-1- Add it to the xml.
-
-```xml
-<com.turingtechnologies.materialscrollbar.SectionIndicator
-  android:layout_width="100dp"
-  android:id="@+id/sectionIndicator"
-  android:layout_alignRight="[Id of scrollBar]"
-  android:layout_alignTop="[Id of scrollBar]"
-  android:layout_height="match_parent"/>
-```
-2- Link the scrollBar and the section indicator programatically.
+To add a section indicator, simply add the following line of code:
 
 ```java
-  scrollBar.setSectionIndicator((SectionIndicator) findViewById(R.id.sectionIndicator));
+materialScrollBar.addSectionIndicator(this);
 ```
 
-3- Make the adapter for your recyclerView implement INameableAdapter and fill in the getCharacterForElement method for your adapter.
+To use a section indicator, you **MUST** make your recyclerView's adapter implement INameableAdapter. If you do not, the library will throw a runtime error informing you of your mistake.
 
 License
 --------
