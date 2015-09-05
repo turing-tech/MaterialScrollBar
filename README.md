@@ -2,11 +2,12 @@
 
 An Android library that brings the Material Design 5.1 scrollbar to pre-5.1 devices. Designed for recyclerViews.
 
+![](https://img.shields.io/hexpm/l/plug.svg) ![](https://img.shields.io/github/release/krimin-killr21/MaterialScrollBar.svg?label=jCenter) ![](https://img.shields.io/badge/API-7%2B-blue.svg?style=flat) [![Android Arsenal](https://img.shields.io/badge/Android%20Arsenal-MaterialScrollBar-blue.svg?style=flat)](https://android-arsenal.com/details/1/2441)
+
 <a href="https://play.google.com/store/apps/details?id=com.turingtechnologies.materialscrollbardemo">
   <img alt="Android app on Google Play" src="https://developer.android.com/images/brand/en_app_rgb_wo_45.png" />
-</a>
-
-![](https://img.shields.io/hexpm/l/plug.svg) ![](https://img.shields.io/github/release/krimin-killr21/MaterialScrollBar.svg?label=jCenter) ![](https://img.shields.io/badge/API-7%2B-blue.svg?style=flat) [![Android Arsenal](https://img.shields.io/badge/Android%20Arsenal-MaterialScrollBar-blue.svg?style=flat)](https://android-arsenal.com/details/1/2441)
+</a> 
+[![PayPal](https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=UH23JHQ8K4U2C)
 
 Preview
 -------
