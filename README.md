@@ -6,7 +6,7 @@ An Android library that brings the Material Design 5.1 scrollbar to pre-5.1 devi
   <img alt="Android app on Google Play" src="https://developer.android.com/images/brand/en_app_rgb_wo_45.png" />
 </a>
 
-![](https://img.shields.io/hexpm/l/plug.svg) ![](https://img.shields.io/github/release/krimin-killr21/MaterialScrollBar.svg?label=jCenter) ![](https://img.shields.io/badge/API-7%2B-blue.svg?style=flat)
+![](https://img.shields.io/hexpm/l/plug.svg) ![](https://img.shields.io/github/release/krimin-killr21/MaterialScrollBar.svg?label=jCenter) ![](https://img.shields.io/badge/API-7%2B-blue.svg?style=flat) [![Android Arsenal](https://img.shields.io/badge/Android%20Arsenal-MaterialScrollBar-blue.svg?style=flat)](https://android-arsenal.com/details/1/2441)
 
 Preview
 -------
