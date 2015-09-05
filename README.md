@@ -43,6 +43,8 @@ where 'recyclerView' is the recyclerView to which you want to link the scrollBar
 
 If you're updating from an older version, remove any xml from this library and rewrite your code to implement the API as above.
 
+Also note that the library does not currently support recyclerViews which do not boarder the screen's edge on the right side.
+
 How to use - Section Indicator
 --------
 To add a section indicator, simply add the following line of code:
