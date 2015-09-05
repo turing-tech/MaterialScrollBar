@@ -1,6 +1,6 @@
 # MaterialScrollBar
 
-An Android library that brings the Material Design 5.1 sidebar to pre-5.1 devices.
+An Android library that brings the Material Design 5.1 scrollbar to pre-5.1 devices. Designed for recyclerViews.
 
 <a href="https://play.google.com/store/apps/details?id=com.turingtechnologies.materialscrollbardemo">
   <img alt="Android app on Google Play" src="https://developer.android.com/images/brand/en_app_rgb_wo_45.png" />
