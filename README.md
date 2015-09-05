@@ -43,6 +43,14 @@ where 'recyclerView' is the recyclerView to which you want to link the scrollBar
 
 If you're updating from an older version, remove any xml from this library and rewrite your code to implement the API as above.
 
+It is also strongly recommended that you provide the accent colour if your app supports devices below Lollipop. You can do this by invoking:
+
+```java
+materialScrollBar.setHandleColour([[Accent Colour]]);
+```
+
+For devices running Lollipop and above, the accent colour will be read automatically. If you fail to provide an accent colour, devices running version of Android below Lollipop will default to a usable but bland grey colour.
+
 Also note that the library does not currently support recyclerViews which do not boarder the screen's edge on the right side.
 
 How to use - Section Indicator
