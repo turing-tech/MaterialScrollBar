@@ -123,6 +123,8 @@ public class MaterialScrollBar extends RelativeLayout {
         setId(R.id.reservedNamedId);
         LayoutParams layoutParams = new LayoutParams(Utils.getDP(20, this), ViewGroup.LayoutParams.MATCH_PARENT);
         layoutParams.addRule(ALIGN_PARENT_RIGHT);
+        layoutParams.addRule(ALIGN_TOP, recyclerView.getId());
+        layoutParams.addRule(ALIGN_BOTTOM, recyclerView.getId());
         ((ViewGroup) recyclerView.getParent()).addView(this, layoutParams);
         recyclerView.addOnScrollListener(scrollListener);
         this.recyclerView = recyclerView;

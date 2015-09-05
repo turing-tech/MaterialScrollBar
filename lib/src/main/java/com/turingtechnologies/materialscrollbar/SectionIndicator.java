@@ -66,6 +66,8 @@ class SectionIndicator extends RelativeLayout{
 
         LayoutParams layoutParams = new LayoutParams(Utils.getDP(100, this), ViewGroup.LayoutParams.MATCH_PARENT);
         layoutParams.addRule(ALIGN_RIGHT, materialScrollBar.getId());
+        layoutParams.addRule(ALIGN_TOP, materialScrollBar.getId());
+        layoutParams.addRule(ALIGN_BOTTOM, materialScrollBar.getId());
         ((ViewGroup)materialScrollBar.getParent()).addView(this, layoutParams);
     }
 
