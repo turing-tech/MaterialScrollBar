@@ -1,5 +1,29 @@
 apply plugin: 'com.android.library'
 
+ext {
+    bintrayRepo = 'maven'
+    bintrayName = 'material-scroll-bar'
+
+    publishedGroupId = 'com.turingtechnologies.materialscrollbar'
+    libraryName = 'Material Scrollbar'
+    artifact = 'lib'
+
+    libraryDescription = 'An Android library that brings the Material Design 5.1 sidebar to pre-5.1 devices.'
+
+    siteUrl = 'https://github.com/krimin-killr21/MaterialScrollBar'
+    gitUrl = 'https://github.com/krimin-killr21/MaterialScrollBar.git'
+
+    libraryVersion = '3.0'
+
+    developerId = 'krimin-killr21'
+    developerName = 'Turing Technologies'
+    developerEmail = 'turingtechnologies@gmail.com'
+
+    licenseName = 'The Apache Software License, Version 2.0'
+    licenseUrl = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+    allLicenses = ["Apache-2.0"]
+}
+
 android {
     compileSdkVersion 23
     buildToolsVersion "23.0.0"
@@ -7,8 +31,8 @@ android {
     defaultConfig {
         minSdkVersion 7
         targetSdkVersion 23
-        versionCode 3
-        versionName "2.0"
+        versionCode 4
+        versionName "3.0"
     }
 }
 
@@ -16,4 +40,8 @@ dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
     compile 'com.nineoldandroids:library:2.4.0'
     compile 'com.android.support:recyclerview-v7:23.0.0'
+    compile 'org.apache.commons:commons-lang3:3.0'
 }
+
+apply from: 'https://raw.githubusercontent.com/nuuneoi/JCenter/master/installv1.gradle'
+apply from: 'https://raw.githubusercontent.com/nuuneoi/JCenter/master/bintrayv1.gradle'

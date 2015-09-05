@@ -54,7 +54,7 @@ public class SplashActivity extends AppCompatActivity {
                 Collections.sort(pkgAppsList, new Comparator<ApplicationInfo>() {
                     @Override
                     public int compare(ApplicationInfo o1, ApplicationInfo o2) {
-                        return o1.loadLabel(getPackageManager()).toString().compareTo(o2.loadLabel(getPackageManager()).toString());
+                        return o1.loadLabel(getPackageManager()).toString().compareToIgnoreCase(o2.loadLabel(getPackageManager()).toString());
                     }
                 });
                 for(int i = 0; i < pkgAppsList.size(); i++){

@@ -24,10 +24,10 @@ import android.graphics.Color;
 import android.os.Build;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.TranslateAnimation;
 import android.widget.RelativeLayout;
@@ -39,14 +39,16 @@ public class MaterialScrollBar extends RelativeLayout {
     private View background;
     private View handle;
     protected int handleColour;
-    protected Activity a;
+    private Activity a;
     private ScrollListener scrollListener = new ScrollListener(this);
     private boolean hidden = true;
     private int hideDuration = 2500;
     private boolean hide = true;
-    protected RecyclerView recyclerView;
+    private RecyclerView recyclerView;
     private SectionIndicator sectionIndicator;
+    private int textColour = android.R.color.white;
 
+    //Thread which checks every 1/10th of a second to decide if the scrollBar should slide away.
     class BarFade extends Thread {
 
         MaterialScrollBar materialScrollBar;
@@ -55,14 +57,18 @@ public class MaterialScrollBar extends RelativeLayout {
             materialScrollBar = msb;
         }
 
+        //Variable which is later set to indicate the time after which the scrollBar should disappear
         long time = 0;
+
+        //Variable which is set to false when dragging is occurring and true when dragging is stopped.
         boolean run = false;
 
         @Override
         public void run() {
             try{
                 while(true){
-                    if(time <= System.currentTimeMillis() && run){
+                    //Is it past the time where the bar should be animated away AND is no scrolling occurring?
+                    if(run && time <= System.currentTimeMillis()){
                         run = false;
                         materialScrollBar.a.runOnUiThread(new Runnable() {
                             @Override
@@ -83,37 +89,43 @@ public class MaterialScrollBar extends RelativeLayout {
         }
     }
 
-    BarFade fade;
+    private BarFade fade;
 
-    public MaterialScrollBar(Context context, AttributeSet attributeSet){
-        super(context, attributeSet);
+    public MaterialScrollBar(Context context, RecyclerView recyclerView){
+        super(context);
 
         if(!isInEditMode()){
             a = (Activity) context;
         }
+
         background = new View(context);
-        LayoutParams lp = new RelativeLayout.LayoutParams((int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 8, getResources().getDisplayMetrics()), LayoutParams.MATCH_PARENT);
+        LayoutParams lp = new RelativeLayout.LayoutParams(Utils.getDP(8, this), LayoutParams.MATCH_PARENT);
         lp.addRule(ALIGN_PARENT_RIGHT);
         background.setLayoutParams(lp);
-        TypedArray attributes = getContext().getTheme().obtainStyledAttributes(attributeSet, R.styleable.MaterialScrollBar, 0, 0);
-        background.setBackgroundColor(attributes.getColor(R.styleable.MaterialScrollBar_barColour, getResources().getColor(android.R.color.darker_gray)));
-        com.nineoldandroids.view.ViewHelper.setAlpha(background, 0.4F);
+        background.setBackgroundColor(getResources().getColor(android.R.color.darker_gray));
+        ViewHelper.setAlpha(background, 0.4F);
 
         handle = new View(context);
-        lp = new RelativeLayout.LayoutParams((int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 8, getResources().getDisplayMetrics()),
-                (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 48, getResources().getDisplayMetrics()));
+        lp = new RelativeLayout.LayoutParams(Utils.getDP(8, this),
+                Utils.getDP(48, this));
         lp.addRule(ALIGN_PARENT_RIGHT);
         handle.setLayoutParams(lp);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            handleColour = attributes.getColor(R.styleable.MaterialScrollBar_handleColour, fetchAccentColor(context));
-            handle.setBackgroundColor(handleColour);
+            handleColour = fetchAccentColour(context);
         } else {
-            handleColour = attributes.getColor(R.styleable.MaterialScrollBar_handleColour, Color.parseColor("#9c9c9c"));
-            handle.setBackgroundColor(handleColour);
+            handleColour = Color.parseColor("#9c9c9c");
         }
+        handle.setBackgroundColor(handleColour);
 
         addView(background);
         addView(handle);
+
+        setId(R.id.reservedNamedId);
+        LayoutParams layoutParams = new LayoutParams(Utils.getDP(20, this), ViewGroup.LayoutParams.MATCH_PARENT);
+        layoutParams.addRule(ALIGN_PARENT_RIGHT);
+        ((ViewGroup) recyclerView.getParent()).addView(this, layoutParams);
+        recyclerView.addOnScrollListener(scrollListener);
+        this.recyclerView = recyclerView;
 
         setTouchIntercept();
 
@@ -125,17 +137,8 @@ public class MaterialScrollBar extends RelativeLayout {
         startAnimation(anim);
     }
 
-    /**
-     * @param rv to assign as the ScrollBar's recycler view.
-     */
-    public MaterialScrollBar setRecyclerView(RecyclerView rv){
-        recyclerView = rv;
-        rv.addOnScrollListener(this.scrollListener);
-        return this;
-    }
-
     class recyclerViewNotSetException extends RuntimeException{
-        public recyclerViewNotSetException(String message) { super(message); }
+        public recyclerViewNotSetException() { super("You failed to run setRecyclerView()! You must do this."); }
     }
 
     private void setTouchIntercept(){
@@ -149,7 +152,7 @@ public class MaterialScrollBar extends RelativeLayout {
                             sectionIndicator.setVisibility(VISIBLE);
                         }
                     } catch (NullPointerException e) {
-                        throw new recyclerViewNotSetException("You failed to run setRecyclerView()! You must do this.");
+                        throw new recyclerViewNotSetException();
                     }
 
                     if (hide) {
@@ -223,6 +226,30 @@ public class MaterialScrollBar extends RelativeLayout {
     }
 
     /**
+     * Provides the ability to programmatically set the text colour of the indicator. Will do nothing if there is no section indicator.
+     * @param colour to set the text of the indicator.
+     */
+    public MaterialScrollBar setTextColour(int colour){
+        textColour = colour;
+        if(sectionIndicator != null){
+            sectionIndicator.setTextColour(colour);
+        }
+        return this;
+    }
+
+    /**
+     * Provides the ability to programmatically set the text colour of the indicator. Will do nothing if there is no section indicator.
+     * @param colour to set the text of the indicator.
+     */
+    public MaterialScrollBar setTextColour(String colour){
+        textColour = Color.parseColor(colour);
+        if(sectionIndicator != null){
+            sectionIndicator.setTextColour(Color.parseColor(colour));
+        }
+        return this;
+    }
+
+    /**
      * Provides the ability to programmatically alter whether the scrollbar
      * should hide after a period of inactivity or not.
      * @param hide sets whether the bar should hide or not.
@@ -241,39 +268,39 @@ public class MaterialScrollBar extends RelativeLayout {
     }
 
     class adapterNotNameableException extends RuntimeException{
-        public adapterNotNameableException(String message) { super(message); }
+        public adapterNotNameableException() { super("In order to add a sectionIndicator, the adapter for your recyclerView MUST implement INameableAdapter."); }
     }
 
     /**
-     * Sets the section indicator which accompanies this scroll bar.
-     * @param sectionIndicator which should be paired to this scroll bar.
+     * Adds a section indicator which accompanies this scroll bar.
      */
-    public MaterialScrollBar setSectionIndicator(SectionIndicator sectionIndicator) {
+    public MaterialScrollBar addSectionIndicator(Context c) {
         if(!(recyclerView.getAdapter() instanceof INameableAdapter)){
-            throw new adapterNotNameableException("In order to add a sectionIndicator, the adapter for your recyclerView MUST implement INameableAdapter.");
+            throw new adapterNotNameableException();
         }
-        this.sectionIndicator = sectionIndicator;
-        sectionIndicator.pairScrollBar(this);
+        sectionIndicator = new SectionIndicator(c, this);
+        sectionIndicator.setTextColour(textColour);
         return this;
     }
 
+    //Fetch accent colour on devices running Lollipop or newer.
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-    protected int fetchAccentColor(Context context) {
+    private int fetchAccentColour(Context context) {
         TypedValue typedValue = new TypedValue();
 
         TypedArray a = context.obtainStyledAttributes(typedValue.data, new int[] { android.R.attr.colorAccent });
-        int color = a.getColor(0, 0);
+        int colour = a.getColor(0, 0);
 
         a.recycle();
 
-        return color;
+        return colour;
     }
 
     private class ScrollListener extends RecyclerView.OnScrollListener {
 
         MaterialScrollBar materialScrollBar;
 
-        protected ScrollListener(MaterialScrollBar msb){
+        ScrollListener(MaterialScrollBar msb){
             materialScrollBar = msb;
         }
 

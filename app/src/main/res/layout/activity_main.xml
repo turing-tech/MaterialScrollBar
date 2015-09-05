@@ -7,16 +7,4 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
-    <com.turingtechnologies.materialscrollbar.MaterialScrollBar
-        android:layout_alignParentRight="true"
-        android:id="@+id/materialScrollBar"
-        android:layout_width="20dp"
-        android:layout_height="match_parent"/>
-
-    <com.turingtechnologies.materialscrollbar.SectionIndicator
-        android:layout_alignParentRight="true"
-        android:id="@+id/sectionIndicator"
-        android:layout_width="100dp"
-        android:layout_height="match_parent"/>
-
 </RelativeLayout>

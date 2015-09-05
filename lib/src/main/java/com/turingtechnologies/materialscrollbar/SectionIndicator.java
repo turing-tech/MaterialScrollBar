@@ -17,11 +17,11 @@
 package com.turingtechnologies.materialscrollbar;
 
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Build;
 import android.support.v4.content.ContextCompat;
-import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
@@ -29,14 +29,19 @@ import android.widget.TextView;
 
 import com.nineoldandroids.view.ViewHelper;
 
-public class SectionIndicator extends RelativeLayout{
+import org.apache.commons.lang3.StringUtils;
 
-    MaterialScrollBar materialScrollBar;
-    RelativeLayout indicator;
-    TextView textView;
+/**
+ * Internal class. Provides the sectionIndicator created by using the addSectionIndicator() method.
+ */
+@SuppressLint("ViewConstructor")
+class SectionIndicator extends RelativeLayout{
 
-    public SectionIndicator(Context context, AttributeSet attrs) {
-        super(context, attrs);
+    private RelativeLayout indicator;
+    private TextView textView;
+
+    public SectionIndicator(Context context, MaterialScrollBar materialScrollBar) {
+        super(context);
 
         indicator = new RelativeLayout(context);
         if(Build.VERSION.SDK_INT >= 16){
@@ -44,25 +49,36 @@ public class SectionIndicator extends RelativeLayout{
         } else {
             indicator.setBackgroundDrawable(ContextCompat.getDrawable(context, R.drawable.indicator));
         }
-        RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(getDP(100), getDP(100));
-        lp.setMargins(0, 0, getDP(8), 0);
+        RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(Utils.getDP(100, this), Utils.getDP(100, this));
+        lp.setMargins(0, 0, Utils.getDP(8, this), 0);
         setVisibility(INVISIBLE);
 
         textView = new TextView(context);
-        textView.setText("#");
-        textView.setTextColor(getResources().getColor(android.R.color.white));
         textView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 50);
+       // textView.setTextColor(getResources().getColor()materialScrollBar.textColour);
         LayoutParams tvlp = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         tvlp.addRule(RelativeLayout.CENTER_IN_PARENT, RelativeLayout.TRUE);
 
         addView(indicator, lp);
         indicator.addView(textView, tvlp);
+
+        ((GradientDrawable)indicator.getBackground()).setColor(materialScrollBar.handleColour);
+
+        LayoutParams layoutParams = new LayoutParams(Utils.getDP(100, this), ViewGroup.LayoutParams.MATCH_PARENT);
+        layoutParams.addRule(ALIGN_RIGHT, materialScrollBar.getId());
+        ((ViewGroup)materialScrollBar.getParent()).addView(this, layoutParams);
     }
 
-    protected void setScroll(float y){
-        y -= getDP(74);
+    /**
+     * Used by the materialScrollBar to move the indicator with the handle
+     * @param y Position to which the indicator should move.
+     */
+    void setScroll(float y){
+        //Displace the indicator upward so that the carrot extends from the centre of the handle.
+        y -= Utils.getDP(74, this);
+        //If the indicator is hidden by the top of the screen, it is inverted and displaced downward.
         if(y < 0){
-            y += getDP(98);
+            y += Utils.getDP(100, this);
             ViewHelper.setScaleY(indicator, -1F);
             ViewHelper.setScaleY(textView, -1F);
             ViewHelper.setY(indicator, y);
@@ -73,17 +89,20 @@ public class SectionIndicator extends RelativeLayout{
         }
     }
 
-    protected void setCharacter(Character c){
-        textView.setText(c.toString());
+    /**
+     * Used by the materialScrollBar to change the character of the indicator.
+     * @param c The character which should be indicated.
+     */
+    void setCharacter(Character c){
+        textView.setText(StringUtils.capitalize(c.toString()));
     }
 
-    private int getDP(int dp){
-        return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, getResources().getDisplayMetrics());
-    }
-
-    protected void pairScrollBar(MaterialScrollBar msb){
-        materialScrollBar = msb;
-        ((GradientDrawable)indicator.getBackground()).setColor(materialScrollBar.handleColour);
+    /**
+     * Used by the materialScrollBar to change the text colour for the indicator.
+     * @param colour The desired text colour.
+     */
+    void setTextColour(int colour){
+        textView.setTextColor(getResources().getColor(colour));
     }
 
 }
