@@ -1,3 +1,5 @@
+[![Android Gems](http://www.android-gems.com/badge/krimin-killr21/MaterialScrollBar.svg?branch=master)](http://www.android-gems.com/lib/krimin-killr21/MaterialScrollBar)
+
 # MaterialScrollBar
 
 An Android library that brings the Material Design 5.1 scrollbar to pre-5.1 devices. Designed for recyclerViews.
