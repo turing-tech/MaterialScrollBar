@@ -25,6 +25,7 @@ public class SplashActivity extends AppCompatActivity {
     public static ArrayList<String> pkgLabelList = new ArrayList<>();
     public static ArrayList<Drawable> pkgIconList = new ArrayList<>();
     public static ArrayList<String> pkgPackageList = new ArrayList<>();
+    public static ArrayList<Long> pkgDateList = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,6 +66,13 @@ public class SplashActivity extends AppCompatActivity {
                 }
                 for(int i = 0; i < pkgAppsList.size(); i++){
                     pkgIconList.add(pkgAppsList.get(i).loadIcon(getPackageManager()));
+                }
+                for(int i = 0; i < pkgAppsList.size(); i++){
+                    try {
+                        pkgDateList.add(getPackageManager().getPackageInfo(pkgAppsList.get(i).packageName, 0).firstInstallTime);
+                    } catch (PackageManager.NameNotFoundException e) {
+                        e.printStackTrace();
+                    }
                 }
                 pkgAppsList = null;
                 runOnUiThread(new Runnable() {

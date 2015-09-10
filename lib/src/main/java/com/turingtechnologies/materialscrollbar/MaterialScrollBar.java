@@ -16,6 +16,7 @@
 
 package com.turingtechnologies.materialscrollbar;
 
+import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
@@ -34,19 +35,21 @@ import android.widget.RelativeLayout;
 
 import com.nineoldandroids.view.ViewHelper;
 
+@SuppressLint("ViewConstructor")
 public class MaterialScrollBar extends RelativeLayout {
 
     private View background;
     private View handle;
-    protected int handleColour;
+    int handleColour;
+    private int handleOffColour = Color.parseColor("#9c9c9c");
     private Activity a;
-    private ScrollListener scrollListener = new ScrollListener(this);
     private boolean hidden = true;
     private int hideDuration = 2500;
     private boolean hide = true;
     private RecyclerView recyclerView;
-    private SectionIndicator sectionIndicator;
+    private Indicator indicator;
     private int textColour = android.R.color.white;
+    private boolean lightOnTouch;
 
     //Thread which checks every 1/10th of a second to decide if the scrollBar should slide away.
     class BarFade extends Thread {
@@ -73,11 +76,7 @@ public class MaterialScrollBar extends RelativeLayout {
                         materialScrollBar.a.runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                TranslateAnimation anim = new TranslateAnimation(Animation.RELATIVE_TO_PARENT, 0.0f, Animation.RELATIVE_TO_SELF, 1.0f, Animation.RELATIVE_TO_PARENT, 0.0f, Animation.RELATIVE_TO_PARENT, 0.0f);
-                                anim.setDuration(500);
-                                anim.setFillAfter(true);
-                                hidden = true;
-                                materialScrollBar.startAnimation(anim);
+                                materialScrollBar.fadeOut();
                             }
                         });
                     }
@@ -91,7 +90,12 @@ public class MaterialScrollBar extends RelativeLayout {
 
     private BarFade fade;
 
-    public MaterialScrollBar(Context context, RecyclerView recyclerView){
+    /**
+     * @param context The app's context
+     * @param recyclerView The recyclerView to which you wish to link the scrollBar
+     * @param lightOnTouch Should the handle always be coloured or should it light up on touch and turn grey when released
+     */
+    public MaterialScrollBar(Context context, RecyclerView recyclerView, boolean lightOnTouch){
         super(context);
 
         if(!isInEditMode()){
@@ -110,23 +114,31 @@ public class MaterialScrollBar extends RelativeLayout {
                 Utils.getDP(48, this));
         lp.addRule(ALIGN_PARENT_RIGHT);
         handle.setLayoutParams(lp);
+
+        this.lightOnTouch = lightOnTouch;
+        int colourToSet;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             handleColour = fetchAccentColour(context);
         } else {
             handleColour = Color.parseColor("#9c9c9c");
         }
-        handle.setBackgroundColor(handleColour);
+        if(lightOnTouch){
+            colourToSet = Color.parseColor("#9c9c9c");
+        } else {
+            colourToSet = handleColour;
+        }
+        handle.setBackgroundColor(colourToSet);
 
         addView(background);
         addView(handle);
 
         setId(R.id.reservedNamedId);
         LayoutParams layoutParams = new LayoutParams(Utils.getDP(20, this), ViewGroup.LayoutParams.MATCH_PARENT);
-        layoutParams.addRule(ALIGN_PARENT_RIGHT);
+        layoutParams.addRule(ALIGN_RIGHT, recyclerView.getId());
         layoutParams.addRule(ALIGN_TOP, recyclerView.getId());
         layoutParams.addRule(ALIGN_BOTTOM, recyclerView.getId());
         ((ViewGroup) recyclerView.getParent()).addView(this, layoutParams);
-        recyclerView.addOnScrollListener(scrollListener);
+        recyclerView.addOnScrollListener(new ScrollListener(this));
         this.recyclerView = recyclerView;
 
         setTouchIntercept();
@@ -139,36 +151,28 @@ public class MaterialScrollBar extends RelativeLayout {
         startAnimation(anim);
     }
 
-    class recyclerViewNotSetException extends RuntimeException{
-        public recyclerViewNotSetException() { super("You failed to run setRecyclerView()! You must do this."); }
-    }
-
     private void setTouchIntercept(){
         setOnTouchListener(new OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 if (event.getAction() != MotionEvent.ACTION_UP) {
-                    try {
-                        recyclerView.scrollToPosition((int) (recyclerView.getAdapter().getItemCount() * (event.getY() / (getHeight() - handle.getHeight()))));
-                        if(sectionIndicator != null && sectionIndicator.getVisibility() == INVISIBLE){
-                            sectionIndicator.setVisibility(VISIBLE);
-                        }
-                    } catch (NullPointerException e) {
-                        throw new recyclerViewNotSetException();
+                    recyclerView.scrollToPosition((int) (recyclerView.getAdapter().getItemCount() * (event.getY() / (getHeight() - handle.getHeight()))));
+                    if(indicator != null && indicator.getVisibility() == INVISIBLE){
+                        indicator.setVisibility(VISIBLE);
                     }
 
-                    if (hide) {
-                        if (hidden) {
-                            hidden = false;
-                            TranslateAnimation anim = new TranslateAnimation(Animation.RELATIVE_TO_SELF, 1.0f, Animation.RELATIVE_TO_SELF, 0.0f, Animation.RELATIVE_TO_PARENT, 0.0f, Animation.RELATIVE_TO_PARENT, 0.0f);
-                            anim.setDuration(500);
-                            anim.setFillAfter(true);
-                            startAnimation(anim);
-                        }
+                    if(lightOnTouch){
+                        handle.setBackgroundColor(handleColour);
                     }
+
+                    fadeIn();
                 } else {
-                    if(sectionIndicator != null && sectionIndicator.getVisibility() == VISIBLE){
-                        sectionIndicator.setVisibility(INVISIBLE);
+                    if(indicator != null && indicator.getVisibility() == VISIBLE){
+                        indicator.setVisibility(INVISIBLE);
+                    }
+
+                    if(lightOnTouch){
+                        handle.setBackgroundColor(handleOffColour);
                     }
 
                     if (hide) {
@@ -196,7 +200,10 @@ public class MaterialScrollBar extends RelativeLayout {
      * @param colour to set the handle.
      */
     public MaterialScrollBar setHandleColour(String colour){
-        handle.setBackgroundColor(Color.parseColor(colour));
+        handleColour = Color.parseColor(colour);
+        if(!lightOnTouch) {
+            handle.setBackgroundColor(Color.parseColor(colour));
+        }
         return this;
     }
 
@@ -205,7 +212,28 @@ public class MaterialScrollBar extends RelativeLayout {
      * @param colour to set the handle.
      */
     public MaterialScrollBar setHandleColour(int colour){
-        handle.setBackgroundColor(colour);
+        handleColour = getResources().getColor(colour);
+        if(!lightOnTouch){
+            handle.setBackgroundColor(getResources().getColor(colour));
+        }
+        return this;
+    }
+
+    /**
+     * Provides the ability to programmatically set the colour of the scrollbar handle when unpressed. Only applies if lightOnTouch is true.
+     * @param colour to set the handle when unpressed.
+     */
+    public MaterialScrollBar setHandleOffColour(String colour){
+        handleOffColour = Color.parseColor(colour);
+        return this;
+    }
+
+    /**
+     * Provides the ability to programmatically set the colour of the scrollbar handle when unpressed. Only applies if lightOnTouch is true.
+     * @param colour to set the handle when unpressed.
+     */
+    public MaterialScrollBar setHandleOffColour(int colour){
+        handleOffColour = getResources().getColor(colour);
         return this;
     }
 
@@ -233,8 +261,8 @@ public class MaterialScrollBar extends RelativeLayout {
      */
     public MaterialScrollBar setTextColour(int colour){
         textColour = colour;
-        if(sectionIndicator != null){
-            sectionIndicator.setTextColour(colour);
+        if(indicator != null){
+            indicator.setTextColour(colour);
         }
         return this;
     }
@@ -245,8 +273,8 @@ public class MaterialScrollBar extends RelativeLayout {
      */
     public MaterialScrollBar setTextColour(String colour){
         textColour = Color.parseColor(colour);
-        if(sectionIndicator != null){
-            sectionIndicator.setTextColour(Color.parseColor(colour));
+        if(indicator != null){
+            indicator.setTextColour(Color.parseColor(colour));
         }
         return this;
     }
@@ -269,19 +297,36 @@ public class MaterialScrollBar extends RelativeLayout {
         return this;
     }
 
-    class adapterNotNameableException extends RuntimeException{
-        public adapterNotNameableException() { super("In order to add a sectionIndicator, the adapter for your recyclerView MUST implement INameableAdapter."); }
-    }
-
     /**
      * Adds a section indicator which accompanies this scroll bar.
      */
-    public MaterialScrollBar addSectionIndicator(Context c) {
-        if(!(recyclerView.getAdapter() instanceof INameableAdapter)){
-            throw new adapterNotNameableException();
+    public MaterialScrollBar addIndicator(Indicator indicator) {
+        indicator.testAdapter(recyclerView.getAdapter());
+        this.indicator = indicator;
+        indicator.linkToScrollBar(this);
+        indicator.setTextColour(textColour);
+        return this;
+    }
+
+    /**
+     * Allows the developer to set a custom bar thickness.
+     * @param thickness The desired bar thickness.
+     */
+    public MaterialScrollBar setBarThickness(int thickness){
+        thickness = Utils.getDP(thickness, this);
+        LayoutParams layoutParams = (LayoutParams) handle.getLayoutParams();
+        layoutParams.width = thickness;
+        handle.setLayoutParams(layoutParams);
+
+        layoutParams = (LayoutParams) background.getLayoutParams();
+        layoutParams.width = thickness;
+        background.setLayoutParams(layoutParams);
+
+        if(indicator != null){
+            LayoutParams lp = (LayoutParams) indicator.getLayoutParams();
+            lp.setMargins(0, 0, handle.getLayoutParams().width, 0);
+            indicator.setLayoutParams(lp);
         }
-        sectionIndicator = new SectionIndicator(c, this);
-        sectionIndicator.setTextColour(textColour);
         return this;
     }
 
@@ -298,6 +343,33 @@ public class MaterialScrollBar extends RelativeLayout {
         return colour;
     }
 
+    /**
+     * Animates the bar out of view
+     */
+    private void fadeOut(){
+        if(!hidden){
+            TranslateAnimation anim = new TranslateAnimation(Animation.RELATIVE_TO_PARENT, 0.0f, Animation.RELATIVE_TO_SELF, 1.0f, Animation.RELATIVE_TO_PARENT, 0.0f, Animation.RELATIVE_TO_PARENT, 0.0f);
+            anim.setDuration(500);
+            anim.setFillAfter(true);
+            hidden = true;
+            startAnimation(anim);
+        }
+    }
+
+    /**
+     * Animates the bar into view
+     */
+    private void fadeIn(){
+        if(hidden && hide){
+            hidden = false;
+            TranslateAnimation anim = new TranslateAnimation(Animation.RELATIVE_TO_SELF, 1.0f, Animation.RELATIVE_TO_SELF, 0.0f, Animation.RELATIVE_TO_PARENT, 0.0f, Animation.RELATIVE_TO_PARENT, 0.0f);
+            anim.setDuration(500);
+            anim.setFillAfter(true);
+            startAnimation(anim);
+
+        }
+    }
+
     private class ScrollListener extends RecyclerView.OnScrollListener {
 
         MaterialScrollBar materialScrollBar;
@@ -311,8 +383,8 @@ public class MaterialScrollBar extends RelativeLayout {
             super.onScrolled(recyclerView, dx, dy);
 
             ViewHelper.setY(handle, calculateScrollProgress(recyclerView) * (materialScrollBar.getHeight() - handle.getHeight()));
-            if(sectionIndicator != null && sectionIndicator.getVisibility() == VISIBLE){
-                sectionIndicator.setScroll(calculateScrollProgress(recyclerView) * (materialScrollBar.getHeight() - handle.getHeight()));
+            if(indicator != null && indicator.getVisibility() == VISIBLE){
+                indicator.setScroll(calculateScrollProgress(recyclerView) * (materialScrollBar.getHeight() - handle.getHeight()));
             }
         }
 
@@ -334,12 +406,8 @@ public class MaterialScrollBar extends RelativeLayout {
             int indexOfLastFullyVisibleItemInFirstSection = numItemsInList - numScrollableSectionsInList - 1;
 
             int currentSection = lastFullyVisiblePosition - indexOfLastFullyVisibleItemInFirstSection;
-            if(sectionIndicator != null && sectionIndicator.getVisibility() == VISIBLE){
-                if(currentSection == 0){
-                    sectionIndicator.setCharacter(((INameableAdapter)recyclerView.getAdapter()).getCharacterForElement(currentSection));
-                } else {
-                    sectionIndicator.setCharacter(((INameableAdapter)recyclerView.getAdapter()).getCharacterForElement(currentSection - 1));
-                }
+            if(indicator != null && indicator.getVisibility() == VISIBLE){
+                indicator.textView.setText(indicator.getTextElement(currentSection, recyclerView.getAdapter()));
             }
 
             return (float) currentSection / numScrollableSectionsInList;
@@ -355,13 +423,7 @@ public class MaterialScrollBar extends RelativeLayout {
                     fade.run = true;
                 } else if (newState == RecyclerView.SCROLL_STATE_DRAGGING) {
                     fade.run = false;
-                    if(hidden){
-                        hidden = false;
-                        TranslateAnimation anim = new TranslateAnimation(Animation.RELATIVE_TO_SELF, 1.0f, Animation.RELATIVE_TO_SELF, 0.0f, Animation.RELATIVE_TO_PARENT, 0.0f, Animation.RELATIVE_TO_PARENT, 0.0f);
-                        anim.setDuration(500);
-                        anim.setFillAfter(true);
-                        materialScrollBar.startAnimation(anim);
-                    }
+                    materialScrollBar.fadeIn();
                 }
             }
         }

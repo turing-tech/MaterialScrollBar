@@ -10,9 +10,13 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.turingtechnologies.materialscrollbar.ICustomAdapter;
+import com.turingtechnologies.materialscrollbar.IDateableAdapter;
 import com.turingtechnologies.materialscrollbar.INameableAdapter;
 
-public class DemoAdapter extends RecyclerView.Adapter<DemoAdapter.ViewHolder> implements INameableAdapter{
+import java.util.Date;
+
+public class DemoAdapter extends RecyclerView.Adapter<DemoAdapter.ViewHolder> implements INameableAdapter, IDateableAdapter, ICustomAdapter{
 
     private Activity act;
 
@@ -27,6 +31,16 @@ public class DemoAdapter extends RecyclerView.Adapter<DemoAdapter.ViewHolder> im
             c = '#';
         }
         return c;
+    }
+
+    @Override
+    public Date getDateForElement(int element) {
+        return new Date(SplashActivity.pkgDateList.get(element));
+    }
+
+    @Override
+    public String getCustomStringForElement(int element) {
+        return SplashActivity.pkgLabelList.get(element);
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {

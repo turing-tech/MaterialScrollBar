@@ -16,12 +16,14 @@
 
 package com.turingtechnologies.materialscrollbar;
 
-public interface INameableAdapter {
+import java.util.Date;
+
+public interface IDateableAdapter {
 
     /**
      * @param element of the adapter that should be titled.
-     * @return The character that the AlphabetIndicator should display for the corresponding element.
+     * @return The date that the DateIndicator should display for the corresponding element.
      */
-    Character getCharacterForElement(int element);
+    Date getDateForElement(int element);
 
 }

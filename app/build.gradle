@@ -6,10 +6,10 @@ android {
 
     defaultConfig {
         applicationId "com.turingtechnologies.materialscrollbardemo"
-        minSdkVersion 9
+        minSdkVersion 11
         targetSdkVersion 23
         versionCode 1
-        versionName "1.0"
+        versionName "2.0"
     }
     buildTypes {
         release {

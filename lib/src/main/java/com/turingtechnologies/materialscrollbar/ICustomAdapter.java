@@ -16,12 +16,12 @@
 
 package com.turingtechnologies.materialscrollbar;
 
-public interface INameableAdapter {
+public interface ICustomAdapter {
 
     /**
      * @param element of the adapter that should be titled.
-     * @return The character that the AlphabetIndicator should display for the corresponding element.
+     * @return Any string.
      */
-    Character getCharacterForElement(int element);
+    String getCustomStringForElement(int element);
 
 }

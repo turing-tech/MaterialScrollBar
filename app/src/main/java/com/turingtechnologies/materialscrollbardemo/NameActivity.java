@@ -8,26 +8,26 @@ import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import com.turingtechnologies.materialscrollbar.AlphabetIndicator;
+import com.turingtechnologies.materialscrollbar.CustomIndicator;
 import com.turingtechnologies.materialscrollbar.MaterialScrollBar;
 
-public class MainActivity extends AppCompatActivity {
+public class NameActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        RecyclerView recyclerView = ((RecyclerView)findViewById(R.id.recyclerView));
+        RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recyclerView);
         recyclerView.setAdapter(new DemoAdapter(this));
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        new MaterialScrollBar(this, recyclerView, true).addIndicator(new AlphabetIndicator(this));
+//        new MaterialScrollBar(this, recyclerView, false).addIndicator(new DateAndTimeIndicator(this, false, true, true, false));
+        new MaterialScrollBar(this, recyclerView, false).addIndicator(new CustomIndicator(this));
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_norm, menu);
+        getMenuInflater().inflate(R.menu.menu_name, menu);
         return true;
     }
 
@@ -39,8 +39,8 @@ public class MainActivity extends AppCompatActivity {
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_toDate) {
-            Intent i = new Intent(this, DateActivity.class);
+        if (id == R.id.action_toNorm) {
+            Intent i = new Intent(this, MainActivity.class);
             i.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
             startActivity(i);
             return true;
