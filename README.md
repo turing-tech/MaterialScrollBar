@@ -28,7 +28,7 @@ maven {
 
 ```gradle
 dependencies {
-    compile 'com.turingtechnologies.materialscrollbar:lib:3.+'
+    compile 'com.turingtechnologies.materialscrollbar:lib:34+'
 }
 ```
 
@@ -37,12 +37,10 @@ How to use - ScrollBar
 For version 3.0.0 and later, all you need to add is this line of code:
 
 ```java
-MaterialScrollBar materialScrollBar = new MaterialScrollBar(this, recyclerView);
+MaterialScrollBar materialScrollBar = new MaterialScrollBar(this, recyclerView, {{lightOnTouch}});
 ```
 
-where 'recyclerView' is the recyclerView to which you want to link the scrollBar.
-
-If you're updating from an older version, remove any xml from this library and rewrite your code to implement the API as above.
+where 'recyclerView' is the recyclerView to which you want to link the scrollBar. "lightOnTouch" can either be true or false. A value of true will cause the handle to be grey until pressed, when it will become the normal accent colour (as set). A value of false will cause the handle to always have the accent colour, even when not being pressed.
 
 It is also strongly recommended that you provide the accent colour if your app supports devices below Lollipop. You can do this by invoking:
 
@@ -59,8 +57,10 @@ How to use - Section Indicator
 To add a section indicator, simply add the following line of code:
 
 ```java
-materialScrollBar.addSectionIndicator(this);
+materialScrollBar.addSectionIndicator({{Section Indicator}});
 ```
+
+The section indicator should be either AlphatbetIndicator, DateAndTimeIndicator, or CustomIndicator. See below for specific instructions per indicator. **It's thundering atm. Shutting off PC until it passes. Documentation incomplete.**
 
 To use a section indicator, you **MUST** make your recyclerView's adapter implement INameableAdapter. If you do not, the library will throw a runtime error informing you of your mistake.
 
