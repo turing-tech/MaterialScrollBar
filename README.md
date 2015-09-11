@@ -110,7 +110,7 @@ All versions have 3 nodes (X.X.X). The first increments every time that an appli
 License
 ======
 
-    Copyright 2015 Wynne Plaga.
+    Copyright 2015 Turing Technologies, an unicorporated orginisation Wynne Plaga.
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
