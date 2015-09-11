@@ -10,7 +10,7 @@ An Android library that brings the Material Design 5.1 scrollbar to pre-5.1 devi
 [![PayPal](https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=UH23JHQ8K4U2C)
 
 Preview
--------
+======
 
 [Video](https://youtu.be/CmcPsJYuzME)
 
@@ -18,7 +18,7 @@ Preview
 ![](http://i.imgur.com/8DNLqkn.png)
 
 How to add
---------
+======
 
 ```gradle
 maven {
@@ -32,11 +32,11 @@ dependencies {
 }
 ```
 Documentation
--------
+======
 
 Note: All customisation methods (setAutoHide, setBarColour, etc) return the materialScrollBar, so they can be chained together if wanted. Alternativly, you can just operate on a variable.
 
-###How to use - ScrollBar
+##How to use - ScrollBar
 
 ```java
 MaterialScrollBar materialScrollBar = new MaterialScrollBar(this, recyclerView, {{lightOnTouch}});
@@ -54,7 +54,7 @@ For devices running Lollipop and above, the accent colour will be read automatic
 
 Also note that the library does not currently support recyclerViews which do not boarder the screen's edge on the right side.
 
-###How to use - Section Indicator
+##How to use - Section Indicator
 
 To add a section indicator, simply add the following line of code:
 
@@ -66,8 +66,8 @@ The section indicator should be either AlphatbetIndicator, DateAndTimeIndicator,
 
 To use an indicator, you **MUST** make your recyclerView's adapter implement the relevant interface. If you do not, the library will throw a runtime error informing you of your mistake. See documentation for the relevant interface.
 
-###Indicators
-####AlphabetIndicator
+##Indicators
+###AlphabetIndicator
 
 **Required Interface:** INameableAdapter
 
@@ -76,7 +76,7 @@ To implement an AlphabetIndicator, which displays one character usually correspo
 ...addSectionIndicator(new AlphabetIndicator(this));
 ```
 
-####DateAndTimeIndicator
+###DateAndTimeIndicator
 
 **Required Interface:** IDateableAdapter
 
@@ -87,14 +87,62 @@ To implement a DateAndTimeIndicator, which displays any combination of time, day
 
 All of the arguments are booleans (except for this first one obviously). The indicator will dynamically size, add punctuation, and localise for you. All you need to do is provide a Date object for each element in your adapter. You should almost always use miliseconds since the epoch unless you have a good reason not to. Otherwise, the library might crash.
 
+###CustomIndicator
+
+**Required Interface:** ICustomAdapter
+
+To implement a CustomIndicator, which displays any text you want, add the following to the end of your materialScrollBar instantiation, or add it as a seperate line.
+```java
+...addSectionIndicator(new CustomIndicator(this));
+```
+
+##Customisation Options
+
+The following are various methods that you can invoke to customise the behaviour of the library.
+
+####setHideDuration(int hideDuration)
+
+**Default:** 2500
+
+Use this to alter the hide duration of the bar. Only has effect if autoHide is true.
+
+####setHandleColour(String|int colour)
+
+**Default:** App designated accent colour (API 19+), Dark grey (API 18-)
+
+Use this to alter the colour of the handle. If lightOnPress is true, this affects the lit colour.
+
+####setHandleOffColour(String|int colour)
+
+**Default:** Dark grey
+
+Use this to alter the colour of the handle when unpressed. Only effective if lightOnPress is true.
+
+####setBarColour(String|int colour)
+
+**Default:** Light grey
+
+Use this to alter the colour of the bar's background.
+
+####setTextColour(String|int colour)
+
+**Default:** White
+
+Use this to alter the colour of text in the indicator. Useful if the background is unusually light and the text needs to be darkened.
+
+####setAutoHide(Boolean autoHide)
+
+**Default:** True
+
+Use this to change whether the bar should deploy and hide as motion occours (true) or if it should always be present (false).
 
 Versioning Policy
--------
+======
 
 All versions have 3 nodes (X.X.X). The first increments every time that an application written for the previous version might be rendered incompatibile with the new version. This occurs whenever a feature's implementation must be changed on the developer's end to continue working. The second node changes whenever a new feature is added or previous features are updated, without breaking any code which was written for the previous version. The last node changes for bugfixes or dependancy updates.
 
 License
---------
+======
 
     Copyright 2015 Wynne Plaga.
 
