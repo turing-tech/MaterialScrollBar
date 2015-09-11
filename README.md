@@ -102,11 +102,6 @@ To implement a CustomIndicator, which displays any text you want, add the follow
 
 For info on other methods, see the detailed documentation from the wiki: https://github.com/krimin-killr21/MaterialScrollBar/wiki/Documentation
 
-Versioning Policy
-======
-
-All versions have 3 nodes (X.X.X). The first increments every time that an application written for the previous version might be rendered incompatibile with the new version. This occurs whenever a feature's implementation must be changed on the developer's end to continue working. The second node changes whenever a new feature is added or previous features are updated, without breaking any code which was written for the previous version. The last node changes for bugfixes or dependancy updates.
-
 License
 ======
 
