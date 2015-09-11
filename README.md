@@ -31,10 +31,12 @@ dependencies {
     compile 'com.turingtechnologies.materialscrollbar:lib:34+'
 }
 ```
+Documentation
+-------
 
-How to use - ScrollBar
---------
-For version 3.0.0 and later, all you need to add is this line of code:
+Note: All customisation methods (setAutoHide, setBarColour, etc) return the materialScrollBar, so they can be chained together if wanted. Alternativly, you can just operate on a variable.
+
+###How to use - ScrollBar
 
 ```java
 MaterialScrollBar materialScrollBar = new MaterialScrollBar(this, recyclerView, {{lightOnTouch}});
@@ -52,17 +54,39 @@ For devices running Lollipop and above, the accent colour will be read automatic
 
 Also note that the library does not currently support recyclerViews which do not boarder the screen's edge on the right side.
 
-How to use - Section Indicator
---------
+###How to use - Section Indicator
+
 To add a section indicator, simply add the following line of code:
 
 ```java
 materialScrollBar.addSectionIndicator({{Section Indicator}});
 ```
 
-The section indicator should be either AlphatbetIndicator, DateAndTimeIndicator, or CustomIndicator. See below for specific instructions per indicator. **It's thundering atm. Shutting off PC until it passes. Documentation incomplete.**
+The section indicator should be either AlphatbetIndicator, DateAndTimeIndicator, or CustomIndicator. See below for specific instructions per indicator.
 
-To use a section indicator, you **MUST** make your recyclerView's adapter implement INameableAdapter. If you do not, the library will throw a runtime error informing you of your mistake.
+To use an indicator, you **MUST** make your recyclerView's adapter implement the relevant interface. If you do not, the library will throw a runtime error informing you of your mistake. See documentation for the relevant interface.
+
+###Indicators
+####AlphabetIndicator
+
+**Required Interface:** INameableAdapter
+
+To implement an AlphabetIndicator, which displays one character usually corresponding to the first letter of each item, add the following to the end of your materialScrollBar instantiation, or add it as a seperate line.
+```java
+...addSectionIndicator(new AlphabetIndicator(this));
+```
+
+####DateAndTimeIndicator
+
+**Required Interface:** IDateableAdapter
+
+To implement a DateAndTimeIndicator, which displays any combination of time, day of the month, month, and year, add the following to the end of your materialScrollBar instantiation, or add it as a seperate line.
+```java
+...addSectionIndicator(new DateAndTimeIndicator(this, {{includeYear}}, {{includeMonth}}, {{includeDay}}, {{includeTime}}));
+```
+
+All of the arguments are booleans (except for this first one obviously). The indicator will dynamically size, add punctuation, and localise for you. All you need to do is provide a Date object for each element in your adapter. You should almost always use miliseconds since the epoch unless you have a good reason not to. Otherwise, the library might crash.
+
 
 Versioning Policy
 -------
