@@ -123,3 +123,8 @@ License
     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
     See the License for the specific language governing permissions and
     limitations under the License.
+    
+    This licensing is applicable to all code offered as part of this
+    repository, which can be identified by the lisence notice preceding
+    the content AND/OR by it's inclusion in a package starting with "com.
+    turingtechnologies.materialscrollbar".
