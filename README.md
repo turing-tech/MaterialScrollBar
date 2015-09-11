@@ -98,43 +98,7 @@ To implement a CustomIndicator, which displays any text you want, add the follow
 
 ##Customisation Options
 
-The following are various methods that you can invoke to customise the behaviour of the library.
-
-####setHideDuration(int hideDuration)
-
-**Default:** 2500
-
-Use this to alter the hide duration of the bar. Only has effect if autoHide is true.
-
-####setHandleColour(String|int colour)
-
-**Default:** App designated accent colour (API 19+), Dark grey (API 18-)
-
-Use this to alter the colour of the handle. If lightOnPress is true, this affects the lit colour.
-
-####setHandleOffColour(String|int colour)
-
-**Default:** Dark grey
-
-Use this to alter the colour of the handle when unpressed. Only effective if lightOnPress is true.
-
-####setBarColour(String|int colour)
-
-**Default:** Light grey
-
-Use this to alter the colour of the bar's background.
-
-####setTextColour(String|int colour)
-
-**Default:** White
-
-Use this to alter the colour of text in the indicator. Useful if the background is unusually light and the text needs to be darkened.
-
-####setAutoHide(Boolean autoHide)
-
-**Default:** True
-
-Use this to change whether the bar should deploy and hide as motion occours (true) or if it should always be present (false).
+For info on other methods, see the detailed documentation from the wiki: https://github.com/krimin-killr21/MaterialScrollBar/wiki/Documentation
 
 Versioning Policy
 ======
