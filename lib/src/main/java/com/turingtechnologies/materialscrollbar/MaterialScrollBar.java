@@ -20,9 +20,12 @@ import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
+import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.Color;
+import android.graphics.drawable.GradientDrawable;
 import android.os.Build;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.TypedValue;
@@ -168,6 +171,9 @@ public class MaterialScrollBar extends RelativeLayout {
                     fadeIn();
                 } else {
                     if(indicator != null && indicator.getVisibility() == VISIBLE){
+                        if(Build.VERSION.SDK_INT <= 12){
+                            indicator.clearAnimation();
+                        }
                         indicator.setVisibility(INVISIBLE);
                     }
 
@@ -200,9 +206,10 @@ public class MaterialScrollBar extends RelativeLayout {
      * @param colour to set the handle.
      */
     public MaterialScrollBar setHandleColour(String colour){
-        handleColour = Color.parseColor(colour);
+        handleColour = ContextCompat.getColor(getContext(), Color.parseColor(colour));
+        ((GradientDrawable) indicator.getBackground()).setColor(Color.parseColor(colour));
         if(!lightOnTouch) {
-            handle.setBackgroundColor(Color.parseColor(colour));
+            ((GradientDrawable)indicator.getBackground()).setColor(Color.parseColor(colour));
         }
         return this;
     }
@@ -212,9 +219,14 @@ public class MaterialScrollBar extends RelativeLayout {
      * @param colour to set the handle.
      */
     public MaterialScrollBar setHandleColour(int colour){
-        handleColour = getResources().getColor(colour);
+        try{
+            handleColour = ContextCompat.getColor(getContext(), getResources().getColor(colour));
+        } catch (Resources.NotFoundException e){
+            handleColour = colour;
+        }
+        ((GradientDrawable)indicator.getBackground()).setColor(handleColour);
         if(!lightOnTouch){
-            handle.setBackgroundColor(getResources().getColor(colour));
+            handle.setBackgroundColor(handleColour);
         }
         return this;
     }

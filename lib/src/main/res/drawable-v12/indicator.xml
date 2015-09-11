@@ -21,13 +21,10 @@
     <solid
         android:color="@android:color/white" />
 
-    <!--
-    ~ For some idiotic reason Android switches left and right until API 12+. Baffling.
-    -->
     <corners
-        android:bottomLeftRadius="0dp"
+        android:bottomLeftRadius="100dp"
         android:topLeftRadius="100dp"
         android:topRightRadius="100dp"
-        android:bottomRightRadius="100dp" />
+        android:bottomRightRadius="0dp" />
 
 </shape>
