@@ -34,7 +34,7 @@ dependencies {
 Documentation
 ======
 
-Note: All customisation methods (setAutoHide, setBarColour, etc) return the materialScrollBar, so they can be chained together if wanted. Alternativly, you can just operate on a variable.
+Note: All customisation methods (setAutoHide, setBarColour, etc) return the materialScrollBar, so they can be chained together if wanted. Alternatively, you can just operate on a variable.
 
 ##How to use - ScrollBar
 
