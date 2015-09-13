@@ -56,15 +56,15 @@ For devices running Lollipop and above, the accent colour will be read automatic
 
 Also note that the library does not currently support recyclerViews which do not boarder the screen's edge on the right side.
 
-##How to use - Section Indicator
+##How to use - Indicator
 
-To add a section indicator, simply add the following line of code:
+To add an indicator, simply add the following line of code:
 
 ```java
-materialScrollBar.addSectionIndicator({{Section Indicator}});
+materialScrollBar.addIndicator({{Indicator}});
 ```
 
-The section indicator should be either AlphatbetIndicator, DateAndTimeIndicator, or CustomIndicator. See below for specific instructions per indicator.
+The indicator should be either AlphatbetIndicator, DateAndTimeIndicator, or CustomIndicator. See below for specific instructions per indicator.
 
 To use an indicator, you **MUST** make your recyclerView's adapter implement the relevant interface. If you do not, the library will throw a runtime error informing you of your mistake. See documentation for the relevant interface.
 
