@@ -30,7 +30,7 @@ import com.nineoldandroids.view.ViewHelper;
 
 public abstract class Indicator extends RelativeLayout{
 
-    TextView textView;
+    protected TextView textView;
     private Context context;
 
     public Indicator(Context context) {
@@ -86,7 +86,7 @@ public abstract class Indicator extends RelativeLayout{
      * @param colour The desired text colour.
      */
     void setTextColour(int colour){
-        textView.setTextColor(getResources().getColor(colour));
+        textView.setTextColor(colour);
     }
 
     abstract String getTextElement(Integer currentSection, RecyclerView.Adapter adapter);
