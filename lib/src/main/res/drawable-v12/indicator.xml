@@ -22,9 +22,9 @@
         android:color="@android:color/white" />
 
     <corners
-        android:bottomLeftRadius="100dp"
-        android:topLeftRadius="100dp"
-        android:topRightRadius="100dp"
+        android:bottomLeftRadius="50dp"
+        android:topLeftRadius="50dp"
+        android:topRightRadius="50dp"
         android:bottomRightRadius="0dp" />
 
 </shape>

@@ -13,7 +13,7 @@ ext {
     siteUrl = 'https://github.com/krimin-killr21/MaterialScrollBar'
     gitUrl = 'https://github.com/krimin-killr21/MaterialScrollBar.git'
 
-    libraryVersion = '4.1.0'
+    libraryVersion = '5.0.0'
 
     developerId = 'krimin-killr21'
     developerName = 'Turing Technologies'
@@ -31,8 +31,8 @@ android {
     defaultConfig {
         minSdkVersion 7
         targetSdkVersion 23
-        versionCode 8
-        versionName "4.1.0"
+        versionCode 9
+        versionName "5.0.0"
     }
 }
 

@@ -20,7 +20,6 @@ import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
-import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
@@ -69,13 +68,14 @@ public class MaterialScrollBar extends RelativeLayout {
 
         //Variable which is set to false when dragging is occurring and true when dragging is stopped.
         boolean run = false;
+        boolean held = false;
 
         @Override
         public void run() {
             try{
                 while(true){
                     //Is it past the time where the bar should be animated away AND is no scrolling occurring?
-                    if(run && time <= System.currentTimeMillis()){
+                    if(run && !held && time <= System.currentTimeMillis()){
                         run = false;
                         materialScrollBar.a.runOnUiThread(new Runnable() {
                             @Override
@@ -176,6 +176,7 @@ public class MaterialScrollBar extends RelativeLayout {
                 if(!totallyHidden) {
                     if (event.getAction() != MotionEvent.ACTION_UP) {
                         recyclerView.scrollToPosition((int) (recyclerView.getAdapter().getItemCount() * (event.getY() / (getHeight() - handle.getHeight()))));
+                        recyclerView.onScrolled(0, 0);
                         if(indicator != null && indicator.getVisibility() == INVISIBLE){
                             indicator.setVisibility(VISIBLE);
                         }
@@ -183,6 +184,8 @@ public class MaterialScrollBar extends RelativeLayout {
                         if(lightOnTouch){
                             handle.setBackgroundColor(handleColour);
                         }
+
+                        fade.held = true;
 
                         fadeIn();
                     } else {
@@ -201,6 +204,7 @@ public class MaterialScrollBar extends RelativeLayout {
                             fade.run = true;
                             fade.time = System.currentTimeMillis() + hideDuration;
                         }
+                        fade.held = false;
                     }
                     return true;
                 }
@@ -224,10 +228,7 @@ public class MaterialScrollBar extends RelativeLayout {
      */
     public MaterialScrollBar setHandleColour(String colour){
         handleColour = Color.parseColor(colour);
-        ((GradientDrawable) indicator.getBackground()).setColor(Color.parseColor(colour));
-        if(!lightOnTouch) {
-            ((GradientDrawable)indicator.getBackground()).setColor(Color.parseColor(colour));
-        }
+        setHandleColour();
         return this;
     }
 
@@ -236,16 +237,28 @@ public class MaterialScrollBar extends RelativeLayout {
      * @param colour to set the handle.
      */
     public MaterialScrollBar setHandleColour(int colour){
-        try{
-            handleColour = ContextCompat.getColor(getContext(), colour);
-        } catch (Resources.NotFoundException e){
-            handleColour = colour;
+        handleColour = colour;
+        setHandleColour();
+        return this;
+    }
+
+    /**
+     * Provides the ability to programmatically set the colour of the scrollbar handle.
+     * @param colourResId to set the handle.
+     */
+    public MaterialScrollBar setHandleColourRes(int colourResId){
+        handleColour = ContextCompat.getColor(getContext(), colourResId);
+        setHandleColour();
+        return this;
+    }
+
+    private void setHandleColour(){
+        if(indicator != null){
+            ((GradientDrawable)indicator.getBackground()).setColor(handleColour);
         }
-        ((GradientDrawable)indicator.getBackground()).setColor(handleColour);
         if(!lightOnTouch){
             handle.setBackgroundColor(handleColour);
         }
-        return this;
     }
 
     /**
@@ -265,11 +278,19 @@ public class MaterialScrollBar extends RelativeLayout {
      * @param colour to set the handle when unpressed.
      */
     public MaterialScrollBar setHandleOffColour(int colour){
-        try{
-            handleOffColour = ContextCompat.getColor(getContext(), colour);
-        } catch (Resources.NotFoundException e){
-            handleOffColour = colour;
+        handleOffColour = colour;
+        if(lightOnTouch){
+            handle.setBackgroundColor(handleOffColour);
         }
+        return this;
+    }
+
+    /**
+     * Provides the ability to programmatically set the colour of the scrollbar handle when unpressed. Only applies if lightOnTouch is true.
+     * @param colourResId to set the handle when unpressed.
+     */
+    public MaterialScrollBar setHandleOffColourRes(int colourResId){
+        handleOffColour = ContextCompat.getColor(getContext(), colourResId);
         if(lightOnTouch){
             handle.setBackgroundColor(handleOffColour);
         }
@@ -290,11 +311,16 @@ public class MaterialScrollBar extends RelativeLayout {
      * @param colour to set the bar.
      */
     public MaterialScrollBar setBarColour(int colour){
-        try{
-            background.setBackgroundColor(ContextCompat.getColor(getContext(), colour));
-        } catch (Resources.NotFoundException e){
-            background.setBackgroundColor(colour);
-        }
+        background.setBackgroundColor(colour);
+        return this;
+    }
+
+    /**
+     * Provides the ability to programmatically set the colour of the scrollbar.
+     * @param colourResId to set the bar.
+     */
+    public MaterialScrollBar setBarColourRes(int colourResId){
+        background.setBackgroundColor(ContextCompat.getColor(getContext(), colourResId));
         return this;
     }
 
@@ -303,12 +329,21 @@ public class MaterialScrollBar extends RelativeLayout {
      * @param colour to set the text of the indicator.
      */
     public MaterialScrollBar setTextColour(int colour){
+        textColour = colour;
         if(indicator != null){
-            try{
-                textColour = ContextCompat.getColor(getContext(), colour);
-            } catch (Resources.NotFoundException e){
-                textColour = colour;
-            }
+            indicator.setTextColour(textColour);
+        }
+        return this;
+    }
+
+
+    /**
+     * Provides the ability to programmatically set the text colour of the indicator. Will do nothing if there is no section indicator.
+     * @param colourResId to set the text of the indicator.
+     */
+    public MaterialScrollBar setTextColourRes(int colourResId){
+        textColour = ContextCompat.getColor(getContext(), colourResId);
+        if(indicator != null){
             indicator.setTextColour(textColour);
         }
         return this;
@@ -345,7 +380,15 @@ public class MaterialScrollBar extends RelativeLayout {
     }
 
     /**
-     * Adds a section indicator which accompanies this scroll bar.
+     * Removes any indicator.
+     */
+    public MaterialScrollBar removeIndicator(){
+        this.indicator = null;
+        return this;
+    }
+
+    /**
+     * Adds an indicator which accompanies this scroll bar.
      */
     public MaterialScrollBar addIndicator(Indicator indicator) {
         indicator.testAdapter(recyclerView.getAdapter());

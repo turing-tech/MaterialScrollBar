@@ -35,24 +35,30 @@ public class ApplicationTest extends ActivityInstrumentationTestCase2<SplashActi
         display.getSize(size);
     }
 
+    public void testColours() throws Throwable {
+        testOfColours();
+        ((MaterialScrollBar) solo.getView(R.id.reservedNamedId)).removeIndicator();
+        testOfColours();
+    }
+
     @TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
-    public void testOfColours() throws Throwable {
+    private void testOfColours() throws Throwable {
         solo.waitForView(R.id.reservedNamedId);
         runTestOnUiThread(new Runnable() {
             @Override
             public void run() {
                 ((MaterialScrollBar) solo.getView(R.id.reservedNamedId)).setBarColour("#FF0000");
                 ((MaterialScrollBar) solo.getView(R.id.reservedNamedId)).setBarColour(0xFF0000);
-                ((MaterialScrollBar) solo.getView(R.id.reservedNamedId)).setBarColour(android.R.color.holo_red_dark);
+                ((MaterialScrollBar) solo.getView(R.id.reservedNamedId)).setBarColourRes(android.R.color.holo_red_dark);
                 ((MaterialScrollBar) solo.getView(R.id.reservedNamedId)).setHandleColour("#FF0000");
                 ((MaterialScrollBar) solo.getView(R.id.reservedNamedId)).setHandleColour(0xFF0000);
-                ((MaterialScrollBar) solo.getView(R.id.reservedNamedId)).setHandleColour(android.R.color.holo_red_dark);
+                ((MaterialScrollBar) solo.getView(R.id.reservedNamedId)).setHandleColourRes(android.R.color.holo_red_dark);
                 ((MaterialScrollBar) solo.getView(R.id.reservedNamedId)).setHandleOffColour("#FF0000");
                 ((MaterialScrollBar) solo.getView(R.id.reservedNamedId)).setHandleOffColour(0xFF0000);
-                ((MaterialScrollBar) solo.getView(R.id.reservedNamedId)).setHandleOffColour(android.R.color.holo_red_dark);
+                ((MaterialScrollBar) solo.getView(R.id.reservedNamedId)).setHandleOffColourRes(android.R.color.holo_red_dark);
                 ((MaterialScrollBar) solo.getView(R.id.reservedNamedId)).setTextColour("#FF0000");
                 ((MaterialScrollBar) solo.getView(R.id.reservedNamedId)).setTextColour(0xFF0000);
-                ((MaterialScrollBar) solo.getView(R.id.reservedNamedId)).setTextColour(android.R.color.holo_red_dark);
+                ((MaterialScrollBar) solo.getView(R.id.reservedNamedId)).setTextColourRes(android.R.color.holo_red_dark);
             }
         });
     }
