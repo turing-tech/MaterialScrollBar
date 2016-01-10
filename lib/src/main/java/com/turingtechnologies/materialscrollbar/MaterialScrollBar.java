@@ -53,6 +53,7 @@ public class MaterialScrollBar extends RelativeLayout {
     private int textColour = ContextCompat.getColor(getContext(), android.R.color.white);
     private boolean lightOnTouch;
     private boolean totallyHidden = false;
+    MaterialScrollBar.ScrollListener scrollListener;
 
     //Thread which checks every 1/10th of a second to decide if the scrollBar should slide away.
     class BarFade extends Thread {
@@ -121,14 +122,14 @@ public class MaterialScrollBar extends RelativeLayout {
         }
 
         background = new View(context);
-        LayoutParams lp = new RelativeLayout.LayoutParams(Utils.getDP(8, this), LayoutParams.MATCH_PARENT);
+        LayoutParams lp = new RelativeLayout.LayoutParams(Utils.getDP(12, this), LayoutParams.MATCH_PARENT);
         lp.addRule(ALIGN_PARENT_RIGHT);
         background.setLayoutParams(lp);
         background.setBackgroundColor(getResources().getColor(android.R.color.darker_gray));
         ViewHelper.setAlpha(background, 0.4F);
 
         handle = new View(context);
-        lp = new RelativeLayout.LayoutParams(Utils.getDP(8, this),
+        lp = new RelativeLayout.LayoutParams(Utils.getDP(12, this),
                 Utils.getDP(48, this));
         lp.addRule(ALIGN_PARENT_RIGHT);
         handle.setLayoutParams(lp);
@@ -156,7 +157,8 @@ public class MaterialScrollBar extends RelativeLayout {
         layoutParams.addRule(ALIGN_TOP, recyclerView.getId());
         layoutParams.addRule(ALIGN_BOTTOM, recyclerView.getId());
         ((ViewGroup) recyclerView.getParent()).addView(this, layoutParams);
-        recyclerView.addOnScrollListener(new ScrollListener(this));
+        scrollListener = new ScrollListener(this);
+        recyclerView.addOnScrollListener(scrollListener);
         this.recyclerView = recyclerView;
 
         setTouchIntercept();
@@ -179,6 +181,7 @@ public class MaterialScrollBar extends RelativeLayout {
                         recyclerView.onScrolled(0, 0);
                         if(indicator != null && indicator.getVisibility() == INVISIBLE){
                             indicator.setVisibility(VISIBLE);
+                            indicator.setScroll(scrollListener.calculateScrollProgress(recyclerView) * (getHeight() - handle.getHeight()));
                         }
 
                         if(lightOnTouch){
@@ -390,10 +393,10 @@ public class MaterialScrollBar extends RelativeLayout {
     /**
      * Adds an indicator which accompanies this scroll bar.
      */
-    public MaterialScrollBar addIndicator(Indicator indicator) {
+    public MaterialScrollBar addIndicator(Indicator indicator, boolean addSpace) {
         indicator.testAdapter(recyclerView.getAdapter());
         this.indicator = indicator;
-        indicator.linkToScrollBar(this);
+        indicator.linkToScrollBar(this, addSpace);
         indicator.setTextColour(textColour);
         return this;
     }
@@ -413,9 +416,7 @@ public class MaterialScrollBar extends RelativeLayout {
         background.setLayoutParams(layoutParams);
 
         if(indicator != null){
-            LayoutParams lp = (LayoutParams) indicator.getLayoutParams();
-            lp.setMargins(0, 0, handle.getLayoutParams().width, 0);
-            indicator.setLayoutParams(lp);
+            indicator.setSizeCustom(thickness);
         }
         return this;
     }

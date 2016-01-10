@@ -32,20 +32,36 @@ public abstract class Indicator extends RelativeLayout{
 
     protected TextView textView;
     private Context context;
+    private boolean addSpace;
 
     public Indicator(Context context) {
         super(context);
         this.context = context;
     }
 
-    void linkToScrollBar(MaterialScrollBar materialScrollBar){
+    public void setSizeCustom(int size){
+        RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams)getLayoutParams();
+        if(addSpace){
+            lp.setMargins(0, 0, size + Utils.getDP(10, this), 0);
+        } else {
+            lp.setMargins(0, 0, size, 0);
+        }
+        setLayoutParams(lp);
+    }
+
+    void linkToScrollBar(MaterialScrollBar materialScrollBar, boolean addSpace){
+        this.addSpace = addSpace;
         if(Build.VERSION.SDK_INT >= 16){
             setBackground(ContextCompat.getDrawable(context, R.drawable.indicator));
         } else {
             setBackgroundDrawable(ContextCompat.getDrawable(context, R.drawable.indicator));
         }
         RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(Utils.getDP(getIndicatorWidth(), this), Utils.getDP(getIndicatorHeight(), this));
-        lp.setMargins(0, 0, Utils.getDP(8, this), 0);
+        if(addSpace){
+            lp.setMargins(0, 0, Utils.getDP(22, this), 0);
+        } else {
+            lp.setMargins(0, 0, Utils.getDP(12, this), 0);
+        }
         setVisibility(INVISIBLE);
 
         textView = new TextView(context);

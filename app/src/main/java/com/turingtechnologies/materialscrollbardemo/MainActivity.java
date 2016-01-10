@@ -21,7 +21,7 @@ public class MainActivity extends AppCompatActivity {
         RecyclerView recyclerView = ((RecyclerView)findViewById(R.id.recyclerView));
         recyclerView.setAdapter(new DemoAdapter(this));
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        new MaterialScrollBar(this, recyclerView, true).addIndicator(new AlphabetIndicator(this));
+        new MaterialScrollBar(this, recyclerView, true).addIndicator(new AlphabetIndicator(this), true);
     }
 
     @Override
