@@ -30,7 +30,7 @@ maven {
 
 ```gradle
 dependencies {
-    compile 'com.turingtechnologies.materialscrollbar:lib:5.+'
+    compile 'com.turingtechnologies.materialscrollbar:lib:6.+'
 }
 ```
 Documentation
