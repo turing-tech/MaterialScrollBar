@@ -64,7 +64,7 @@ materialScrollBar.addIndicator({{Indicator}}, {{addSpace}});
 
 The indicator should be either AlphatbetIndicator, DateAndTimeIndicator, or CustomIndicator. See below for specific instructions per indicator.
 
-{{addSpace}} indicates whether there should be space in between the indicator and the bar. True adds space, as in the latest version of the Google Launcher, while false adds no space, as in the Android 5.1 system scrollbars.
+{{addSpace}} is a boolean which indicates whether there should be space in between the indicator and the bar. True adds space, as in the latest version of the Google Launcher, while false adds no space, as in the Android 5.1 system scrollbars.
 
 To use an indicator, you **MUST** make your recyclerView's adapter implement the relevant interface. If you do not, the library will throw a runtime error informing you of your mistake. See documentation for the relevant interface.
 
