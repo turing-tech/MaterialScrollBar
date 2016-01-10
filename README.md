@@ -54,8 +54,6 @@ materialScrollBar.setHandleColour([[Accent Colour]]);
 
 For devices running Lollipop and above, the accent colour will be read automatically. If you fail to provide an accent colour, devices running version of Android below Lollipop will default to a usable but bland grey colour.
 
-Also note that the library does not currently support recyclerViews which do not boarder the screen's edge on the right side.
-
 ##How to use - Indicator
 
 To add an indicator, simply add the following line of code:
