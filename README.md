@@ -105,7 +105,7 @@ For info on other methods, see the detailed documentation from the wiki: https:/
 License
 ======
 
-    Copyright 2015 Turing Technologies, an unincorporated orginisation of Wynne Plaga.
+    Copyright 2016 Turing Technologies, an unincorporated orginisation of Wynne Plaga.
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
