@@ -30,7 +30,7 @@ maven {
 
 ```gradle
 dependencies {
-    compile 'com.turingtechnologies.materialscrollbar:lib:5.+'
+    compile 'com.turingtechnologies.materialscrollbar:lib:6.+'
 }
 ```
 Documentation
@@ -54,17 +54,17 @@ materialScrollBar.setHandleColour([[Accent Colour]]);
 
 For devices running Lollipop and above, the accent colour will be read automatically. If you fail to provide an accent colour, devices running version of Android below Lollipop will default to a usable but bland grey colour.
 
-Also note that the library does not currently support recyclerViews which do not boarder the screen's edge on the right side.
-
 ##How to use - Indicator
 
 To add an indicator, simply add the following line of code:
 
 ```java
-materialScrollBar.addIndicator({{Indicator}});
+materialScrollBar.addIndicator({{Indicator}}, {{addSpace}});
 ```
 
 The indicator should be either AlphatbetIndicator, DateAndTimeIndicator, or CustomIndicator. See below for specific instructions per indicator.
+
+{{addSpace}} is a boolean which indicates whether there should be space in between the indicator and the bar. True adds space, as in the latest version of the Google Launcher, while false adds no space, as in the Android 5.1 system scrollbars.
 
 To use an indicator, you **MUST** make your recyclerView's adapter implement the relevant interface. If you do not, the library will throw a runtime error informing you of your mistake. See documentation for the relevant interface.
 
