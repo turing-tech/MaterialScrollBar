@@ -30,6 +30,10 @@
             android:name=".NameActivity"
             android:label="NameActivity" >
         </activity>
+        <activity
+            android:name=".IconActivity"
+            android:label="IconActivity" >
+        </activity>
     </application>
 
 </manifest>

@@ -83,7 +83,7 @@ abstract class Indicator extends RelativeLayout{
      */
     void setScroll(float y){
         //Displace the indicator upward so that the carrot extends from the centre of the handle.
-        y += Utils.getDP(24 - getIndicatorHeight(), this);
+        y -= Utils.getDP(getIndicatorHeight() + 25, this);
         //If the indicator is hidden by the top of the screen, it is inverted and displaced downward.
         if(y < 0){
             y += Utils.getDP(getIndicatorHeight(), this);

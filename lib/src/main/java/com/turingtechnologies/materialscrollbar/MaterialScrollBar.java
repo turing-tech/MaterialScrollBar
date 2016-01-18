@@ -24,13 +24,11 @@ import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Build;
-import android.os.Handler;
-import android.os.Looper;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.TypedValue;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
@@ -40,31 +38,21 @@ import android.widget.RelativeLayout;
 import com.nineoldandroids.view.ViewHelper;
 
 @SuppressLint("ViewConstructor")
-public class MaterialScrollBar extends RelativeLayout {
+abstract class MaterialScrollBar extends RelativeLayout {
 
     private View background;
-    private View handle;
+    Handle handle;
     int handleColour;
-    private int handleOffColour = Color.parseColor("#9c9c9c");
+    int handleOffColour = Color.parseColor("#9c9c9c");
     Activity a;
     private boolean hidden = true;
-    private int hideDuration = 2500;
-    private boolean hide = true;
-    private RecyclerView recyclerView;
-    private Indicator indicator;
+    RecyclerView recyclerView;
+    Indicator indicator;
     private int textColour = ContextCompat.getColor(getContext(), android.R.color.white);
-    private boolean lightOnTouch;
-    private boolean totallyHidden = false;
+    boolean lightOnTouch;
+    boolean totallyHidden = false;
     MaterialScrollBar.ScrollListener scrollListener;
-    private Handler mUIHandler = new Handler(Looper.getMainLooper());
-
-    private Runnable mFadeBar = new Runnable() {
-
-        @Override
-        public void run() {
-            fadeOut();
-        }
-    };
+    boolean hold = false;
 
     /**
      * For testing only. Should not generally be accessed.
@@ -85,7 +73,7 @@ public class MaterialScrollBar extends RelativeLayout {
      * @param recyclerView The recyclerView to which you wish to link the scrollBar
      * @param lightOnTouch Should the handle always be coloured or should it light up on touch and turn grey when released
      */
-    public MaterialScrollBar(Context context, RecyclerView recyclerView, boolean lightOnTouch){
+    MaterialScrollBar(Context context, RecyclerView recyclerView, boolean lightOnTouch){
         super(context);
 
         if(!isInEditMode()){
@@ -99,9 +87,9 @@ public class MaterialScrollBar extends RelativeLayout {
         background.setBackgroundColor(ContextCompat.getColor(context, android.R.color.darker_gray));
         ViewHelper.setAlpha(background, 0.4F);
 
-        handle = new View(context);
+        handle = new Handle(context, getMode());
         lp = new RelativeLayout.LayoutParams(Utils.getDP(12, this),
-                Utils.getDP(48, this));
+                Utils.getDP(72, this));
         lp.addRule(ALIGN_PARENT_RIGHT);
         handle.setLayoutParams(lp);
 
@@ -134,62 +122,22 @@ public class MaterialScrollBar extends RelativeLayout {
 
         setTouchIntercept();
 
-        TranslateAnimation anim = new TranslateAnimation(Animation.RELATIVE_TO_PARENT, 0.0f, Animation.RELATIVE_TO_SELF, 1.0f, Animation.RELATIVE_TO_PARENT, 0.0f, Animation.RELATIVE_TO_PARENT, 0.0f);
+        TranslateAnimation anim = new TranslateAnimation(Animation.RELATIVE_TO_PARENT, 0.0f, Animation.RELATIVE_TO_SELF, getHideRatio(), Animation.RELATIVE_TO_PARENT, 0.0f, Animation.RELATIVE_TO_PARENT, 0.0f);
+        anim.setDuration(0);
         anim.setFillAfter(true);
+        hidden = true;
         startAnimation(anim);
     }
 
-    private void setTouchIntercept(){
-        setOnTouchListener(new OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                if(!totallyHidden) {
-                    if (event.getAction() != MotionEvent.ACTION_UP) {
-                        recyclerView.scrollToPosition((int) (recyclerView.getAdapter().getItemCount() * (event.getY() / (getHeight() - handle.getHeight()))));
-                        recyclerView.onScrolled(0, 0);
-                        if(indicator != null && indicator.getVisibility() == INVISIBLE){
-                            indicator.setVisibility(VISIBLE);
-                            indicator.setScroll(scrollListener.calculateScrollProgress(recyclerView) * (getHeight() - handle.getHeight()));
-                        }
-
-                        if(lightOnTouch){
-                            handle.setBackgroundColor(handleColour);
-                        }
-
-                        mUIHandler.removeCallbacks(mFadeBar);
-                        fadeIn();
-                    } else {
-                        if(indicator != null && indicator.getVisibility() == VISIBLE){
-                            if(Build.VERSION.SDK_INT <= 12){
-                                indicator.clearAnimation();
-                            }
-                            indicator.setVisibility(INVISIBLE);
-                        }
-
-                        if(lightOnTouch){
-                            handle.setBackgroundColor(handleOffColour);
-                        }
-
-                        if (hide) {
-                            mUIHandler.removeCallbacks(mFadeBar);
-                            mUIHandler.postDelayed(mFadeBar, hideDuration);
-                        }
-                    }
-                    return true;
-                }
-                return false;
-            }
-        });
-    }
-
-    /**
-     * Provides the ability to programmatically set the hide duration of the scrollbar.
-     * @param duration for the bar to remain visible after inactivity before hiding.
-     */
-    public MaterialScrollBar setHideDuration(int duration){
-        this.hideDuration = duration;
+    public MaterialScrollBar getMe(){
         return this;
     }
+
+    abstract void setTouchIntercept();
+
+    abstract int getMode();
+
+    abstract float getHideRatio();
 
     /**
      * Provides the ability to programmatically set the colour of the scrollbar handle.
@@ -331,22 +279,6 @@ public class MaterialScrollBar extends RelativeLayout {
     }
 
     /**
-     * Provides the ability to programmatically alter whether the scrollbar
-     * should hide after a period of inactivity or not.
-     * @param hide sets whether the bar should hide or not.
-     */
-    public MaterialScrollBar setAutoHide(Boolean hide){
-        if(!hide){
-            mUIHandler.removeCallbacks(mFadeBar);
-            TranslateAnimation anim = new TranslateAnimation(Animation.RELATIVE_TO_PARENT, 0.0f, Animation.RELATIVE_TO_SELF, 0.0f, Animation.RELATIVE_TO_PARENT, 0.0f, Animation.RELATIVE_TO_PARENT, 0.0f);
-            anim.setFillAfter(true);
-            startAnimation(anim);
-        }
-        this.hide = hide;
-        return this;
-    }
-
-    /**
      * Removes any indicator.
      */
     public MaterialScrollBar removeIndicator(){
@@ -401,27 +333,33 @@ public class MaterialScrollBar extends RelativeLayout {
     /**
      * Animates the bar out of view
      */
-    private void fadeOut(){
+    void fadeOut(){
         if(!hidden){
-            TranslateAnimation anim = new TranslateAnimation(Animation.RELATIVE_TO_PARENT, 0.0f, Animation.RELATIVE_TO_SELF, 1.0f, Animation.RELATIVE_TO_PARENT, 0.0f, Animation.RELATIVE_TO_PARENT, 0.0f);
-            anim.setDuration(500);
+            TranslateAnimation anim = new TranslateAnimation(Animation.RELATIVE_TO_PARENT, 0.0f, Animation.RELATIVE_TO_SELF, getHideRatio(), Animation.RELATIVE_TO_PARENT, 0.0f, Animation.RELATIVE_TO_PARENT, 0.0f);
+            anim.setDuration(150);
             anim.setFillAfter(true);
             hidden = true;
             startAnimation(anim);
+            postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    handle.expandHandle();
+                }
+            }, anim.getDuration() / 3);
         }
     }
 
     /**
      * Animates the bar into view
      */
-    private void fadeIn(){
-        if(hidden && hide && !totallyHidden){
+    void fadeIn(){
+        if(hidden && getHide() && !totallyHidden){
             hidden = false;
-            TranslateAnimation anim = new TranslateAnimation(Animation.RELATIVE_TO_SELF, 1.0f, Animation.RELATIVE_TO_SELF, 0.0f, Animation.RELATIVE_TO_PARENT, 0.0f, Animation.RELATIVE_TO_PARENT, 0.0f);
-            anim.setDuration(500);
+            TranslateAnimation anim = new TranslateAnimation(Animation.RELATIVE_TO_SELF, getHideRatio(), Animation.RELATIVE_TO_SELF, 0.0f, Animation.RELATIVE_TO_PARENT, 0.0f, Animation.RELATIVE_TO_PARENT, 0.0f);
+            anim.setDuration(150);
             anim.setFillAfter(true);
             startAnimation(anim);
-
+            handle.collapseHandle();
         }
     }
 
@@ -433,7 +371,11 @@ public class MaterialScrollBar extends RelativeLayout {
         fadeOut();
     }
 
-    private class ScrollListener extends RecyclerView.OnScrollListener {
+    abstract void onScroll();
+
+    abstract boolean getHide();
+
+    class ScrollListener extends RecyclerView.OnScrollListener {
 
         MaterialScrollBar materialScrollBar;
 
@@ -445,9 +387,11 @@ public class MaterialScrollBar extends RelativeLayout {
         public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
             super.onScrolled(recyclerView, dx, dy);
 
-            ViewHelper.setY(handle, calculateScrollProgress(recyclerView) * (materialScrollBar.getHeight() - handle.getHeight()));
-            if(indicator != null && indicator.getVisibility() == VISIBLE){
-                indicator.setScroll(calculateScrollProgress(recyclerView) * (materialScrollBar.getHeight() - handle.getHeight()));
+            if(!hold){
+                ViewHelper.setY(handle, (float) recyclerView.computeVerticalScrollOffset() / ((float) recyclerView.computeVerticalScrollRange() - recyclerView.computeVerticalScrollExtent()) * (materialScrollBar.getHeight() - handle.getHeight()));
+                if(indicator != null && indicator.getVisibility() == VISIBLE){
+                    indicator.setScroll(calculateScrollProgress(recyclerView) * (materialScrollBar.getHeight() - handle.getHeight()) + handle.getHeight() / 2);
+                }
             }
         }
 
@@ -462,7 +406,12 @@ public class MaterialScrollBar extends RelativeLayout {
             RecyclerView.ViewHolder holder = recyclerView.getChildViewHolder(visibleChild);
             int itemHeight = holder.itemView.getHeight();
             int recyclerHeight = recyclerView.getHeight();
-            int itemsInWindow = recyclerHeight / itemHeight;
+            int itemsInWindow;
+            if(layoutManager instanceof GridLayoutManager){
+                itemsInWindow = recyclerHeight / itemHeight * ((GridLayoutManager) layoutManager).getSpanCount();
+            } else {
+                itemsInWindow = recyclerHeight / itemHeight;
+            }
 
             int numItemsInList = recyclerView.getAdapter().getItemCount();
             int numScrollableSectionsInList = numItemsInList - itemsInWindow;
@@ -477,33 +426,11 @@ public class MaterialScrollBar extends RelativeLayout {
         }
 
         @Override
-        public void onScrollStateChanged(final RecyclerView recyclerView, int newState) {
+        public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
             super.onScrollStateChanged(recyclerView, newState);
 
-            if(hide){
-                if(newState == RecyclerView.SCROLL_STATE_IDLE){
-                    mUIHandler.removeCallbacks(mFadeBar);
-                    mUIHandler.postDelayed(mFadeBar, hideDuration);
-                } else if (newState == RecyclerView.SCROLL_STATE_DRAGGING) {
-                    if(Build.VERSION.SDK_INT >= 14){
-                        if (recyclerView.canScrollVertically(1) || recyclerView.canScrollVertically(-1) || recyclerView.canScrollHorizontally(1) || recyclerView.canScrollHorizontally(-1)) {
-                            mUIHandler.removeCallbacks(mFadeBar);
-                            materialScrollBar.fadeIn();
-                        }
-                    } else {
-                        View visibleChild = recyclerView.getChildAt(0);
-                        RecyclerView.ViewHolder holder = recyclerView.getChildViewHolder(visibleChild);
-                        int itemHeight = holder.itemView.getHeight();
-                        int recyclerHeight = recyclerView.getHeight();
-                        int itemsInWindow = recyclerHeight / itemHeight;
-
-                        int numItemsInList = recyclerView.getAdapter().getItemCount();
-                        if(numItemsInList > itemsInWindow){
-                            mUIHandler.removeCallbacks(mFadeBar);
-                            materialScrollBar.fadeIn();
-                        }
-                    }
-                }
+            if(newState == RecyclerView.SCROLL_STATE_DRAGGING){
+                onScroll();
             }
         }
     }

@@ -9,7 +9,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.turingtechnologies.materialscrollbar.CustomIndicator;
-import com.turingtechnologies.materialscrollbar.MaterialScrollBar;
+import com.turingtechnologies.materialscrollbar.TouchScrollBar;
 
 public class NameActivity extends AppCompatActivity {
 
@@ -20,7 +20,7 @@ public class NameActivity extends AppCompatActivity {
         RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recyclerView);
         recyclerView.setAdapter(new DemoAdapter(this));
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        new MaterialScrollBar(this, recyclerView, false).addIndicator(new CustomIndicator(this), true);
+        new TouchScrollBar(this, recyclerView, false).addIndicator(new CustomIndicator(this), true);
     }
 
     @Override
@@ -38,8 +38,8 @@ public class NameActivity extends AppCompatActivity {
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_toNorm) {
-            Intent i = new Intent(this, MainActivity.class);
+        if (id == R.id.action_toIcon) {
+            Intent i = new Intent(this, IconActivity.class);
             i.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
             startActivity(i);
             return true;

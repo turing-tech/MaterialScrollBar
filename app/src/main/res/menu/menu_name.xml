@@ -2,6 +2,6 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="com.turingtechnologies.materialscrollbardemo.NameActivity">
-    <item android:id="@+id/action_toNorm" android:title="Alphabet"
+    <item android:id="@+id/action_toIcon" android:title="Icon"
         android:orderInCategory="100" app:showAsAction="always" />
 </menu>

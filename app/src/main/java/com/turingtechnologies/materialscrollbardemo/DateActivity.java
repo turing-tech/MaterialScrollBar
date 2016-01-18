@@ -9,7 +9,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.turingtechnologies.materialscrollbar.DateAndTimeIndicator;
-import com.turingtechnologies.materialscrollbar.MaterialScrollBar;
+import com.turingtechnologies.materialscrollbar.TouchScrollBar;
 
 public class DateActivity extends AppCompatActivity {
 
@@ -20,7 +20,7 @@ public class DateActivity extends AppCompatActivity {
         RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recyclerView);
         recyclerView.setAdapter(new DemoAdapter(this));
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        new MaterialScrollBar(this, recyclerView, false).addIndicator(new DateAndTimeIndicator(this, false, true, true, true), true);
+        new TouchScrollBar(this, recyclerView, false).addIndicator(new DateAndTimeIndicator(this, false, true, true, true), true);
     }
 
     @Override

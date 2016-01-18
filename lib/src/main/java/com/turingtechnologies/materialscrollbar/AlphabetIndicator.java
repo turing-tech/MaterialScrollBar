@@ -39,12 +39,12 @@ public class AlphabetIndicator extends Indicator{
 
     @Override
     int getIndicatorHeight() {
-        return 100;
+        return 75;
     }
 
     @Override
     int getIndicatorWidth() {
-        return 100;
+        return 75;
     }
 
     @Override
@@ -56,7 +56,7 @@ public class AlphabetIndicator extends Indicator{
 
     @Override
     int getTextSize() {
-        return 50;
+        return 40;
     }
 
 }
