@@ -14,10 +14,9 @@ Go see the wiki!
 Preview
 ======
 
-[Video](https://youtu.be/CmcPsJYuzME)
+[Video](https://youtu.be/F5glJeAFnA4)
 
-![](http://i.imgur.com/9rY0e8h.png)
-![](http://i.imgur.com/8DNLqkn.png)
+[Image Preview](http://imgur.com/a/TErZR)
 
 How to add
 ======
@@ -30,7 +29,7 @@ maven {
 
 ```gradle
 dependencies {
-    compile 'com.turingtechnologies.materialscrollbar:lib:6.+'
+    compile 'com.turingtechnologies.materialscrollbar:lib:7.+'
 }
 ```
 Documentation
@@ -41,10 +40,16 @@ Note: All customisation methods (setAutoHide, setBarColour, etc) return the mate
 ##How to use - ScrollBar
 
 ```java
-MaterialScrollBar materialScrollBar = new MaterialScrollBar(this, recyclerView, {{lightOnTouch}});
+DragScrollBar materialScrollBar = new DragScrollBar(this, recyclerView, {{lightOnTouch}});
 ```
 
-where 'recyclerView' is the recyclerView to which you want to link the scrollBar. "lightOnTouch" can either be true or false. A value of true will cause the handle to be grey until pressed, when it will become the normal accent colour (as set). A value of false will cause the handle to always have the accent colour, even when not being pressed.
+or
+
+```java
+TouchScrollBar materialScrollBar = new TouchScrollBar(this, recyclerView, {{lightOnTouch}});
+```
+
+where 'recyclerView' is the recyclerView to which you want to link the scrollBar. The difference between the two options is that the touch option hides after a cooldown period and touches anywhere on the track, whether on the button or not, scroll the view. The drag option on the other hand hides using the animation seen in the video and will only respond to touches on the handle. "lightOnTouch" can either be true or false. A value of true will cause the handle to be grey until pressed, when it will become the normal accent colour (as set). A value of false will cause the handle to always have the accent colour, even when not being pressed.
 
 It is also strongly recommended that you provide the accent colour if your app supports devices below Lollipop. You can do this by invoking:
 
