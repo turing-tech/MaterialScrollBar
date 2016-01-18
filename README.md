@@ -39,11 +39,15 @@ Note: All customisation methods (setAutoHide, setBarColour, etc) return the mate
 
 ##How to use - ScrollBar
 
+The Google Now Launcher Option
+
 ```java
 DragScrollBar materialScrollBar = new DragScrollBar(this, recyclerView, {{lightOnTouch}});
 ```
 
 or
+
+The Google Messenger Option
 
 ```java
 TouchScrollBar materialScrollBar = new TouchScrollBar(this, recyclerView, {{lightOnTouch}});
