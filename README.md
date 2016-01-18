@@ -14,10 +14,11 @@ Go see the wiki!
 Preview
 ======
 
-[Video](https://youtu.be/CmcPsJYuzME)
+[Video](https://youtu.be/F5glJeAFnA4)
 
-![](http://i.imgur.com/9rY0e8h.png)
-![](http://i.imgur.com/8DNLqkn.png)
+[Image Preview](http://imgur.com/a/TErZR)
+
+For more info on how they work, see the video.
 
 How to add
 ======
@@ -30,7 +31,7 @@ maven {
 
 ```gradle
 dependencies {
-    compile 'com.turingtechnologies.materialscrollbar:lib:6.+'
+    compile 'com.turingtechnologies.materialscrollbar:lib:7.+'
 }
 ```
 Documentation
@@ -41,7 +42,13 @@ Note: All customisation methods (setAutoHide, setBarColour, etc) return the mate
 ##How to use - ScrollBar
 
 ```java
-MaterialScrollBar materialScrollBar = new MaterialScrollBar(this, recyclerView, {{lightOnTouch}});
+DragScrollBar materialScrollBar = new DragScrollBar(this, recyclerView, {{lightOnTouch}});
+```
+
+or
+
+```java
+TouchScrollBar materialScrollBar = new TouchScrollBar(this, recyclerView, {{lightOnTouch}});
 ```
 
 where 'recyclerView' is the recyclerView to which you want to link the scrollBar. "lightOnTouch" can either be true or false. A value of true will cause the handle to be grey until pressed, when it will become the normal accent colour (as set). A value of false will cause the handle to always have the accent colour, even when not being pressed.
