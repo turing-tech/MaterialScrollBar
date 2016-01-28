@@ -26,8 +26,6 @@ import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.nineoldandroids.view.ViewHelper;
-
 abstract class Indicator extends RelativeLayout{
 
     protected TextView textView;
@@ -87,13 +85,13 @@ abstract class Indicator extends RelativeLayout{
         //If the indicator is hidden by the top of the screen, it is inverted and displaced downward.
         if(y < 0){
             y += Utils.getDP(getIndicatorHeight(), this);
-            ViewHelper.setScaleY(this, -1F);
-            ViewHelper.setScaleY(textView, -1F);
-            ViewHelper.setY(this, y);
+            setScaleY(-1F);
+            textView.setScaleY(-1F);
+            setY(y);
         } else {
-            ViewHelper.setScaleY(this, 1F);
-            ViewHelper.setScaleY(textView, 1F);
-            ViewHelper.setY(this, y);
+            setScaleY(1F);
+            textView.setScaleY(1F);
+            setY(y);
         }
     }
 

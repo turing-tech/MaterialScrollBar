@@ -35,8 +35,6 @@ import android.view.animation.Animation;
 import android.view.animation.TranslateAnimation;
 import android.widget.RelativeLayout;
 
-import com.nineoldandroids.view.ViewHelper;
-
 @SuppressLint("ViewConstructor")
 abstract class MaterialScrollBar extends RelativeLayout {
 
@@ -85,7 +83,7 @@ abstract class MaterialScrollBar extends RelativeLayout {
         lp.addRule(ALIGN_PARENT_RIGHT);
         background.setLayoutParams(lp);
         background.setBackgroundColor(ContextCompat.getColor(context, android.R.color.darker_gray));
-        ViewHelper.setAlpha(background, 0.4F);
+        background.setAlpha(0.4F);
 
         handle = new Handle(context, getMode());
         lp = new RelativeLayout.LayoutParams(Utils.getDP(12, this),
@@ -388,7 +386,7 @@ abstract class MaterialScrollBar extends RelativeLayout {
             super.onScrolled(recyclerView, dx, dy);
 
             if(!hold){
-                ViewHelper.setY(handle, (float) recyclerView.computeVerticalScrollOffset() / ((float) recyclerView.computeVerticalScrollRange() - recyclerView.computeVerticalScrollExtent()) * (materialScrollBar.getHeight() - handle.getHeight()));
+                handle.setY((float) recyclerView.computeVerticalScrollOffset() / ((float) recyclerView.computeVerticalScrollRange() - recyclerView.computeVerticalScrollExtent()) * (materialScrollBar.getHeight() - handle.getHeight()));
                 if(indicator != null && indicator.getVisibility() == VISIBLE){
                     indicator.setScroll(calculateScrollProgress(recyclerView) * (materialScrollBar.getHeight() - handle.getHeight()) + handle.getHeight() / 2);
                 }

@@ -29,7 +29,7 @@ android {
     buildToolsVersion "23.0.2"
 
     defaultConfig {
-        minSdkVersion 7
+        minSdkVersion 14
         targetSdkVersion 23
         versionCode 13
         versionName "7.0.0"
@@ -38,9 +38,7 @@ android {
 
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
-    compile 'com.nineoldandroids:library:2.4.0'
     compile 'com.android.support:recyclerview-v7:23.1.1'
-    compile 'org.apache.commons:commons-lang3:3.4'
 }
 
 apply from: 'https://raw.githubusercontent.com/nuuneoi/JCenter/master/installv1.gradle'

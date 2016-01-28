@@ -20,8 +20,6 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 
-import org.apache.commons.lang3.StringUtils;
-
 /**
  * Indicator which should be used when only one character will be displayed at a time.
  */
@@ -34,7 +32,8 @@ public class AlphabetIndicator extends Indicator{
 
     @Override
     String getTextElement(Integer currentSection, RecyclerView.Adapter adapter) {
-        return StringUtils.capitalize(((INameableAdapter) adapter).getCharacterForElement(currentSection).toString());
+        Character provided = ((INameableAdapter) adapter).getCharacterForElement(currentSection);
+        return String.valueOf(Character.toUpperCase(provided));
     }
 
     @Override

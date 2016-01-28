@@ -27,8 +27,6 @@ import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.TranslateAnimation;
 
-import com.nineoldandroids.view.ViewHelper;
-
 public class TouchScrollBar extends MaterialScrollBar{
 
     boolean hide = true;
@@ -61,7 +59,7 @@ public class TouchScrollBar extends MaterialScrollBar{
                     if (event.getAction() != MotionEvent.ACTION_UP) {
                         hold = true;
                         if (recyclerView.getLayoutManager() instanceof GridLayoutManager && ((GridLayoutManager) recyclerView.getLayoutManager()).getSpanCount() != 1) {
-                            if(event.getRawY() - (handle.getHeight() * 3 / 2) >= ViewHelper.getY(getMe()) && event.getRawY() - handle.getHeight() / 2 <= getBottom() + ViewHelper.getY(getMe())) {
+                            if(event.getRawY() - (handle.getHeight() * 3 / 2) >= getMe().getY() && event.getRawY() - handle.getHeight() / 2 <= getBottom() + getMe().getY()) {
                                 int itemsInWindow = recyclerView.getHeight() / recyclerView.getChildAt(0).getHeight() * ((GridLayoutManager) recyclerView.getLayoutManager()).getSpanCount();
 
                                 int numItemsInList = recyclerView.getAdapter().getItemCount();
@@ -69,16 +67,16 @@ public class TouchScrollBar extends MaterialScrollBar{
                                 int[] pos = new int[2];
                                 getMe().getLocationOnScreen(pos);
                                 ((GridLayoutManager) recyclerView.getLayoutManager()).scrollToPositionWithOffset((int) (((event.getRawY() - pos[1]) / (getHeight() - (handle.getHeight() * 3 / 2))) * numScrollableSectionsInList), 0);
-                                ViewHelper.setY(handle, (event.getRawY() - ViewHelper.getY(getMe())) - (handle.getHeight() * 3 / 2));
+                                handle.setY((event.getRawY() - getMe().getY()) - (handle.getHeight() * 3 / 2));
                                 scrollListener.calculateScrollProgress(recyclerView);
                                 if (indicator != null && indicator.getVisibility() == VISIBLE) {
                                     indicator.setScroll(event.getRawY() - handle.getHeight() / 2 - Utils.getDP(40, getMe()));
                                 }
                             }
                         } else {
-                            if(event.getRawY() - (handle.getHeight() * 3 / 2) >= ViewHelper.getY(getMe()) && event.getRawY() - handle.getHeight() / 2 <= getBottom() + ViewHelper.getY(getMe())){
-                                recyclerView.scrollToPosition((int) (recyclerView.getAdapter().getItemCount() * ((event.getRawY() - ViewHelper.getY(getMe())  - (handle.getHeight() * 3 / 2)) / (getHeight() - handle.getHeight()))));
-                                ViewHelper.setY(handle, (event.getRawY() - ViewHelper.getY(getMe())) - (handle.getHeight() * 3 / 2));
+                            if(event.getRawY() - (handle.getHeight() * 3 / 2) >= getMe().getY() && event.getRawY() - handle.getHeight() / 2 <= getBottom() + getMe().getY()){
+                                recyclerView.scrollToPosition((int) (recyclerView.getAdapter().getItemCount() * ((event.getRawY() - getMe().getY()  - (handle.getHeight() * 3 / 2)) / (getHeight() - handle.getHeight()))));
+                                handle.setY((event.getRawY() - getMe().getY()) - (handle.getHeight() * 3 / 2));
                                 scrollListener.calculateScrollProgress(recyclerView);
                                 if(indicator != null && indicator.getVisibility() == VISIBLE){
                                     indicator.setScroll(event.getRawY() - handle.getHeight() / 2 - Utils.getDP(40, getMe()));
