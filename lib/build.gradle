@@ -1,6 +1,32 @@
 apply plugin: 'com.android.library'
+apply plugin: 'maven-publish'
+
+// load deploy configs
+Properties props = new Properties()
+File propsFile = file('deploy.properties')
+if (propsFile.exists()) {
+    props.load(new FileInputStream(propsFile))
+}
+
+buildscript {
+    repositories {
+        mavenCentral()
+        maven {
+            url "https://oss.sonatype.org/content/repositories/snapshots/"
+        }
+    }
+    dependencies {
+        classpath "org.apache.maven.wagon:wagon-ftp:2.9"
+    }
+}
+
 
 ext {
+
+    publishUser = props.user
+    publishPass = props.pass
+    publishUrl = props.url
+
     bintrayRepo = 'maven'
     bintrayName = 'material-scroll-bar'
 
@@ -13,7 +39,9 @@ ext {
     siteUrl = 'https://github.com/krimin-killr21/MaterialScrollBar'
     gitUrl = 'https://github.com/krimin-killr21/MaterialScrollBar.git'
 
-    libraryVersion = '7.0.0'
+    libraryVersion = '8.0.0'
+
+    supportLibVersion = '23.1.1'
 
     developerId = 'krimin-killr21'
     developerName = 'Turing Technologies'
@@ -32,14 +60,52 @@ android {
         minSdkVersion 14
         targetSdkVersion 23
         versionCode 13
-        versionName "7.0.0"
+        versionName libraryVersion
     }
 }
 
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
-    compile 'com.android.support:recyclerview-v7:23.1.1'
+    compile "com.android.support:recyclerview-v7:${supportLibVersion}"
+    compile "com.android.support:design:${supportLibVersion}"
 }
 
 apply from: 'https://raw.githubusercontent.com/nuuneoi/JCenter/master/installv1.gradle'
 apply from: 'https://raw.githubusercontent.com/nuuneoi/JCenter/master/bintrayv1.gradle'
+
+publishing {
+    publications {
+        maven(MavenPublication) {
+            groupId publishedGroupId
+            artifactId artifact
+            version libraryVersion
+            // from components.java
+            // artifact bundleRelease
+            artifact("$buildDir/outputs/aar/lib-release.aar")
+        }
+    }
+}
+
+apply plugin: 'maven'
+
+configurations {
+    deployerJars
+}
+
+dependencies {
+    //the one and only version that works
+    deployerJars 'org.apache.maven.wagon:wagon-ftp:2.2'
+}
+
+uploadArchives {
+    repositories.mavenDeployer {
+        configuration = configurations.deployerJars
+        uniqueVersion = false
+        repository(url: publishUrl) {
+            authentication(userName: publishUser, password: publishPass)
+        }
+        pom.groupId = publishedGroupId 
+        pom.artifactId = artifact
+        pom.version = libraryVersion
+    }
+}

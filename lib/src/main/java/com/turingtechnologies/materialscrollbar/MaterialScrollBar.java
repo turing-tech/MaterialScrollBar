@@ -24,11 +24,13 @@ import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Build;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.TypedValue;
+import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
@@ -109,11 +111,7 @@ abstract class MaterialScrollBar extends RelativeLayout {
         addView(handle);
 
         setId(R.id.reservedNamedId);
-        LayoutParams layoutParams = new LayoutParams(Utils.getDP(20, this), ViewGroup.LayoutParams.MATCH_PARENT);
-        layoutParams.addRule(ALIGN_RIGHT, recyclerView.getId());
-        layoutParams.addRule(ALIGN_TOP, recyclerView.getId());
-        layoutParams.addRule(ALIGN_BOTTOM, recyclerView.getId());
-        ((ViewGroup) recyclerView.getParent()).addView(this, layoutParams);
+        attachSelf(recyclerView);
         scrollListener = new ScrollListener(this);
         recyclerView.addOnScrollListener(scrollListener);
         this.recyclerView = recyclerView;
@@ -125,6 +123,36 @@ abstract class MaterialScrollBar extends RelativeLayout {
         anim.setFillAfter(true);
         hidden = true;
         startAnimation(anim);
+    }
+
+    private void attachSelf(RecyclerView recyclerView) {
+        final int width = Utils.getDP(20, this);
+        ViewGroup parent = (ViewGroup) recyclerView.getParent();
+        MarginLayoutParams layoutParams;
+        if (parent instanceof RelativeLayout) {
+            LayoutParams params = new LayoutParams(width, ViewGroup.LayoutParams.MATCH_PARENT);
+            params.addRule(ALIGN_RIGHT, recyclerView.getId());
+            params.addRule(ALIGN_TOP, recyclerView.getId());
+            params.addRule(ALIGN_BOTTOM, recyclerView.getId());
+            layoutParams = params;
+        } else if (parent instanceof CoordinatorLayout) {
+            final CoordinatorLayout.LayoutParams params =
+                new CoordinatorLayout.LayoutParams(width, ViewGroup.LayoutParams.MATCH_PARENT);
+            params.gravity = Gravity.END;
+            layoutParams = params;
+        } else {
+            layoutParams = new MarginLayoutParams(width, ViewGroup.LayoutParams.MATCH_PARENT);
+        }
+
+        // respect margins on the recycler (for better alignment)
+        ViewGroup.LayoutParams rawRecyclerParams = recyclerView.getLayoutParams();
+        if (rawRecyclerParams instanceof MarginLayoutParams) {
+            MarginLayoutParams srcMargins = (MarginLayoutParams) rawRecyclerParams;
+            layoutParams.setMargins(srcMargins.leftMargin, srcMargins.topMargin,
+                srcMargins.rightMargin, srcMargins.bottomMargin);
+        }
+
+        parent.addView(this, layoutParams);
     }
 
     public MaterialScrollBar getMe(){

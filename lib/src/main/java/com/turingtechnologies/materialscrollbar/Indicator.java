@@ -19,9 +19,12 @@ package com.turingtechnologies.materialscrollbar;
 import android.content.Context;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Build;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.view.MarginLayoutParamsCompat;
 import android.support.v7.widget.RecyclerView;
 import android.util.TypedValue;
+import android.view.Gravity;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -54,13 +57,6 @@ abstract class Indicator extends RelativeLayout{
         } else {
             setBackgroundDrawable(ContextCompat.getDrawable(context, R.drawable.indicator));
         }
-        RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(Utils.getDP(getIndicatorWidth(), this), Utils.getDP(getIndicatorHeight(), this));
-        if(addSpace){
-            lp.setMargins(0, 0, Utils.getDP(22, this), 0);
-        } else {
-            lp.setMargins(0, 0, Utils.getDP(12, this), 0);
-        }
-        setVisibility(INVISIBLE);
 
         textView = new TextView(context);
         textView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, getTextSize());
@@ -69,10 +65,42 @@ abstract class Indicator extends RelativeLayout{
 
         addView(textView, tvlp);
 
+        setVisibility(INVISIBLE);
         ((GradientDrawable)getBackground()).setColor(materialScrollBar.handleColour);
 
-        lp.addRule(ALIGN_RIGHT, materialScrollBar.getId());
-        ((ViewGroup)materialScrollBar.getParent()).addView(this, lp);
+        final int width = Utils.getDP(getIndicatorWidth(), this);
+        final int height = Utils.getDP(getIndicatorHeight(), this);
+
+        ViewGroup parent = (ViewGroup) materialScrollBar.getParent();
+        MarginLayoutParams params;
+        if (parent instanceof RelativeLayout) {
+            RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(width, height);
+            lp.addRule(ALIGN_RIGHT, materialScrollBar.getId());
+            params = lp;
+        } else if (parent instanceof CoordinatorLayout) {
+            CoordinatorLayout.LayoutParams lp = new CoordinatorLayout.LayoutParams(width, height);
+            lp.gravity = Gravity.END;
+            params = lp;
+        } else {
+            params = new MarginLayoutParams(width, height);
+        }
+
+        ViewGroup.LayoutParams rawScrollBarParams = materialScrollBar.getLayoutParams();
+        if (rawScrollBarParams instanceof MarginLayoutParams) {
+            MarginLayoutParams srcParams = (MarginLayoutParams) rawScrollBarParams;
+            if (addSpace) {
+                MarginLayoutParamsCompat.setMarginEnd(params, Utils.getDP(22, this));
+            } else {
+                MarginLayoutParamsCompat.setMarginEnd(params, Utils.getDP(12, this));
+            }
+
+            params.leftMargin += srcParams.leftMargin;
+            params.topMargin += srcParams.topMargin;
+            params.rightMargin += srcParams.rightMargin;
+            params.bottomMargin += srcParams.bottomMargin;
+        }
+
+        parent.addView(this, params);
     }
 
     /**
