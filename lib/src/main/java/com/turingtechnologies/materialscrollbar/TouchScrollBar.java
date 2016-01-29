@@ -53,41 +53,55 @@ public class TouchScrollBar extends MaterialScrollBar{
     @Override
     void setTouchIntercept() {
         setOnTouchListener(new OnTouchListener() {
+            public int[] posWorkspace = new int[2];
+
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 if(!totallyHidden) {
                     if (event.getAction() != MotionEvent.ACTION_UP) {
                         hold = true;
-                        if (recyclerView.getLayoutManager() instanceof GridLayoutManager && ((GridLayoutManager) recyclerView.getLayoutManager()).getSpanCount() != 1) {
-                            if(event.getRawY() - (handle.getHeight() * 3 / 2) >= getMe().getY() && event.getRawY() - handle.getHeight() / 2 <= getBottom() + getMe().getY()) {
-                                int itemsInWindow = recyclerView.getHeight() / recyclerView.getChildAt(0).getHeight() * ((GridLayoutManager) recyclerView.getLayoutManager()).getSpanCount();
+
+                        final MaterialScrollBar self = getMe();
+                        final float handleHeight = handle.getHeight();
+                        final float handleMiddle = handleHeight / 2;
+                        final float handleOffset = (handleHeight * 3 / 2);
+                        final float eventY = event.getRawY();
+                        final float myY = self.getY();
+                        final float myHeight = self.getHeight();
+                        final float eventYOffset = eventY - handleOffset;
+
+                        final RecyclerView.LayoutManager manager = recyclerView.getLayoutManager();
+                        if (manager instanceof GridLayoutManager && ((GridLayoutManager) manager).getSpanCount() != 1) {
+                            final GridLayoutManager gridManager = (GridLayoutManager) manager;
+                            if(eventYOffset >= myY && eventY - handleHeight / 2 <= getBottom() + myY) {
+                                int itemsInWindow = recyclerView.getHeight() / recyclerView.getChildAt(0).getHeight() * gridManager.getSpanCount();
 
                                 int numItemsInList = recyclerView.getAdapter().getItemCount();
                                 int numScrollableSectionsInList = numItemsInList - itemsInWindow;
-                                int[] pos = new int[2];
-                                getMe().getLocationOnScreen(pos);
-                                ((GridLayoutManager) recyclerView.getLayoutManager()).scrollToPositionWithOffset((int) (((event.getRawY() - pos[1]) / (getHeight() - (handle.getHeight() * 3 / 2))) * numScrollableSectionsInList), 0);
-                                handle.setY((event.getRawY() - getMe().getY()) - (handle.getHeight() * 3 / 2));
+                                getMe().getLocationOnScreen(posWorkspace);
+                                gridManager.scrollToPositionWithOffset((int) (((eventY - posWorkspace[1]) / (myHeight - handleOffset)) * numScrollableSectionsInList), 0);
+                                float finalY = Math.min(myHeight - handleHeight, eventYOffset - myY);
+                                handle.setY(finalY);
                                 scrollListener.calculateScrollProgress(recyclerView);
                                 if (indicator != null && indicator.getVisibility() == VISIBLE) {
-                                    indicator.setScroll(event.getRawY() - handle.getHeight() / 2 - Utils.getDP(40, getMe()));
+                                    indicator.setScroll(eventY - handleMiddle - Utils.getDP(40, self));
                                 }
                             }
                         } else {
-                            if(event.getRawY() - (handle.getHeight() * 3 / 2) >= getMe().getY() && event.getRawY() - handle.getHeight() / 2 <= getBottom() + getMe().getY()){
-                                recyclerView.scrollToPosition((int) (recyclerView.getAdapter().getItemCount() * ((event.getRawY() - getMe().getY()  - (handle.getHeight() * 3 / 2)) / (getHeight() - handle.getHeight()))));
-                                handle.setY((event.getRawY() - getMe().getY()) - (handle.getHeight() * 3 / 2));
+                            if(eventYOffset >= myY && eventY - handleMiddle <= getBottom() + myY){
+                                recyclerView.scrollToPosition((int) (recyclerView.getAdapter().getItemCount() * ((eventYOffset - myY) / (myHeight - handleHeight))));
+                                float finalY = Math.min(myHeight - handleHeight, eventYOffset - myY);
+                                handle.setY(finalY);
                                 scrollListener.calculateScrollProgress(recyclerView);
                                 if(indicator != null && indicator.getVisibility() == VISIBLE){
-                                    indicator.setScroll(event.getRawY() - handle.getHeight() / 2 - Utils.getDP(40, getMe()));
+                                    indicator.setScroll(eventY - handleMiddle - Utils.getDP(40, self));
                                 }
                             }
                             recyclerView.onScrolled(0, 0);
                             if(indicator != null && indicator.getVisibility() == INVISIBLE){
                                 indicator.setVisibility(VISIBLE);
-                                int[] pos = new int[2];
-                                getMe().getLocationOnScreen(pos);
-                                indicator.setScroll(scrollListener.calculateScrollProgress(recyclerView) * (getHeight() - handle.getHeight()) + pos[1]);
+                                getMe().getLocationOnScreen(posWorkspace);
+                                indicator.setScroll(scrollListener.calculateScrollProgress(recyclerView) * (myHeight - handleHeight) + posWorkspace[1]);
                             }
                         }
 

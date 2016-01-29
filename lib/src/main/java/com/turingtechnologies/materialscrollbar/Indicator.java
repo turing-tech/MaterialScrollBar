@@ -111,7 +111,11 @@ abstract class Indicator extends RelativeLayout{
         //Displace the indicator upward so that the carrot extends from the centre of the handle.
         y -= Utils.getDP(getIndicatorHeight() + 25, this);
         //If the indicator is hidden by the top of the screen, it is inverted and displaced downward.
-        if(y < 0){
+        ViewGroup.LayoutParams params = getLayoutParams();
+        int marginTop = params instanceof MarginLayoutParams
+            ? ((MarginLayoutParams) params).topMargin
+            : 0;
+        if(y < marginTop){
             y += Utils.getDP(getIndicatorHeight(), this);
             setScaleY(-1F);
             textView.setScaleY(-1F);
