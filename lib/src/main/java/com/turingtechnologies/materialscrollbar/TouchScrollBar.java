@@ -29,7 +29,7 @@ import android.view.animation.TranslateAnimation;
 
 import com.nineoldandroids.view.ViewHelper;
 
-public class TouchScrollBar extends MaterialScrollBar{
+public class TouchScrollBar extends MaterialScrollBar<TouchScrollBar>{
 
     boolean hide = true;
     private int hideDuration = 2500;

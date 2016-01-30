@@ -29,10 +29,13 @@ public class Handle extends View {
     RectF rectF;
     Paint p = new Paint();
     Integer mode;
+    boolean expanded = false;
+    Context context;
 
     public Handle(Context c, int m){
         super(c);
 
+        context = c;
         mode = m;
         p.setFlags(Paint.ANTI_ALIAS_FLAG);
     }
@@ -45,6 +48,7 @@ public class Handle extends View {
     }
 
     public void collapseHandle(){
+        expanded = true;
         rectF = new RectF(new Rect(getLeft(),getTop(),getLeft(),getBottom()));
         invalidate();
     }
@@ -55,7 +59,8 @@ public class Handle extends View {
     }
 
     public void expandHandle(){
-        rectF = new RectF(new Rect(getLeft() - 20,getTop(),getLeft() - 9,getBottom()));
+        expanded = false;
+        rectF = makeRect();
         invalidate();
     }
 
@@ -64,21 +69,25 @@ public class Handle extends View {
         super.onLayout(changed, left, top, right, bottom);
 
         if(mode == 0){
-            rectF = new RectF(new Rect(getLeft() - 20,getTop(),getLeft() - 9,getBottom()));
+            rectF = makeRect();
         }
+    }
+
+    private RectF makeRect(){
+        return new RectF(new Rect(getLeft() - Utils.getDP(11, context),getTop(),getLeft()-Utils.getDP(4, context),getBottom()));
     }
 
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
 
-        if(mode == 0){
+        if(mode == 0 && !expanded){
             Rect newRect = canvas.getClipBounds();
-            newRect.inset(getLeft() - 20, 0); //make the rect larger
+            newRect.inset(getLeft() - Utils.getDP(30, context), 0); //make the rect larger
 
             canvas.clipRect(newRect, Region.Op.REPLACE);
 
-            canvas.drawArc(rectF, 335F, 360F, false, p);
+            canvas.drawArc(rectF, 90F, 180F, false, p); //335
         }
     }
 }

@@ -25,7 +25,7 @@ import android.view.View;
 
 import com.nineoldandroids.view.ViewHelper;
 
-public class DragScrollBar extends MaterialScrollBar{
+public class DragScrollBar extends MaterialScrollBar<DragScrollBar>{
 
     public DragScrollBar(Context context, RecyclerView recyclerView, boolean lightOnTouch){
         super(context, recyclerView, lightOnTouch);
@@ -33,7 +33,7 @@ public class DragScrollBar extends MaterialScrollBar{
 
     @Override
     void setTouchIntercept() {
-        handle.setOnTouchListener(new OnTouchListener() {
+        OnTouchListener otl = new OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 if (!totallyHidden) {
@@ -94,7 +94,13 @@ public class DragScrollBar extends MaterialScrollBar{
                 }
                 return false;
             }
-        });
+        };
+        //For APIs <8, the valid touch area will not follow the button and thus the entire bar must be a valid touch area
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB){
+            handle.setOnTouchListener(otl);
+        } else {
+            setOnTouchListener(otl);
+        }
     }
 
     @Override

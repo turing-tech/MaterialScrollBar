@@ -1,5 +1,7 @@
 apply plugin: 'com.android.library'
 
+def version = '7.1.0'
+
 ext {
     bintrayRepo = 'maven'
     bintrayName = 'material-scroll-bar'
@@ -13,7 +15,7 @@ ext {
     siteUrl = 'https://github.com/krimin-killr21/MaterialScrollBar'
     gitUrl = 'https://github.com/krimin-killr21/MaterialScrollBar.git'
 
-    libraryVersion = '7.0.1'
+    libraryVersion = version
 
     developerId = 'krimin-killr21'
     developerName = 'Turing Technologies'
@@ -31,8 +33,8 @@ android {
     defaultConfig {
         minSdkVersion 7
         targetSdkVersion 23
-        versionCode 14
-        versionName "7.0.1"
+        versionCode 15
+        versionName version
     }
 }
 
