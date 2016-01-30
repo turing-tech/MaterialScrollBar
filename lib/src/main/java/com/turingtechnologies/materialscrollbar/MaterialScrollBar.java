@@ -118,6 +118,7 @@ abstract class MaterialScrollBar<T> extends RelativeLayout {
         ((ViewGroup) recyclerView.getParent()).addView(this, layoutParams);
         scrollListener = new ScrollListener(this);
         recyclerView.addOnScrollListener(scrollListener);
+        recyclerView.setVerticalScrollBarEnabled(false); // disable any existing scrollbars
         this.recyclerView = recyclerView;
 
         setTouchIntercept();

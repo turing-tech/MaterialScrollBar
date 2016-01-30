@@ -1,6 +1,6 @@
 apply plugin: 'com.android.library'
 
-def version = '7.1.0'
+def version = '7.1.1'
 
 ext {
     bintrayRepo = 'maven'
@@ -16,6 +16,8 @@ ext {
     gitUrl = 'https://github.com/krimin-killr21/MaterialScrollBar.git'
 
     libraryVersion = version
+
+    supportLibVersion = '23.1.1'
 
     developerId = 'krimin-killr21'
     developerName = 'Turing Technologies'
@@ -33,7 +35,7 @@ android {
     defaultConfig {
         minSdkVersion 7
         targetSdkVersion 23
-        versionCode 15
+        versionCode 16
         versionName version
     }
 }
@@ -41,8 +43,8 @@ android {
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
     compile 'com.nineoldandroids:library:2.4.0'
-    compile 'com.android.support:recyclerview-v7:23.1.1'
-    compile 'org.apache.commons:commons-lang3:3.4'
+    compile "com.android.support:recyclerview-v7:${supportLibVersion}"
+    compile "com.android.support:design:${supportLibVersion}"
 }
 
 apply from: 'https://raw.githubusercontent.com/nuuneoi/JCenter/master/installv1.gradle'
