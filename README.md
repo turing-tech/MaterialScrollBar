@@ -130,5 +130,5 @@ License
     
     This licensing is applicable to all code offered as part of this
     repository, which can be identified by the lisence notice preceding
-    the content AND/OR by it's inclusion in a package starting with "com.
+    the content AND/OR by its inclusion in a package starting with "com.
     turingtechnologies.materialscrollbar".
