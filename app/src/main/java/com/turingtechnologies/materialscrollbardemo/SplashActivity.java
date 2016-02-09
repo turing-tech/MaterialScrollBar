@@ -58,18 +58,12 @@ public class SplashActivity extends AppCompatActivity {
                         return o1.loadLabel(getPackageManager()).toString().compareToIgnoreCase(o2.loadLabel(getPackageManager()).toString());
                     }
                 });
-                for(int i = 0; i < pkgAppsList.size(); i++){
-                    pkgLabelList.add(pkgAppsList.get(i).loadLabel(getPackageManager()).toString());
-                }
-                for(int i = 0; i < pkgAppsList.size(); i++){
-                    pkgPackageList.add(pkgAppsList.get(i).packageName);
-                }
-                for(int i = 0; i < pkgAppsList.size(); i++){
-                    pkgIconList.add(pkgAppsList.get(i).loadIcon(getPackageManager()));
-                }
-                for(int i = 0; i < pkgAppsList.size(); i++){
+                for(ApplicationInfo appInfo : pkgAppsList){
+                    pkgLabelList.add(appInfo.loadLabel(getPackageManager()).toString());
+                    pkgPackageList.add(appInfo.packageName);
+                    pkgIconList.add(appInfo.loadIcon(getPackageManager()));
                     try {
-                        pkgDateList.add(getPackageManager().getPackageInfo(pkgAppsList.get(i).packageName, 0).firstInstallTime);
+                        pkgDateList.add(getPackageManager().getPackageInfo(appInfo.packageName, 0).firstInstallTime);
                     } catch (PackageManager.NameNotFoundException e) {
                         e.printStackTrace();
                     }

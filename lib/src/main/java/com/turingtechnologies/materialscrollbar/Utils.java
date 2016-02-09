@@ -17,6 +17,8 @@
 package com.turingtechnologies.materialscrollbar;
 
 import android.content.Context;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.TypedValue;
 import android.view.View;
 
@@ -38,5 +40,25 @@ class Utils {
      */
     static int getDP(int dp, Context c){
         return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, c.getResources().getDisplayMetrics());
+    }
+
+    static boolean doElementsFit(RecyclerView recyclerView){
+        View visibleChild = recyclerView.getChildAt(0);
+        try{
+            RecyclerView.ViewHolder holder = recyclerView.getChildViewHolder(visibleChild);
+            int itemHeight = holder.itemView.getHeight();
+            int recyclerHeight = recyclerView.getHeight();
+            int itemsInWindow;
+            if(recyclerView.getLayoutManager() instanceof GridLayoutManager){
+                itemsInWindow = recyclerHeight / itemHeight * ((GridLayoutManager) recyclerView.getLayoutManager()).getSpanCount();
+            } else {
+                itemsInWindow = recyclerHeight / itemHeight;
+            }
+            return recyclerView.getAdapter().getItemCount() <= itemsInWindow;
+        } catch (NullPointerException e){
+            return true;
+        } catch (ArithmeticException e){
+            return true;
+        }
     }
 }

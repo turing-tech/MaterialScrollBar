@@ -73,7 +73,7 @@ abstract class MaterialScrollBar<T> extends RelativeLayout {
      * @param recyclerView The recyclerView to which you wish to link the scrollBar
      * @param lightOnTouch Should the handle always be coloured or should it light up on touch and turn grey when released
      */
-    MaterialScrollBar(Context context, RecyclerView recyclerView, boolean lightOnTouch){
+    MaterialScrollBar(Context context, final RecyclerView recyclerView, boolean lightOnTouch){
         super(context);
 
         if(!isInEditMode()){
@@ -128,6 +128,20 @@ abstract class MaterialScrollBar<T> extends RelativeLayout {
         anim.setFillAfter(true);
         hidden = true;
         startAnimation(anim);
+
+        recyclerView.addOnChildAttachStateChangeListener(new RecyclerView.OnChildAttachStateChangeListener() {
+            @Override
+            public void onChildViewAttachedToWindow(View view) {
+                if(Utils.doElementsFit(recyclerView)){
+                    background.setVisibility(GONE);
+                } else {
+                    background.setVisibility(VISIBLE);
+                }
+            }
+
+            @Override
+            public void onChildViewDetachedFromWindow(View view) {}
+        });
     }
 
     public MaterialScrollBar getMe(){
@@ -431,7 +445,10 @@ abstract class MaterialScrollBar<T> extends RelativeLayout {
             super.onScrollStateChanged(recyclerView, newState);
 
             if(newState == RecyclerView.SCROLL_STATE_DRAGGING){
-                onScroll();
+                //Only scrolls if the elements do not fit on page
+                if(!Utils.doElementsFit(recyclerView)){
+                    onScroll();
+                }
             }
         }
     }
