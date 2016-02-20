@@ -22,6 +22,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.Animation;
@@ -45,6 +46,14 @@ public class TouchScrollBar extends MaterialScrollBar<TouchScrollBar>{
 
     public TouchScrollBar(Context context, RecyclerView recyclerView, boolean lightOnTouch){
         super(context, recyclerView, lightOnTouch);
+    }
+
+    public TouchScrollBar(Context context, AttributeSet attributeSet){
+        super(context, attributeSet);
+    }
+
+    public TouchScrollBar(Context context, AttributeSet attributeSet, int defStyle){
+        super(context, attributeSet, defStyle);
     }
 
     public TouchScrollBar setHideDuration(int duration){

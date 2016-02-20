@@ -110,7 +110,7 @@ public class DateAndTimeIndicator extends Indicator {
     @Override
     void testAdapter(RecyclerView.Adapter adapter) {
         if(!(adapter instanceof IDateableAdapter)){
-            throw new adapterNotSetupForIndicatorException("IDateableAdapter");
+            throw new CustomExceptions.AdapterNotSetupForIndicatorException("IDateableAdapter");
         }
     }
 

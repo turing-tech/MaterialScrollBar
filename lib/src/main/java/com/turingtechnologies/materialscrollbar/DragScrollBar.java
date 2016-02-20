@@ -20,6 +20,7 @@ import android.content.Context;
 import android.os.Build;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
 
@@ -29,6 +30,14 @@ public class DragScrollBar extends MaterialScrollBar<DragScrollBar>{
 
     public DragScrollBar(Context context, RecyclerView recyclerView, boolean lightOnTouch){
         super(context, recyclerView, lightOnTouch);
+    }
+
+    public DragScrollBar(Context context, AttributeSet attributeSet, int defStyle){
+        super(context, attributeSet, defStyle);
+    }
+
+    public DragScrollBar(Context context, AttributeSet attributeSet){
+        super(context, attributeSet);
     }
 
     @Override
@@ -110,7 +119,11 @@ public class DragScrollBar extends MaterialScrollBar<DragScrollBar>{
 
     @Override
     float getHideRatio() {
-        return .35F;
+        if(super.programmatic){
+            return .35F;
+        } else {
+            return .65F;
+        }
     }
 
     @Override

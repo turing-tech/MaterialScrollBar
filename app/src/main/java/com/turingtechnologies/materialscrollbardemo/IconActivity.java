@@ -31,7 +31,7 @@ public class IconActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_others);
 
         RecyclerView recyclerView = ((RecyclerView)findViewById(R.id.recyclerView));
         recyclerView.setAdapter(new IconAdapter(this));

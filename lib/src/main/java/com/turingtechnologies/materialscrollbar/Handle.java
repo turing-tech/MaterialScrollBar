@@ -31,13 +31,15 @@ public class Handle extends View {
     Integer mode;
     boolean expanded = false;
     Context context;
+    Boolean programmatic;
 
-    public Handle(Context c, int m){
+    public Handle(Context c, int m, boolean pro){
         super(c);
 
         context = c;
         mode = m;
         p.setFlags(Paint.ANTI_ALIAS_FLAG);
+        programmatic = pro;
     }
 
     @Override
@@ -74,7 +76,11 @@ public class Handle extends View {
     }
 
     private RectF makeRect(){
-        return new RectF(new Rect(getLeft() - Utils.getDP(11, context),getTop(),getLeft()-Utils.getDP(4, context),getBottom()));
+        if(programmatic){
+            return new RectF(new Rect(getLeft() - Utils.getDP(11, context),getTop(),getLeft()-Utils.getDP(4, context),getBottom()));
+        } else {
+            return new RectF(new Rect(getLeft() - Utils.getDP(4, context),getTop(),getLeft()+Utils.getDP(6, context),getBottom()));
+        }
     }
 
     @Override

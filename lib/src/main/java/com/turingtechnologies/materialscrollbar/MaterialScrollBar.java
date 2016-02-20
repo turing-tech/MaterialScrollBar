@@ -16,18 +16,18 @@
 
 package com.turingtechnologies.materialscrollbar;
 
-import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
-import android.app.Activity;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Build;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewGroup;
@@ -37,14 +37,14 @@ import android.widget.RelativeLayout;
 
 import com.nineoldandroids.view.ViewHelper;
 
-@SuppressLint("ViewConstructor")
+import java.util.ArrayList;
+
 abstract class MaterialScrollBar<T> extends RelativeLayout {
 
     private View background;
     Handle handle;
     int handleColour;
     int handleOffColour = Color.parseColor("#9c9c9c");
-    Activity a;
     private boolean hidden = true;
     RecyclerView recyclerView;
     Indicator indicator;
@@ -53,42 +53,81 @@ abstract class MaterialScrollBar<T> extends RelativeLayout {
     boolean totallyHidden = false;
     MaterialScrollBar.ScrollListener scrollListener;
     boolean hold = false;
+    TypedArray a;
+    int seekId = 0;
+    //For some unknown reason, some behaviours are reversed when added programmatically versus xml. Can be handled but as yet not understood.
+    boolean programmatic;
 
-    /**
-     * For testing only. Should not generally be accessed.
-     */
-    public boolean getHidden(){
-        return hidden;
+    //Style-less XML Constructor
+    MaterialScrollBar(Context context, AttributeSet attributeSet){
+        this(context, attributeSet, 0);
     }
 
-    /**
-     * For testing only. Should not generally be accessed.
-     */
-    public String getIndicatorText(){
-        return (String) indicator.textView.getText();
+    //Styled XML Constructor
+    MaterialScrollBar(Context context, AttributeSet attributeSet, int defStyle){
+        super(context, attributeSet, defStyle);
+        programmatic = false;
+        addView(setUpBackground(context));
+        setUpProps(context, attributeSet);
+        addView(setUpHanlde(context, a.getBoolean(R.styleable.MaterialScrollBar_lightOnTouch, true)));
+        if(!isInEditMode()){
+            seekId = a.getResourceId(R.styleable.MaterialScrollBar_recyclerView, 0);
+        }
+        implementPreferences();
+        a.recycle();
     }
 
-    /**
-     * @param context The app's context
-     * @param recyclerView The recyclerView to which you wish to link the scrollBar
-     * @param lightOnTouch Should the handle always be coloured or should it light up on touch and turn grey when released
-     */
+    //Programmatic Constructor
     MaterialScrollBar(Context context, final RecyclerView recyclerView, boolean lightOnTouch){
         super(context);
-
-        if(!isInEditMode()){
-            a = (Activity) context;
+        programmatic = true;
+        if(!(recyclerView.getParent() instanceof RelativeLayout)){
+            throw new CustomExceptions.UnsupportedParentException();
         }
+        setId(R.id.reservedNamedId);
+        addView(setUpBackground(context));
+        addView(setUpHanlde(context, lightOnTouch));
+        LayoutParams layoutParams = new LayoutParams(Utils.getDP(20, this), ViewGroup.LayoutParams.MATCH_PARENT);
+        layoutParams.addRule(ALIGN_RIGHT, recyclerView.getId());
+        layoutParams.addRule(ALIGN_TOP, recyclerView.getId());
+        layoutParams.addRule(ALIGN_BOTTOM, recyclerView.getId());
+        ((ViewGroup) recyclerView.getParent()).addView(this, layoutParams);
+        programSetUp(recyclerView);
+    }
 
+    //XML case only. Sets up attributes and reads in mandatory attributes.
+    void setUpProps(Context context, AttributeSet attrs){
+        a = context.getTheme().obtainStyledAttributes(
+                attrs,
+                R.styleable.MaterialScrollBar,
+                0, 0);
+        ArrayList<String> missing = new ArrayList<>();
+        if(!a.hasValue(R.styleable.MaterialScrollBar_recyclerView)){
+            missing.add("recyclerView");
+        }
+        if(!a.hasValue(R.styleable.MaterialScrollBar_lightOnTouch)){
+            missing.add("lightOnTouch");
+        }
+        if(missing.size() != 0){
+            throw new CustomExceptions.MissingAttributesException(missing);
+        }
+    }
+
+    //Dual case. Sets up bar.
+    View setUpBackground(Context context){
         background = new View(context);
         LayoutParams lp = new RelativeLayout.LayoutParams(Utils.getDP(12, this), LayoutParams.MATCH_PARENT);
         lp.addRule(ALIGN_PARENT_RIGHT);
         background.setLayoutParams(lp);
         background.setBackgroundColor(ContextCompat.getColor(context, android.R.color.darker_gray));
         ViewHelper.setAlpha(background, 0.4F);
+        return(background);
+    }
 
-        handle = new Handle(context, getMode());
-        lp = new RelativeLayout.LayoutParams(Utils.getDP(12, this),
+    //Dual case. Sets up handle.
+    Handle setUpHanlde(Context context, Boolean lightOnTouch){
+        handle = new Handle(context, getMode(), programmatic);
+        RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(Utils.getDP(12, this),
                 Utils.getDP(72, this));
         lp.addRule(ALIGN_PARENT_RIGHT);
         handle.setLayoutParams(lp);
@@ -106,16 +145,11 @@ abstract class MaterialScrollBar<T> extends RelativeLayout {
             colourToSet = handleColour;
         }
         handle.setBackgroundColor(colourToSet);
+        return handle;
+    }
 
-        addView(background);
-        addView(handle);
-
-        setId(R.id.reservedNamedId);
-        LayoutParams layoutParams = new LayoutParams(Utils.getDP(20, this), ViewGroup.LayoutParams.MATCH_PARENT);
-        layoutParams.addRule(ALIGN_RIGHT, recyclerView.getId());
-        layoutParams.addRule(ALIGN_TOP, recyclerView.getId());
-        layoutParams.addRule(ALIGN_BOTTOM, recyclerView.getId());
-        ((ViewGroup) recyclerView.getParent()).addView(this, layoutParams);
+    //Programmatic case only. Implements general setup.
+    void programSetUp(final RecyclerView recyclerView){
         scrollListener = new ScrollListener(this);
         recyclerView.addOnScrollListener(scrollListener);
         recyclerView.setVerticalScrollBarEnabled(false); // disable any existing scrollbars
@@ -142,6 +176,101 @@ abstract class MaterialScrollBar<T> extends RelativeLayout {
             @Override
             public void onChildViewDetachedFromWindow(View view) {}
         });
+    }
+
+    //XML case only. Implements optional attributes.
+    void implementPreferences(){
+        if(a.hasValue(R.styleable.MaterialScrollBar_barColour)){
+            setBarColour(a.getColor(R.styleable.MaterialScrollBar_barColour, 0));
+        }
+        if(a.hasValue(R.styleable.MaterialScrollBar_handleColour)){
+            setHandleColour(a.getColor(R.styleable.MaterialScrollBar_handleColour, 0));
+        }
+        if(a.hasValue(R.styleable.MaterialScrollBar_handleOffColour)){
+            setHandleOffColour(a.getColor(R.styleable.MaterialScrollBar_handleOffColour, 0));
+        }
+        if(a.hasValue(R.styleable.MaterialScrollBar_textColour)){
+            setTextColour(a.getColor(R.styleable.MaterialScrollBar_textColour, 0));
+        }
+        if(a.hasValue(R.styleable.MaterialScrollBar_barThickness)){
+            setBarThickness(a.getInteger(R.styleable.MaterialScrollBar_barThickness, 0));
+        }
+    }
+
+    //XML case only. Implements general setup.
+    @Override
+    protected void onAttachedToWindow() {
+        super.onAttachedToWindow();
+
+        if(seekId != 0){
+            recyclerView = (RecyclerView) getRootView().findViewById(seekId);
+            scrollListener = new ScrollListener(this);
+            recyclerView.addOnScrollListener(scrollListener);
+            recyclerView.setVerticalScrollBarEnabled(false); // disable any existing scrollbars
+
+            setTouchIntercept();
+
+            TranslateAnimation anim = new TranslateAnimation(Animation.RELATIVE_TO_PARENT, 0.0f, Animation.RELATIVE_TO_SELF, getHideRatio(), Animation.RELATIVE_TO_PARENT, 0.0f, Animation.RELATIVE_TO_PARENT, 0.0f);
+            anim.setDuration(0);
+            anim.setFillAfter(true);
+            hidden = true;
+            startAnimation(anim);
+
+            recyclerView.addOnChildAttachStateChangeListener(new RecyclerView.OnChildAttachStateChangeListener() {
+                @Override
+                public void onChildViewAttachedToWindow(View view) {
+                    if(Utils.doElementsFit(recyclerView)){
+                        background.setVisibility(GONE);
+                    } else {
+                        background.setVisibility(VISIBLE);
+                    }
+                }
+
+                @Override
+                public void onChildViewDetachedFromWindow(View view) {}
+            });
+        }
+    }
+
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        int desiredWidth = Utils.getDP(12, this);
+        int desiredHeight = 100;
+
+        int widthMode = MeasureSpec.getMode(widthMeasureSpec);
+        int widthSize = MeasureSpec.getSize(widthMeasureSpec);
+        int heightMode = MeasureSpec.getMode(heightMeasureSpec);
+        int heightSize = MeasureSpec.getSize(heightMeasureSpec);
+
+        int width;
+        int height;
+
+        //Measure Width
+        if (widthMode == MeasureSpec.EXACTLY) {
+            //Must be this size
+            width = widthSize;
+        } else if (widthMode == MeasureSpec.AT_MOST) {
+            //Can't be bigger than...
+            width = Math.min(desiredWidth, widthSize);
+        } else {
+            //Be whatever you want
+            width = desiredWidth;
+        }
+
+        //Measure Height
+        if (heightMode == MeasureSpec.EXACTLY) {
+            //Must be this size
+            height = heightSize;
+        } else if (heightMode == MeasureSpec.AT_MOST) {
+            //Can't be bigger than...
+            height = Math.min(desiredHeight, heightSize);
+        } else {
+            height = desiredHeight;
+        }
+
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+
+        setMeasuredDimension(width, height);
     }
 
     public MaterialScrollBar getMe(){
@@ -304,11 +433,35 @@ abstract class MaterialScrollBar<T> extends RelativeLayout {
     /**
      * Adds an indicator which accompanies this scroll bar.
      */
-    public T addIndicator(Indicator indicator, boolean addSpace) {
-        indicator.testAdapter(recyclerView.getAdapter());
-        this.indicator = indicator;
-        indicator.linkToScrollBar(this, addSpace);
-        indicator.setTextColour(textColour);
+    public T addIndicator(final Indicator indicator, final boolean addSpace) {
+        class attachListener implements Runnable {
+
+            MaterialScrollBar view;
+
+            attachListener(MaterialScrollBar v){
+                view = v;
+            }
+
+            @Override
+            public void run() {
+                while(!ViewCompat.isAttachedToWindow(view)) {
+
+                    try {
+                        Thread.sleep(100);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+
+                }
+
+                indicator.testAdapter(recyclerView.getAdapter());
+                view.indicator = indicator;
+                indicator.linkToScrollBar(view, addSpace);
+                indicator.setTextColour(textColour);
+
+            }
+        }
+        new Thread(new attachListener(this)).start();
         return (T)this;
     }
 
@@ -337,10 +490,10 @@ abstract class MaterialScrollBar<T> extends RelativeLayout {
     private int fetchAccentColour(Context context) {
         TypedValue typedValue = new TypedValue();
 
-        TypedArray a = context.obtainStyledAttributes(typedValue.data, new int[] { android.R.attr.colorAccent });
-        int colour = a.getColor(0, 0);
+        TypedArray b = context.obtainStyledAttributes(typedValue.data, new int[] { android.R.attr.colorAccent });
+        int colour = b.getColor(0, 0);
 
-        a.recycle();
+        b.recycle();
 
         return colour;
     }

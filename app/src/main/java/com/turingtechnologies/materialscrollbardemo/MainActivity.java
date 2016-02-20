@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.TypedValue;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -22,7 +21,7 @@ public class MainActivity extends AppCompatActivity {
         RecyclerView recyclerView = ((RecyclerView)findViewById(R.id.recyclerView));
         recyclerView.setAdapter(new DemoAdapter(this));
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        new DragScrollBar(this, recyclerView, false).setHandleColour(obtainStyledAttributes(new TypedValue().data, new int[] { R.attr.colorAccent }).getColor(0,0)).addIndicator(new AlphabetIndicator(this), true);
+        ((DragScrollBar)findViewById(R.id.dragScrollBar)).addIndicator(new AlphabetIndicator(this), true);
     }
 
     @Override

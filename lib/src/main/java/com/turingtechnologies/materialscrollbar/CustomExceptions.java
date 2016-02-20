@@ -16,10 +16,32 @@
 
 package com.turingtechnologies.materialscrollbar;
 
- class adapterNotSetupForIndicatorException extends RuntimeException{
+import java.util.ArrayList;
 
-        adapterNotSetupForIndicatorException(String shouldExtend) {
+class CustomExceptions {
+
+    static class AdapterNotSetupForIndicatorException extends RuntimeException {
+
+        AdapterNotSetupForIndicatorException(String shouldExtend){
             super("In order to add this indicator, the adapter for your recyclerView MUST implement " + shouldExtend + ".");
         }
+
+    }
+
+    static class MissingAttributesException extends RuntimeException {
+
+         MissingAttributesException(ArrayList<String> missing){
+             super("You are missing the following required attributes from a scroll bar in your XML: " + missing);
+         }
+
+    }
+
+    static class UnsupportedParentException extends RuntimeException {
+
+        UnsupportedParentException(){
+            super("The recyclerView which is associated with a programmatically added scroll bar must be the child of a relative layout.");
+        }
+
+    }
 
 }

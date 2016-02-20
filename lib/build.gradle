@@ -1,6 +1,6 @@
 apply plugin: 'com.android.library'
 
-def version = '7.2.0'
+def version = '8.0.0'
 
 ext {
     bintrayRepo = 'maven'
@@ -35,7 +35,7 @@ android {
     defaultConfig {
         minSdkVersion 7
         targetSdkVersion 23
-        versionCode 17
+        versionCode 18
         versionName version
     }
 }
