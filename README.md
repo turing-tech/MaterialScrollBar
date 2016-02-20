@@ -69,11 +69,11 @@ The Google Messenger Option
 
 Additonal optional attributes:
 
-handleColour - Colour
-barColour - Colour
-handleOffColour - Colour
-textColour - Colour
-barThickness - Integer
+* handleColour - Colour
+* barColour - Colour
+* handleOffColour - Colour
+* textColour - Colour
+* barThickness - Integer
 
 Please note that for both of these configurations, both recyclerView and lightOnTouch* must have a valid value. The recyclerView attribute should point to the id of the recyclerView to which you want to link the scrollbar.
 
