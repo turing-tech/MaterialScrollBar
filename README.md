@@ -67,6 +67,14 @@ The Google Messenger Option
     android:layout_height="match_parent" />
 ```
 
+Additonal optional attributes:
+
+handleColour - Colour
+barColour - Colour
+handleOffColour - Colour
+textColour - Colour
+barThickness - Integer
+
 Please note that for both of these configurations, both recyclerView and lightOnTouch* must have a valid value. The recyclerView attribute should point to the id of the recyclerView to which you want to link the scrollbar.
 
 \* lightOnTouch behaves as follows. A value of true will cause the handle to be grey until pressed, when it will become the normal accent colour (as set). A value of false will cause the handle to always have the accent colour, even when not being pressed.
