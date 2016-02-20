@@ -39,6 +39,38 @@ Note: All customisation methods (setAutoHide, setBarColour, etc) return the mate
 
 ##How to use - ScrollBar
 
+The scrollbar can be implemented programatically or through XML.
+
+###XML
+
+The Google Now Launcher Option
+
+```xml
+<com.turingtechnologies.materialscrollbar.DragScrollBar
+    android:id="@+id/dragScrollBar"
+    android:layout_width="wrap_content"
+    app:recyclerView="@id/recyclerView"
+    app:lightOnTouch="false"
+    android:layout_height="match_parent" />
+```
+
+or
+
+The Google Messenger Option
+
+```xml
+<com.turingtechnologies.materialscrollbar.TouchScrollBar
+    android:id="@+id/touchScrollBar"
+    android:layout_width="wrap_content"
+    app:recyclerView="@id/recyclerView"
+    app:lightOnTouch="false"
+    android:layout_height="match_parent" />
+```
+
+Please note that for both of these configurations, both recyclerView and lightOnTouch must have a valid value. The recyclerView attribute should point to the id of the recyclerView to which you want to link the scrollbar.
+
+###Programmatically
+
 The Google Now Launcher Option
 
 ```java
@@ -53,7 +85,7 @@ The Google Messenger Option
 TouchScrollBar materialScrollBar = new TouchScrollBar(this, recyclerView, {{lightOnTouch}});
 ```
 
-where 'recyclerView' is the recyclerView to which you want to link the scrollBar. The difference between the two options is that the touch option hides after a cooldown period and touches anywhere on the track, whether on the button or not, scroll the view. The drag option on the other hand hides using the animation seen in the video and will only respond to touches on the handle. "lightOnTouch" can either be true or false. A value of true will cause the handle to be grey until pressed, when it will become the normal accent colour (as set). A value of false will cause the handle to always have the accent colour, even when not being pressed.
+where 'recyclerView' is the object of the recyclerView to which you want to link the scrollBar. The difference between the two options is that the touch option hides after a cooldown period and touches anywhere on the track, whether on the button or not, scroll the view. The drag option on the other hand hides using the animation seen in the video and will only respond to touches on the handle. "lightOnTouch" can either be true or false. A value of true will cause the handle to be grey until pressed, when it will become the normal accent colour (as set). A value of false will cause the handle to always have the accent colour, even when not being pressed.
 
 It is also strongly recommended that you provide the accent colour if your app supports devices below Lollipop. You can do this by invoking:
 
@@ -70,6 +102,8 @@ To add an indicator, simply add the following line of code:
 ```java
 materialScrollBar.addIndicator({{Indicator}}, {{addSpace}});
 ```
+
+If you implemented the bar programmatically, simply get the object using findViewById and then the scrollbar's id.
 
 The indicator should be either AlphatbetIndicator, DateAndTimeIndicator, or CustomIndicator. See below for specific instructions per indicator.
 
