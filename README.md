@@ -146,7 +146,7 @@ All of the arguments are booleans (except for this first one obviously). The ind
 
 **Required Interface:** `ICustomAdapter`
 
-To implement a `CustomIndicator`, which displays any text you want, add the following to the end of your 'materialScrollBar' instantiation, or add it as a seperate line.
+To implement a `CustomIndicator`, which displays any text you want, add the following to the end of your `materialScrollBar` instantiation, or add it as a seperate line.
 ```java
 ...addSectionIndicator(new CustomIndicator(this));
 ```
