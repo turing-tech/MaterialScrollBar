@@ -27,4 +27,9 @@
         <attr name="barThickness" format="integer"/>
     </declare-styleable>
 
+    <declare-styleable name="TouchScrollBar">
+        <attr name="hideDelayInMilliseconds" format="integer"/>
+        <attr name="autoHide" format="boolean"/>
+    </declare-styleable>
+
 </resources>

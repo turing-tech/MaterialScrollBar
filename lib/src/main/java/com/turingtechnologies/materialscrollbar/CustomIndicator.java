@@ -28,17 +28,18 @@ import android.support.v7.widget.RecyclerView;
 public class CustomIndicator extends Indicator {
 
     private int textSize = 25;
-    private Context context;
 
     public CustomIndicator(Context context){
         super(context);
-        this.context = context;
     }
 
     @Override
     String getTextElement(Integer currentSection, RecyclerView.Adapter adapter) {
         String text = ((ICustomAdapter)adapter).getCustomStringForElement(currentSection);
         LayoutParams layoutParams = (LayoutParams) getLayoutParams();
+        if(layoutParams == null){
+            return "";
+        }
         Paint paint = new Paint();
         paint.setTextSize(textSize);
         int width = Utils.getDP((int) paint.measureText(text), context) + Utils.getDP(30, context);

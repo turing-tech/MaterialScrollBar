@@ -31,12 +31,13 @@ import com.nineoldandroids.view.ViewHelper;
 abstract class Indicator extends RelativeLayout{
 
     protected TextView textView;
-    private Context context;
+    protected Context context;
     private boolean addSpace;
 
     public Indicator(Context context) {
         super(context);
         this.context = context;
+        textView = new TextView(context);
     }
 
     public void setSizeCustom(int size){
@@ -58,13 +59,12 @@ abstract class Indicator extends RelativeLayout{
         }
         RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(Utils.getDP(getIndicatorWidth(), this), Utils.getDP(getIndicatorHeight(), this));
         if(addSpace){
-            lp.setMargins(0, 0, Utils.getDP(22, this), 0);
+            lp.setMargins(0, 0, Utils.getDP(10 + materialScrollBar.getWidth(), this), 0);
         } else {
-            lp.setMargins(0, 0, Utils.getDP(12, this), 0);
+            lp.setMargins(0, 0, Utils.getDP(2 + materialScrollBar.getWidth(), this), 0);
         }
         setVisibility(INVISIBLE);
 
-        textView = new TextView(context);
         textView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, getTextSize());
         RelativeLayout.LayoutParams tvlp = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         tvlp.addRule(RelativeLayout.CENTER_IN_PARENT, RelativeLayout.TRUE);
@@ -81,9 +81,11 @@ abstract class Indicator extends RelativeLayout{
      * Used by the materialScrollBar to move the indicator with the handle
      * @param y Position to which the indicator should move.
      */
-    void setScroll(float y){
-        //Displace the indicator upward so that the carrot extends from the centre of the handle.
-        y -= Utils.getDP(getIndicatorHeight() + 25, this);
+    void setScroll(float y, boolean programmatic){
+        //Displace the indicator so that the carrot extends from the centre of the handle.
+        if(!programmatic){
+            y += Utils.getDP(getIndicatorHeight() - 25, this);
+        }
         //If the indicator is hidden by the top of the screen, it is inverted and displaced downward.
         if(y < 0){
             y += Utils.getDP(getIndicatorHeight(), this);

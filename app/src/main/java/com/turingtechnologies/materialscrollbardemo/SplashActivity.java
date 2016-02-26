@@ -40,6 +40,7 @@ public class SplashActivity extends AppCompatActivity {
             getWindow().setStatusBarColor(Color.TRANSPARENT);
         }
 
+        //noinspection WrongConstant
         pkgAppsList = getPackageManager().getInstalledApplications(PackageManager.GET_ACTIVITIES);
         for(int i = 0; i < pkgAppsList.size(); i++){
             if(getPackageManager().getLaunchIntentForPackage(pkgAppsList.get(i).packageName) == null || (!BuildConfig.DEBUG && pkgAppsList.get(i).packageName.contains("com.turingtechnologies.youNote"))){

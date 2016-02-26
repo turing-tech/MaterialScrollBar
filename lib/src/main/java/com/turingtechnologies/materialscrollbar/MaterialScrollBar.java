@@ -24,8 +24,6 @@ import android.graphics.drawable.GradientDrawable;
 import android.os.Build;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewCompat;
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.util.TypedValue;
@@ -39,6 +37,29 @@ import com.nineoldandroids.view.ViewHelper;
 
 import java.util.ArrayList;
 
+/*
+ * Table Of Contents:
+ *
+ * I - Initial Setup
+ * II - Abstraction for flavour differentiation
+ * III - Customisation methods
+ *
+ * Outline for developers.
+ *
+ * The two flavours of the MaterialScrollBar are the DragScrollBar and the TouchScrollBar. They both
+ * extend this class. Implementations which are unique to each flavour are implemented through
+ * abstraction. The use of the T generic is used to maintain the identity of the subclass when
+ * chaining settings (ie. So that DragScrollBar(...).addIndicator(...) will return dragScrollBar and
+ * not MaterialScrollBar).
+ *
+ * The class can be instantiated programmatically or through XML. The framework for getting
+ * everything set up the same regardless of the source is below. The methods are annotated to
+ * indicate which invocation option uses which methods.
+ *
+ * Scrolling logic is computed separably in ScrollingUtilities. A unique instance is made for each
+ * instance of the bar.
+ */
+@SuppressWarnings("unchecked")
 abstract class MaterialScrollBar<T> extends RelativeLayout {
 
     private View background;
@@ -50,13 +71,14 @@ abstract class MaterialScrollBar<T> extends RelativeLayout {
     Indicator indicator;
     private int textColour = ContextCompat.getColor(getContext(), android.R.color.white);
     boolean lightOnTouch;
-    boolean totallyHidden = false;
-    MaterialScrollBar.ScrollListener scrollListener;
-    boolean hold = false;
-    TypedArray a;
-    int seekId = 0;
+    boolean hiddenByUser = false;
+    private TypedArray a;
+    private int seekId = 0;
     //For some unknown reason, some behaviours are reversed when added programmatically versus xml. Can be handled but as yet not understood.
     boolean programmatic;
+    ScrollingUtilities scrollUtils = new ScrollingUtilities(this);
+
+    //CHAPTER I - INITIAL SETUP
 
     //Style-less XML Constructor
     MaterialScrollBar(Context context, AttributeSet attributeSet){
@@ -84,27 +106,30 @@ abstract class MaterialScrollBar<T> extends RelativeLayout {
         if(!(recyclerView.getParent() instanceof RelativeLayout)){
             throw new CustomExceptions.UnsupportedParentException();
         }
-        setId(R.id.reservedNamedId);
-        addView(setUpBackground(context));
-        addView(setUpHanlde(context, lightOnTouch));
+        setId(R.id.reservedNamedId); //Gives the view an ID so that it can be found in the parent.
+        addView(setUpBackground(context)); //Adds the background
+        addView(setUpHanlde(context, lightOnTouch)); //Adds the handle
         LayoutParams layoutParams = new LayoutParams(Utils.getDP(20, this), ViewGroup.LayoutParams.MATCH_PARENT);
         layoutParams.addRule(ALIGN_RIGHT, recyclerView.getId());
         layoutParams.addRule(ALIGN_TOP, recyclerView.getId());
         layoutParams.addRule(ALIGN_BOTTOM, recyclerView.getId());
-        ((ViewGroup) recyclerView.getParent()).addView(this, layoutParams);
-        programSetUp(recyclerView);
+        ((ViewGroup) recyclerView.getParent()).addView(this, layoutParams); //Fits bar to right edge of the relevant view.
+        this.recyclerView = recyclerView;
+        generalSetup();
     }
 
-    //XML case only. Sets up attributes and reads in mandatory attributes.
+    //XML case only. Unpacks XML attributes and ensures that no mandatory attributes are missing.
     void setUpProps(Context context, AttributeSet attrs){
         a = context.getTheme().obtainStyledAttributes(
                 attrs,
                 R.styleable.MaterialScrollBar,
                 0, 0);
         ArrayList<String> missing = new ArrayList<>();
+        //Ensures that a recyclerView is associated with the bar.
         if(!a.hasValue(R.styleable.MaterialScrollBar_recyclerView)){
             missing.add("recyclerView");
         }
+        //Ensures that a preference is expressed for lightOnTouch.
         if(!a.hasValue(R.styleable.MaterialScrollBar_lightOnTouch)){
             missing.add("lightOnTouch");
         }
@@ -148,36 +173,6 @@ abstract class MaterialScrollBar<T> extends RelativeLayout {
         return handle;
     }
 
-    //Programmatic case only. Implements general setup.
-    void programSetUp(final RecyclerView recyclerView){
-        scrollListener = new ScrollListener(this);
-        recyclerView.addOnScrollListener(scrollListener);
-        recyclerView.setVerticalScrollBarEnabled(false); // disable any existing scrollbars
-        this.recyclerView = recyclerView;
-
-        setTouchIntercept();
-
-        TranslateAnimation anim = new TranslateAnimation(Animation.RELATIVE_TO_PARENT, 0.0f, Animation.RELATIVE_TO_SELF, getHideRatio(), Animation.RELATIVE_TO_PARENT, 0.0f, Animation.RELATIVE_TO_PARENT, 0.0f);
-        anim.setDuration(0);
-        anim.setFillAfter(true);
-        hidden = true;
-        startAnimation(anim);
-
-        recyclerView.addOnChildAttachStateChangeListener(new RecyclerView.OnChildAttachStateChangeListener() {
-            @Override
-            public void onChildViewAttachedToWindow(View view) {
-                if(Utils.doElementsFit(recyclerView)){
-                    background.setVisibility(GONE);
-                } else {
-                    background.setVisibility(VISIBLE);
-                }
-            }
-
-            @Override
-            public void onChildViewDetachedFromWindow(View view) {}
-        });
-    }
-
     //XML case only. Implements optional attributes.
     void implementPreferences(){
         if(a.hasValue(R.styleable.MaterialScrollBar_barColour)){
@@ -195,43 +190,59 @@ abstract class MaterialScrollBar<T> extends RelativeLayout {
         if(a.hasValue(R.styleable.MaterialScrollBar_barThickness)){
             setBarThickness(a.getInteger(R.styleable.MaterialScrollBar_barThickness, 0));
         }
+        implementFlavourPreferences(a);
     }
 
-    //XML case only. Implements general setup.
+    //XML case only. Waits for all of the views to be attached to the window and then implements general setup.
+    //Waiting must occur so that the relevant recyclerview can be found.
     @Override
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
 
         if(seekId != 0){
             recyclerView = (RecyclerView) getRootView().findViewById(seekId);
-            scrollListener = new ScrollListener(this);
-            recyclerView.addOnScrollListener(scrollListener);
-            recyclerView.setVerticalScrollBarEnabled(false); // disable any existing scrollbars
-
-            setTouchIntercept();
-
-            TranslateAnimation anim = new TranslateAnimation(Animation.RELATIVE_TO_PARENT, 0.0f, Animation.RELATIVE_TO_SELF, getHideRatio(), Animation.RELATIVE_TO_PARENT, 0.0f, Animation.RELATIVE_TO_PARENT, 0.0f);
-            anim.setDuration(0);
-            anim.setFillAfter(true);
-            hidden = true;
-            startAnimation(anim);
-
-            recyclerView.addOnChildAttachStateChangeListener(new RecyclerView.OnChildAttachStateChangeListener() {
-                @Override
-                public void onChildViewAttachedToWindow(View view) {
-                    if(Utils.doElementsFit(recyclerView)){
-                        background.setVisibility(GONE);
-                    } else {
-                        background.setVisibility(VISIBLE);
-                    }
-                }
-
-                @Override
-                public void onChildViewDetachedFromWindow(View view) {}
-            });
+            generalSetup();
         }
     }
 
+    //Dual case. General setup.
+    private void generalSetup(){
+        recyclerView.setVerticalScrollBarEnabled(false); // disable any existing scrollbars
+        recyclerView.addOnScrollListener(new scrollListener()); // lets us read when the recyclerView scrolls
+
+        setTouchIntercept(); // catches touches on the bar
+
+        //Hides the view
+        TranslateAnimation anim = new TranslateAnimation(Animation.RELATIVE_TO_PARENT, 0.0f, Animation.RELATIVE_TO_SELF, getHideRatio(), Animation.RELATIVE_TO_PARENT, 0.0f, Animation.RELATIVE_TO_PARENT, 0.0f);
+        anim.setDuration(0);
+        anim.setFillAfter(true);
+        hidden = true;
+        startAnimation(anim);
+    }
+
+    boolean sizeUnchecked = true;
+
+    //Checks each time the bar is laid out. If there are few enough view that
+    //they all fit on the screen then the bar is hidden. If a view is added which doesn't fit on
+    //the screen then the bar is unhidden.
+    @Override
+    protected void onLayout(boolean changed, int l, int t, int r, int b) {
+        super.onLayout(changed, l, t, r, b);
+
+        if(sizeUnchecked){
+            scrollUtils.getCurScrollState();
+            if(scrollUtils.getAvailableScrollHeight() <= 0){
+                background.setVisibility(GONE);
+                handle.setVisibility(GONE);
+            } else {
+                background.setVisibility(VISIBLE);
+                handle.setVisibility(VISIBLE);
+                sizeUnchecked = false;
+            }
+        }
+    }
+
+    // Makes the bar render correctly for XML
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         int desiredWidth = Utils.getDP(12, this);
@@ -273,15 +284,21 @@ abstract class MaterialScrollBar<T> extends RelativeLayout {
         setMeasuredDimension(width, height);
     }
 
-    public MaterialScrollBar getMe(){
-        return this;
-    }
+    //CHAPTER II - ABSTRACTION FOR FLAVOUR DIFFERENTIATION
 
     abstract void setTouchIntercept();
 
     abstract int getMode();
 
     abstract float getHideRatio();
+
+    abstract void onScroll();
+
+    abstract boolean getHide();
+
+    abstract void implementFlavourPreferences(TypedArray a);
+
+    //CHAPTER III - CUSTOMISATION METHODS
 
     /**
      * Provides the ability to programmatically set the colour of the scrollbar handle.
@@ -456,8 +473,13 @@ abstract class MaterialScrollBar<T> extends RelativeLayout {
 
                 indicator.testAdapter(recyclerView.getAdapter());
                 view.indicator = indicator;
-                indicator.linkToScrollBar(view, addSpace);
-                indicator.setTextColour(textColour);
+                view.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        indicator.linkToScrollBar(view, addSpace);
+                        indicator.setTextColour(textColour);
+                    }
+                });
 
             }
         }
@@ -521,7 +543,7 @@ abstract class MaterialScrollBar<T> extends RelativeLayout {
      * Animates the bar into view
      */
     void fadeIn(){
-        if(hidden && getHide() && !totallyHidden){
+        if(hidden && getHide() && !hiddenByUser){
             hidden = false;
             TranslateAnimation anim = new TranslateAnimation(Animation.RELATIVE_TO_SELF, getHideRatio(), Animation.RELATIVE_TO_SELF, 0.0f, Animation.RELATIVE_TO_PARENT, 0.0f, Animation.RELATIVE_TO_PARENT, 0.0f);
             anim.setDuration(150);
@@ -535,74 +557,18 @@ abstract class MaterialScrollBar<T> extends RelativeLayout {
      * Hide or unhide the scrollBar.
      */
     public void setScrollBarHidden(boolean hidden){
-        totallyHidden = hidden;
+        hiddenByUser = hidden;
         fadeOut();
     }
 
-    abstract void onScroll();
-
-    abstract boolean getHide();
-
-    class ScrollListener extends RecyclerView.OnScrollListener {
-
-        MaterialScrollBar materialScrollBar;
-
-        ScrollListener(MaterialScrollBar msb){
-            materialScrollBar = msb;
-        }
-
+    class scrollListener extends RecyclerView.OnScrollListener {
         @Override
         public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
             super.onScrolled(recyclerView, dx, dy);
 
-            if(!hold){
-                ViewHelper.setY(handle, (float) recyclerView.computeVerticalScrollOffset() / ((float) recyclerView.computeVerticalScrollRange() - recyclerView.computeVerticalScrollExtent()) * (materialScrollBar.getHeight() - handle.getHeight()));
-                if(indicator != null && indicator.getVisibility() == VISIBLE){
-                    indicator.setScroll(calculateScrollProgress(recyclerView) * (materialScrollBar.getHeight() - handle.getHeight()) + handle.getHeight() / 2);
-                }
-            }
-        }
-
-        public float calculateScrollProgress(RecyclerView recyclerView) {
-            LinearLayoutManager layoutManager = (LinearLayoutManager) recyclerView.getLayoutManager();
-            int lastFullyVisiblePosition = layoutManager.findLastCompletelyVisibleItemPosition();
-
-            View visibleChild = recyclerView.getChildAt(0);
-            if (visibleChild == null) {
-                return 0;
-            }
-            RecyclerView.ViewHolder holder = recyclerView.getChildViewHolder(visibleChild);
-            int itemHeight = holder.itemView.getHeight();
-            int recyclerHeight = recyclerView.getHeight();
-            int itemsInWindow;
-            if(layoutManager instanceof GridLayoutManager){
-                itemsInWindow = recyclerHeight / itemHeight * ((GridLayoutManager) layoutManager).getSpanCount();
-            } else {
-                itemsInWindow = recyclerHeight / itemHeight;
-            }
-
-            int numItemsInList = recyclerView.getAdapter().getItemCount();
-            int numScrollableSectionsInList = numItemsInList - itemsInWindow;
-            int indexOfLastFullyVisibleItemInFirstSection = numItemsInList - numScrollableSectionsInList - 1;
-
-            int currentSection = lastFullyVisiblePosition - indexOfLastFullyVisibleItemInFirstSection;
-            if(indicator != null && indicator.getVisibility() == VISIBLE){
-                indicator.textView.setText(indicator.getTextElement(currentSection, recyclerView.getAdapter()));
-            }
-
-            return (float) currentSection / numScrollableSectionsInList;
-        }
-
-        @Override
-        public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
-            super.onScrollStateChanged(recyclerView, newState);
-
-            if(newState == RecyclerView.SCROLL_STATE_DRAGGING){
-                //Only scrolls if the elements do not fit on page
-                if(!Utils.doElementsFit(recyclerView)){
-                    onScroll();
-                }
-            }
+            scrollUtils.scrollHandleAndIndicator();
+            onScroll();
         }
     }
+
 }

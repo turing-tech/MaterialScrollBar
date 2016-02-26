@@ -22,9 +22,9 @@ android {
 dependencies {
     compile project(':lib')
     compile fileTree(include: ['*.jar'], dir: 'libs')
-    compile 'com.android.support:recyclerview-v7:23.1.1'
+    compile "com.android.support:recyclerview-v7:${supportLibVersion}"
     compile 'org.apache.commons:commons-lang3:3.4'
     compile 'com.pnikosis:materialish-progress:1.5'
-    compile 'com.android.support:appcompat-v7:23.1.1'
+    compile "com.android.support:appcompat-v7:${supportLibVersion}"
     androidTestCompile 'com.jayway.android.robotium:robotium-solo:5.2.1'
 }

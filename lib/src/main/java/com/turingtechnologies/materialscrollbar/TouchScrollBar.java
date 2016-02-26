@@ -17,10 +17,10 @@
 package com.turingtechnologies.materialscrollbar;
 
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
-import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
@@ -28,15 +28,13 @@ import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.TranslateAnimation;
 
-import com.nineoldandroids.view.ViewHelper;
-
 public class TouchScrollBar extends MaterialScrollBar<TouchScrollBar>{
 
-    boolean hide = true;
+    private boolean hide = true;
     private int hideDuration = 2500;
-    private Handler mUIHandler = new Handler(Looper.getMainLooper());
+    private Handler uiHandler = new Handler(Looper.getMainLooper());
 
-    private Runnable mFadeBar = new Runnable() {
+    private Runnable fadeBar = new Runnable() {
 
         @Override
         public void run() {
@@ -66,50 +64,27 @@ public class TouchScrollBar extends MaterialScrollBar<TouchScrollBar>{
         setOnTouchListener(new OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                if(!totallyHidden) {
+                if(!hiddenByUser) {
                     if (event.getAction() != MotionEvent.ACTION_UP) {
-                        hold = true;
-                        if (recyclerView.getLayoutManager() instanceof GridLayoutManager && ((GridLayoutManager) recyclerView.getLayoutManager()).getSpanCount() != 1) {
-                            if(event.getRawY() - (handle.getHeight() * 3 / 2) >= ViewHelper.getY(getMe()) && event.getRawY() - handle.getHeight() / 2 <= getBottom() + ViewHelper.getY(getMe())) {
-                                int itemsInWindow = recyclerView.getHeight() / recyclerView.getChildAt(0).getHeight() * ((GridLayoutManager) recyclerView.getLayoutManager()).getSpanCount();
-
-                                int numItemsInList = recyclerView.getAdapter().getItemCount();
-                                int numScrollableSectionsInList = numItemsInList - itemsInWindow;
-                                int[] pos = new int[2];
-                                getMe().getLocationOnScreen(pos);
-                                ((GridLayoutManager) recyclerView.getLayoutManager()).scrollToPositionWithOffset((int) (((event.getRawY() - pos[1]) / (getHeight() - (handle.getHeight() * 3 / 2))) * numScrollableSectionsInList), 0);
-                                ViewHelper.setY(handle, (event.getRawY() - ViewHelper.getY(getMe())) - (handle.getHeight() * 3 / 2));
-                                scrollListener.calculateScrollProgress(recyclerView);
-                                if (indicator != null && indicator.getVisibility() == VISIBLE) {
-                                    indicator.setScroll(event.getRawY() - handle.getHeight() / 2 - Utils.getDP(40, getMe()));
-                                }
-                            }
-                        } else {
-                            if(event.getRawY() - (handle.getHeight() * 3 / 2) >= ViewHelper.getY(getMe()) && event.getRawY() - handle.getHeight() / 2 <= getBottom() + ViewHelper.getY(getMe())){
-                                recyclerView.scrollToPosition((int) (recyclerView.getAdapter().getItemCount() * ((event.getRawY() - ViewHelper.getY(getMe())  - (handle.getHeight() * 3 / 2)) / (getHeight() - handle.getHeight()))));
-                                ViewHelper.setY(handle, (event.getRawY() - ViewHelper.getY(getMe())) - (handle.getHeight() * 3 / 2));
-                                scrollListener.calculateScrollProgress(recyclerView);
-                                if(indicator != null && indicator.getVisibility() == VISIBLE){
-                                    indicator.setScroll(event.getRawY() - handle.getHeight() / 2 - Utils.getDP(40, getMe()));
-                                }
-                            }
-                            recyclerView.onScrolled(0, 0);
-                            if(indicator != null && indicator.getVisibility() == INVISIBLE){
-                                indicator.setVisibility(VISIBLE);
-                                int[] pos = new int[2];
-                                getMe().getLocationOnScreen(pos);
-                                indicator.setScroll(scrollListener.calculateScrollProgress(recyclerView) * (getHeight() - handle.getHeight()) + pos[1]);
-                            }
+                        if (indicator != null && indicator.getVisibility() == INVISIBLE) {
+                            indicator.setVisibility(VISIBLE);
                         }
+                        int top = 0;
+                        int bottom = recyclerView.getHeight() - Utils.getDP(72, recyclerView.getContext());
+                        float boundedY = Math.max(top, Math.min(bottom, event.getY()));
+                        scrollUtils.scrollToPositionAtProgress((boundedY - top) / (bottom - top));
+                        scrollUtils.scrollHandleAndIndicator();
+                        recyclerView.onScrolled(0, 0);
 
                         if(lightOnTouch){
                             handle.setBackgroundColor(handleColour);
                         }
 
-                        mUIHandler.removeCallbacks(mFadeBar);
-                        fadeIn();
+                        if(hide){
+                            uiHandler.removeCallbacks(fadeBar);
+                            fadeIn();
+                        }
                     } else {
-                        hold = false;
                         if(indicator != null && indicator.getVisibility() == VISIBLE){
                             if(Build.VERSION.SDK_INT <= 12){
                                 indicator.clearAnimation();
@@ -122,8 +97,8 @@ public class TouchScrollBar extends MaterialScrollBar<TouchScrollBar>{
                         }
 
                         if (hide) {
-                            mUIHandler.removeCallbacks(mFadeBar);
-                            mUIHandler.postDelayed(mFadeBar, hideDuration);
+                            uiHandler.removeCallbacks(fadeBar);
+                            uiHandler.postDelayed(fadeBar, hideDuration);
                         }
                     }
                     return true;
@@ -145,14 +120,28 @@ public class TouchScrollBar extends MaterialScrollBar<TouchScrollBar>{
 
     @Override
     void onScroll() {
-        mUIHandler.removeCallbacks(mFadeBar);
-        mUIHandler.postDelayed(mFadeBar, hideDuration);
-        fadeIn();
+        System.out.println(hide);
+        if(hide){
+            uiHandler.removeCallbacks(fadeBar);
+            uiHandler.postDelayed(fadeBar, hideDuration);
+            fadeIn();
+        }
     }
 
     @Override
     boolean getHide() {
         return hide;
+    }
+
+    @Override
+    void implementFlavourPreferences(TypedArray a) {
+        if(a.hasValue(R.styleable.TouchScrollBar_autoHide)){
+            setAutoHide(a.getBoolean(R.styleable.TouchScrollBar_autoHide, true));
+            System.out.println(hide);
+        }
+        if(a.hasValue(R.styleable.TouchScrollBar_hideDelayInMilliseconds)){
+            hideDuration = (a.getInteger(R.styleable.TouchScrollBar_hideDelayInMilliseconds, 2500));
+        }
     }
 
     /**

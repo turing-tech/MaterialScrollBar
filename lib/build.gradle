@@ -1,6 +1,6 @@
 apply plugin: 'com.android.library'
 
-def version = '8.0.0'
+def version = '8.1.0'
 
 ext {
     bintrayRepo = 'maven'
@@ -16,8 +16,6 @@ ext {
     gitUrl = 'https://github.com/krimin-killr21/MaterialScrollBar.git'
 
     libraryVersion = version
-
-    supportLibVersion = '23.1.1'
 
     developerId = 'krimin-killr21'
     developerName = 'Turing Technologies'
@@ -44,7 +42,6 @@ dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
     compile 'com.nineoldandroids:library:2.4.0'
     compile "com.android.support:recyclerview-v7:${supportLibVersion}"
-    compile "com.android.support:design:${supportLibVersion}"
 }
 
 apply from: 'https://raw.githubusercontent.com/nuuneoi/JCenter/master/installv1.gradle'
