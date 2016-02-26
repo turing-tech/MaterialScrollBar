@@ -1,6 +1,6 @@
 # MaterialScrollBar
 
-An Android library that brings the Material Design 5.1 scrollbar to pre-5.1 devices. Designed for recyclerViews.
+An Android library that brings the Material Design 5.1 scrollbar to pre-5.1 devices. Designed for Android's 'recyclerView'.
 
 Go see the wiki!
 
@@ -39,7 +39,7 @@ Note: All customisation methods (setAutoHide, setBarColour, etc) return the mate
 
 ##How to use - ScrollBar
 
-The scrollbar can be implemented programatically or through XML.
+The 'scrollBar' can be implemented programatically or through XML.
 
 ###XML
 
@@ -75,7 +75,7 @@ Additonal optional attributes:
 * textColour - Colour
 * barThickness - Integer
 
-Please note that for both of these configurations, both recyclerView and lightOnTouch* must have a valid value. The recyclerView attribute should point to the id of the recyclerView to which you want to link the scrollbar.
+Please note that for both of these configurations, both recyclerView and lightOnTouch* must have a valid value. The recyclerView attribute should point to the id of the 'recyclerView' to which you want to link the scrollbar.
 
 \* lightOnTouch behaves as follows. A value of true will cause the handle to be grey until pressed, when it will become the normal accent colour (as set). A value of false will cause the handle to always have the accent colour, even when not being pressed.
 
@@ -95,7 +95,7 @@ The Google Messenger Option
 TouchScrollBar materialScrollBar = new TouchScrollBar(this, recyclerView, {{lightOnTouch}});
 ```
 
-where 'recyclerView' is the object of the recyclerView to which you want to link the scrollBar. The difference between the two options is that the touch option hides after a cooldown period and touches anywhere on the track, whether on the button or not, scroll the view. The drag option on the other hand hides using the animation seen in the video and will only respond to touches on the handle. "lightOnTouch" can either be true or false. A value of true will cause the handle to be grey until pressed, when it will become the normal accent colour (as set). A value of false will cause the handle to always have the accent colour, even when not being pressed.
+where 'recyclerView' is the object of the 'recyclerView' to which you want to link the 'scrollBar'. The difference between the two options is that the touch option hides after a cooldown period and touches anywhere on the track, whether on the button or not, scroll the view. The drag option on the other hand hides using the animation seen in the video and will only respond to touches on the handle. "lightOnTouch" can either be true or false. A value of true will cause the handle to be grey until pressed, when it will become the normal accent colour (as set). A value of false will cause the handle to always have the accent colour, even when not being pressed.
 
 It is also strongly recommended that you provide the accent colour if your app supports devices below Lollipop. You can do this by invoking:
 
@@ -113,40 +113,40 @@ To add an indicator, simply add the following line of code:
 materialScrollBar.addIndicator({{Indicator}}, {{addSpace}});
 ```
 
-If you implemented the bar programmatically, simply get the object using findViewById and then the scrollbar's id.
+If you implemented the bar programmatically, simply get the object using 'findViewById()' and then the scrollbar's id.
 
-The indicator should be either AlphatbetIndicator, DateAndTimeIndicator, or CustomIndicator. See below for specific instructions per indicator.
+The indicator should be either 'AlphatbetIndicator', 'DateAndTimeIndicator', or 'CustomIndicator'. See below for specific instructions per indicator.
 
-{{addSpace}} is a boolean which indicates whether there should be space in between the indicator and the bar. True adds space, as in the latest version of the Google Launcher, while false adds no space, as in the Android 5.1 system scrollbars.
+'{{addSpace}}' is a boolean which indicates whether there should be space in between the indicator and the bar. True adds space, as in the latest version of the Google Launcher, while false adds no space, as in the Android 5.1 system scrollbars.
 
-To use an indicator, you **MUST** make your recyclerView's adapter implement the relevant interface. If you do not, the library will throw a runtime error informing you of your mistake. See documentation for the relevant interface.
+To use an indicator, you **MUST** make your 'recyclerView''s adapter implement the relevant interface. If you do not, the library will throw a runtime error informing you of your mistake. See documentation for the relevant interface.
 
 ##Indicators
 ###AlphabetIndicator
 
-**Required Interface:** INameableAdapter
+**Required Interface:** 'INameableAdapter'
 
-To implement an AlphabetIndicator, which displays one character usually corresponding to the first letter of each item, add the following to the end of your materialScrollBar instantiation, or add it as a seperate line.
+To implement an 'AlphabetIndicator', which displays one character usually corresponding to the first letter of each item, add the following to the end of your 'materialScrollBar' instantiation, or add it as a seperate line.
 ```java
 ...addSectionIndicator(new AlphabetIndicator(this));
 ```
 
 ###DateAndTimeIndicator
 
-**Required Interface:** IDateableAdapter
+**Required Interface:** 'IDateableAdapter'
 
-To implement a DateAndTimeIndicator, which displays any combination of time, day of the month, month, and year, add the following to the end of your materialScrollBar instantiation, or add it as a seperate line.
+To implement a 'DateAndTimeIndicator', which displays any combination of time, day of the month, month, and year, add the following to the end of your 'materialScrollBar' instantiation, or add it as a seperate line.
 ```java
 ...addSectionIndicator(new DateAndTimeIndicator(this, {{includeYear}}, {{includeMonth}}, {{includeDay}}, {{includeTime}}));
 ```
 
-All of the arguments are booleans (except for this first one obviously). The indicator will dynamically size, add punctuation, and localise for you. All you need to do is provide a Date object for each element in your adapter. You should almost always use miliseconds since the epoch unless you have a good reason not to. Otherwise, the library might crash.
+All of the arguments are booleans (except for this first one obviously). The indicator will dynamically size, add punctuation, and localise for you. All you need to do is provide a 'Date' object for each element in your adapter. You should almost always use miliseconds since the epoch unless you have a good reason not to. Otherwise, the library might crash.
 
 ###CustomIndicator
 
-**Required Interface:** ICustomAdapter
+**Required Interface:** 'ICustomAdapter'
 
-To implement a CustomIndicator, which displays any text you want, add the following to the end of your materialScrollBar instantiation, or add it as a seperate line.
+To implement a 'CustomIndicator', which displays any text you want, add the following to the end of your 'materialScrollBar' instantiation, or add it as a seperate line.
 ```java
 ...addSectionIndicator(new CustomIndicator(this));
 ```
