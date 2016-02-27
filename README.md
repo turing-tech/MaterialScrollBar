@@ -6,16 +6,16 @@ An Android library that brings the Material Design 5.1 scrollbar to pre-5.1 devi
 
 Go see the wiki!
 
-<a href="https://play.google.com/store/apps/details?id=com.turingtechnologies.materialscrollbardemo">
-  <img alt="Android app on Google Play" src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/cd/Get_it_on_Google_play.svg/170px-Get_it_on_Google_play.svg.png" />
-</a> 
-[![PayPal](https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=UH23JHQ8K4U2C)
-
 ![](sample.png)
 
 [Video](https://youtu.be/F5glJeAFnA4)
 
 [Image Preview](http://imgur.com/a/2SSeY)
+
+<a href="https://play.google.com/store/apps/details?id=com.turingtechnologies.materialscrollbardemo">
+  <img alt="Android app on Google Play" src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/cd/Get_it_on_Google_play.svg/170px-Get_it_on_Google_play.svg.png" />
+</a> 
+[![PayPal](https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=UH23JHQ8K4U2C)
 
 How to add
 ======
