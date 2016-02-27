@@ -1,18 +1,15 @@
 # MaterialScrollBar
 
+[![Apache 2.0](https://img.shields.io/hexpm/l/plug.svg)](http://www.apache.org/licenses/LICENSE-2.0) [![BinTray](https://img.shields.io/github/release/krimin-killr21/MaterialScrollBar.svg?label=jCenter)](https://bintray.com/krimin-killr21/maven/material-scroll-bar/view) [![Version](https://img.shields.io/badge/API-7%2B-blue.svg?style=flat)](https://android-arsenal.com/api?level=7) [![Android Arsenal](https://img.shields.io/badge/Android%20Arsenal-MaterialScrollBar-blue.svg?style=flat)](https://android-arsenal.com/details/1/2441)
+
 An Android library that brings the Material Design 5.1 scrollbar to pre-5.1 devices. Designed for Android's `recyclerView`.
 
 Go see the wiki!
-
-[![Apache 2.0](https://img.shields.io/hexpm/l/plug.svg)](http://www.apache.org/licenses/LICENSE-2.0) [![BinTray](https://img.shields.io/github/release/krimin-killr21/MaterialScrollBar.svg?label=jCenter)](https://bintray.com/krimin-killr21/maven/material-scroll-bar/view) [![Version](https://img.shields.io/badge/API-7%2B-blue.svg?style=flat)](https://android-arsenal.com/api?level=7) [![Android Arsenal](https://img.shields.io/badge/Android%20Arsenal-MaterialScrollBar-blue.svg?style=flat)](https://android-arsenal.com/details/1/2441)
 
 <a href="https://play.google.com/store/apps/details?id=com.turingtechnologies.materialscrollbardemo">
   <img alt="Android app on Google Play" src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/cd/Get_it_on_Google_play.svg/170px-Get_it_on_Google_play.svg.png" />
 </a> 
 [![PayPal](https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=UH23JHQ8K4U2C)
-
-Preview
-======
 
 ![](sample.png)
 
