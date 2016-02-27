@@ -50,7 +50,7 @@ class ScrollingUtilities {
         int scrollBarY = (int) (((float) scrollY / getAvailableScrollHeight()) * getAvailableScrollBarHeight());
         ViewHelper.setY(materialScrollBar.handle, scrollBarY);
         if(materialScrollBar.indicator != null){
-            materialScrollBar.indicator.setScroll(scrollBarY, materialScrollBar.programmatic);
+            materialScrollBar.indicator.setScroll(scrollBarY + materialScrollBar.getTop(), materialScrollBar.programmatic);
             materialScrollBar.indicator.textView.setText(materialScrollBar.indicator.getTextElement(scrollPosState.rowIndex, materialScrollBar.recyclerView.getAdapter()));
         }
     }

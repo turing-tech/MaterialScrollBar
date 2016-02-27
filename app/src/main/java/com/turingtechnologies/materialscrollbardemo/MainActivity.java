@@ -9,7 +9,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.turingtechnologies.materialscrollbar.AlphabetIndicator;
-import com.turingtechnologies.materialscrollbar.TouchScrollBar;
+import com.turingtechnologies.materialscrollbar.DragScrollBar;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -21,7 +21,7 @@ public class MainActivity extends AppCompatActivity {
         RecyclerView recyclerView = ((RecyclerView)findViewById(R.id.recyclerView));
         recyclerView.setAdapter(new DemoAdapter(this));
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        ((TouchScrollBar)findViewById(R.id.dragScrollBar)).addIndicator(new AlphabetIndicator(this), true);
+        ((DragScrollBar)findViewById(R.id.dragScrollBar)).addIndicator(new AlphabetIndicator(this), true);
     }
 
     @Override

@@ -16,6 +16,9 @@
 
 package com.turingtechnologies.materialscrollbar;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.os.Build;
@@ -68,8 +71,20 @@ public class TouchScrollBar extends MaterialScrollBar<TouchScrollBar>{
                     if (event.getAction() != MotionEvent.ACTION_UP) {
                         if (indicator != null && indicator.getVisibility() == INVISIBLE) {
                             indicator.setVisibility(VISIBLE);
+                            if(Build.VERSION.SDK_INT >= 12){
+                                indicator.setAlpha(0F);
+                                indicator.animate().alpha(1F).setDuration(150).setListener(new AnimatorListenerAdapter() {
+                                    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
+                                    @Override
+                                    public void onAnimationEnd(Animator animation) {
+                                        super.onAnimationEnd(animation);
+
+                                        indicator.setAlpha(1F);
+                                    }
+                                });
+                            }
                         }
-                        int top = 0;
+                        int top = handle.getHeight() / 2;
                         int bottom = recyclerView.getHeight() - Utils.getDP(72, recyclerView.getContext());
                         float boundedY = Math.max(top, Math.min(bottom, event.getY()));
                         scrollUtils.scrollToPositionAtProgress((boundedY - top) / (bottom - top));
@@ -120,7 +135,6 @@ public class TouchScrollBar extends MaterialScrollBar<TouchScrollBar>{
 
     @Override
     void onScroll() {
-        System.out.println(hide);
         if(hide){
             uiHandler.removeCallbacks(fadeBar);
             uiHandler.postDelayed(fadeBar, hideDuration);
@@ -130,14 +144,14 @@ public class TouchScrollBar extends MaterialScrollBar<TouchScrollBar>{
 
     @Override
     boolean getHide() {
-        return hide;
+//        return hide;
+        return true;
     }
 
     @Override
     void implementFlavourPreferences(TypedArray a) {
         if(a.hasValue(R.styleable.TouchScrollBar_autoHide)){
             setAutoHide(a.getBoolean(R.styleable.TouchScrollBar_autoHide, true));
-            System.out.println(hide);
         }
         if(a.hasValue(R.styleable.TouchScrollBar_hideDelayInMilliseconds)){
             hideDuration = (a.getInteger(R.styleable.TouchScrollBar_hideDelayInMilliseconds, 2500));
@@ -151,10 +165,14 @@ public class TouchScrollBar extends MaterialScrollBar<TouchScrollBar>{
      */
     public MaterialScrollBar setAutoHide(Boolean hide){
         if(!hide){
-            TranslateAnimation anim = new TranslateAnimation(Animation.RELATIVE_TO_PARENT, 0.0f, Animation.RELATIVE_TO_SELF, 0.0f, Animation.RELATIVE_TO_PARENT, 0.0f, Animation.RELATIVE_TO_PARENT, 0.0f);
+            TranslateAnimation anim = new TranslateAnimation(Animation.RELATIVE_TO_PARENT, 0.0f,
+                    Animation.RELATIVE_TO_SELF, 0.0f, Animation.RELATIVE_TO_PARENT, 0.0f, Animation.RELATIVE_TO_PARENT, 0.0f);
             anim.setFillAfter(true);
             startAnimation(anim);
         }
+        //This is not obeyed. If you print `hide` outside of this method it disagrees with what is
+        //set here. I have no idea wtf is going on so if anyone could figure that out that'd be
+        //great.
         this.hide = hide;
         return this;
     }

@@ -59,9 +59,9 @@ abstract class Indicator extends RelativeLayout{
         }
         RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(Utils.getDP(getIndicatorWidth(), this), Utils.getDP(getIndicatorHeight(), this));
         if(addSpace){
-            lp.setMargins(0, 0, Utils.getDP(10 + materialScrollBar.getWidth(), this), 0);
+            lp.setMargins(0, 0, Utils.getDP(15, this) + materialScrollBar.handle.getWidth(), 0);
         } else {
-            lp.setMargins(0, 0, Utils.getDP(2 + materialScrollBar.getWidth(), this), 0);
+            lp.setMargins(0, 0, Utils.getDP(2, this) + materialScrollBar.handle.getWidth(), 0);
         }
         setVisibility(INVISIBLE);
 
@@ -83,9 +83,7 @@ abstract class Indicator extends RelativeLayout{
      */
     void setScroll(float y, boolean programmatic){
         //Displace the indicator so that the carrot extends from the centre of the handle.
-        if(!programmatic){
-            y += Utils.getDP(getIndicatorHeight() - 25, this);
-        }
+        y -= Utils.getDP(getIndicatorHeight() / 2, this);
         //If the indicator is hidden by the top of the screen, it is inverted and displaced downward.
         if(y < 0){
             y += Utils.getDP(getIndicatorHeight(), this);

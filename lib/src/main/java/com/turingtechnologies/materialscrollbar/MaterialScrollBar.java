@@ -229,7 +229,7 @@ abstract class MaterialScrollBar<T> extends RelativeLayout {
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
         super.onLayout(changed, l, t, r, b);
 
-        if(sizeUnchecked){
+        if(sizeUnchecked && !isInEditMode()){
             scrollUtils.getCurScrollState();
             if(scrollUtils.getAvailableScrollHeight() <= 0){
                 background.setVisibility(GONE);
@@ -449,6 +449,8 @@ abstract class MaterialScrollBar<T> extends RelativeLayout {
 
     /**
      * Adds an indicator which accompanies this scroll bar.
+     *
+     * @param addSpace Should space be put between the indicator and the bar or should they touch?
      */
     public T addIndicator(final Indicator indicator, final boolean addSpace) {
         class attachListener implements Runnable {
