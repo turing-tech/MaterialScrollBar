@@ -14,9 +14,11 @@ Go see the wiki!
 Preview
 ======
 
+![](http://imgur.com/VxFsQL2.png)
+
 [Video](https://youtu.be/F5glJeAFnA4)
 
-[Image Preview](http://imgur.com/a/TErZR)
+[Image Preview](http://imgur.com/a/2SSeY)
 
 How to add
 ======
