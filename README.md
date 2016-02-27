@@ -17,8 +17,7 @@ Go see the wiki!
 </a> 
 [![PayPal](https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=UH23JHQ8K4U2C)
 
-How to add
-======
+###Gradle
 
 ```gradle
 maven {
@@ -31,16 +30,15 @@ dependencies {
     compile 'com.turingtechnologies.materialscrollbar:lib:8.+'
 }
 ```
-Documentation
-======
+###Documentation
 
-Note: All customisation methods (setAutoHide, setBarColour, etc) return the materialScrollBar, so they can be chained together if wanted. Alternatively, you can just operate on a variable.
+Note: All customisation methods (`setAutoHide`, `setBarColour`, etc) return the `materialScrollBar`, so they can be chained together if wanted. Alternatively, you can just operate on a variable.
 
-##How to use - ScrollBar
+####How to use - ScrollBar
 
 The 'scrollBar' can be implemented programatically or through XML.
 
-###XML
+#####XML
 
 The Google Now Launcher Option
 
@@ -78,7 +76,7 @@ Please note that for both of these configurations, both recyclerView and lightOn
 
 \* lightOnTouch behaves as follows. A value of true will cause the handle to be grey until pressed, when it will become the normal accent colour (as set). A value of false will cause the handle to always have the accent colour, even when not being pressed.
 
-###Programmatically
+#####Programmatically
 
 The Google Now Launcher Option
 
@@ -104,7 +102,7 @@ materialScrollBar.setHandleColour([[Accent Colour]]);
 
 For devices running Lollipop and above, the accent colour will be read automatically. If you fail to provide an accent colour, devices running version of Android below Lollipop will default to a usable but bland grey colour.
 
-##How to use - Indicator
+####How to use - Indicator
 
 To add an indicator, simply add the following line of code:
 
@@ -120,8 +118,8 @@ The indicator should be either `AlphatbetIndicator`, `DateAndTimeIndicator`, or 
 
 To use an indicator, you **MUST** make your 'recyclerView''s adapter implement the relevant interface. If you do not, the library will throw a runtime error informing you of your mistake. See documentation for the relevant interface.
 
-##Indicators
-###AlphabetIndicator
+####Indicators
+#####AlphabetIndicator
 
 **Required Interface:** `INameableAdapter`
 
@@ -130,7 +128,7 @@ To implement an `AlphabetIndicator`, which displays one character usually corres
 ...addSectionIndicator(new AlphabetIndicator(this));
 ```
 
-###DateAndTimeIndicator
+#####DateAndTimeIndicator
 
 **Required Interface:** `IDateableAdapter`
 
@@ -141,7 +139,7 @@ To implement a `DateAndTimeIndicator`, which displays any combination of time, d
 
 All of the arguments are booleans (except for this first one obviously). The indicator will dynamically size, add punctuation, and localise for you. All you need to do is provide a `Date` object for each element in your adapter. You should almost always use miliseconds since the epoch unless you have a good reason not to. Otherwise, the library might crash.
 
-###CustomIndicator
+#####CustomIndicator
 
 **Required Interface:** `ICustomAdapter`
 
@@ -150,12 +148,11 @@ To implement a `CustomIndicator`, which displays any text you want, add the foll
 ...addSectionIndicator(new CustomIndicator(this));
 ```
 
-##Customisation Options
+####Customisation Options
 
 For info on other methods, see the detailed documentation from the wiki: https://github.com/krimin-killr21/MaterialScrollBar/wiki/Documentation
 
-License
-======
+###License
 
 Material Scroll Bar:
 
