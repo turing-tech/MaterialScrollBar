@@ -14,7 +14,7 @@ Go see the wiki!
 Preview
 ======
 
-![](http://imgur.com/VxFsQL2.png)
+![](sample.png)
 
 [Video](https://youtu.be/F5glJeAFnA4)
 
