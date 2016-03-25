@@ -24,11 +24,14 @@ import android.graphics.drawable.GradientDrawable;
 import android.os.Build;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewCompat;
+import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewParent;
 import android.view.animation.Animation;
 import android.view.animation.TranslateAnimation;
 import android.widget.RelativeLayout;
@@ -41,6 +44,7 @@ import java.util.ArrayList;
  * I - Initial Setup
  * II - Abstraction for flavour differentiation
  * III - Customisation methods
+ * IV - Misc Methods
  *
  * Outline for developers.
  *
@@ -75,6 +79,7 @@ abstract class MaterialScrollBar<T> extends RelativeLayout {
     //For some unknown reason, some behaviours are reversed when added programmatically versus xml. Can be handled but as yet not understood.
     boolean programmatic;
     ScrollingUtilities scrollUtils = new ScrollingUtilities(this);
+    SwipeRefreshLayout swipeRefreshLayout;
 
     //CHAPTER I - INITIAL SETUP
 
@@ -210,12 +215,32 @@ abstract class MaterialScrollBar<T> extends RelativeLayout {
 
         setTouchIntercept(); // catches touches on the bar
 
+        identifySwipeRefreshParents();
+
         //Hides the view
         TranslateAnimation anim = new TranslateAnimation(Animation.RELATIVE_TO_PARENT, 0.0f, Animation.RELATIVE_TO_SELF, getHideRatio(), Animation.RELATIVE_TO_PARENT, 0.0f, Animation.RELATIVE_TO_PARENT, 0.0f);
         anim.setDuration(0);
         anim.setFillAfter(true);
         hidden = true;
         startAnimation(anim);
+    }
+
+    //Identifies any SwipeRefreshLayout parent so that it can be disabled and enabled during scrolling.
+    void identifySwipeRefreshParents(){
+        boolean cycle = true;
+        ViewParent parent = getParent();
+        while(cycle){
+            if(parent instanceof SwipeRefreshLayout){
+                swipeRefreshLayout = (SwipeRefreshLayout)parent;
+                cycle = false;
+            } else {
+                if(parent.getParent() == null){
+                    cycle = false;
+                } else {
+                    parent = parent.getParent();
+                }
+            }
+        }
     }
 
     boolean sizeUnchecked = true;
@@ -507,6 +532,16 @@ abstract class MaterialScrollBar<T> extends RelativeLayout {
         return (T)this;
     }
 
+    /**
+     * Hide or unhide the scrollBar.
+     */
+    public void setScrollBarHidden(boolean hidden){
+        hiddenByUser = hidden;
+        fadeOut();
+    }
+
+    //CHAPTER IV - MISC METHODS
+
     //Fetch accent colour on devices running Lollipop or newer.
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     private int fetchAccentColour(Context context) {
@@ -553,14 +588,6 @@ abstract class MaterialScrollBar<T> extends RelativeLayout {
         }
     }
 
-    /**
-     * Hide or unhide the scrollBar.
-     */
-    public void setScrollBarHidden(boolean hidden){
-        hiddenByUser = hidden;
-        fadeOut();
-    }
-
     class scrollListener extends RecyclerView.OnScrollListener {
         @Override
         public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
@@ -568,6 +595,15 @@ abstract class MaterialScrollBar<T> extends RelativeLayout {
 
             scrollUtils.scrollHandleAndIndicator();
             onScroll();
+
+            //Disables any swipeRefreshLayout parent if the recyclerview is not at the top and enables it if it is.
+            if(swipeRefreshLayout != null){
+                if(((LinearLayoutManager)recyclerView.getLayoutManager()).findFirstCompletelyVisibleItemPosition() == 0){
+                    swipeRefreshLayout.setEnabled(true);
+                } else {
+                    swipeRefreshLayout.setEnabled(false);
+                }
+            }
         }
     }
 
