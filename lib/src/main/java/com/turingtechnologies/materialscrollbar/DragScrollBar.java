@@ -30,6 +30,8 @@ import android.view.View;
 
 public class DragScrollBar extends MaterialScrollBar<DragScrollBar>{
 
+    Boolean draggableFromAnywhere = false;
+
     public DragScrollBar(Context context, RecyclerView recyclerView, boolean lightOnTouch){
         super(context, recyclerView, lightOnTouch);
     }
@@ -44,13 +46,23 @@ public class DragScrollBar extends MaterialScrollBar<DragScrollBar>{
 
     boolean held = false;
 
+    public DragScrollBar setDraggableFromAnywhere(boolean draggableFromAnywhere){
+        this.draggableFromAnywhere = draggableFromAnywhere;
+        return this;
+    }
+
+    //Tests to ensure that the touch is on the handle depending on the user preference
+    private boolean validTouch(MotionEvent event){
+        return draggableFromAnywhere || (event.getY() >= ViewCompat.getY(handle) - Utils.getDP(20, recyclerView.getContext()) && event.getY() <= ViewCompat.getY(handle) + handle.getHeight());
+    }
+
     @Override
     void setTouchIntercept() {
         OnTouchListener otl = new OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
             if (!hiddenByUser) {
-                if(event.getAction() == MotionEvent.ACTION_DOWN && event.getY() >= ViewCompat.getY(handle) - Utils.getDP(20, recyclerView.getContext()) && event.getY() <= ViewCompat.getY(handle) + handle.getHeight()){
+                if(event.getAction() == MotionEvent.ACTION_DOWN && validTouch(event)){
                     held = true;
                 }
                 if ((event.getAction() == MotionEvent.ACTION_MOVE || event.getAction() == MotionEvent.ACTION_DOWN) && held) {
