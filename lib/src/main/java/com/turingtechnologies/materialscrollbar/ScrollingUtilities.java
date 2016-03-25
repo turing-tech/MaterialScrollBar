@@ -16,11 +16,10 @@
 
 package com.turingtechnologies.materialscrollbar;
 
+import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.view.View;
-
-import com.nineoldandroids.view.ViewHelper;
 
 /*
  * Lots of complicated maths taken mostly from Google. Abandon all hope, ye who enter here.
@@ -48,7 +47,8 @@ class ScrollingUtilities {
         getCurScrollState();
         int scrollY = materialScrollBar.getPaddingTop() + (scrollPosState.rowIndex * scrollPosState.rowHeight) - scrollPosState.rowTopOffset;
         int scrollBarY = (int) (((float) scrollY / getAvailableScrollHeight()) * getAvailableScrollBarHeight());
-        ViewHelper.setY(materialScrollBar.handle, scrollBarY);
+        ViewCompat.setY(materialScrollBar.handle, scrollBarY);
+        materialScrollBar.handle.invalidate();
         if(materialScrollBar.indicator != null){
             materialScrollBar.indicator.setScroll(scrollBarY + materialScrollBar.getTop(), materialScrollBar.programmatic);
             materialScrollBar.indicator.textView.setText(materialScrollBar.indicator.getTextElement(scrollPosState.rowIndex, materialScrollBar.recyclerView.getAdapter()));

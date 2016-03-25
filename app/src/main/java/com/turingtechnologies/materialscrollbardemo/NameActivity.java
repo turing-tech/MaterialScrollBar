@@ -20,7 +20,7 @@ public class NameActivity extends AppCompatActivity {
         RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recyclerView);
         recyclerView.setAdapter(new DemoAdapter(this));
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        new TouchScrollBar(this, recyclerView, false).addIndicator(new CustomIndicator(this), true);
+        new TouchScrollBar(this, recyclerView, false).addIndicator(new CustomIndicator(this), true).setHandleColour(Utils.fetchAccentColor(this));
     }
 
     @Override

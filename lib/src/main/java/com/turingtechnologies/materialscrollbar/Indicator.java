@@ -20,13 +20,12 @@ import android.content.Context;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Build;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.RecyclerView;
 import android.util.TypedValue;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-
-import com.nineoldandroids.view.ViewHelper;
 
 abstract class Indicator extends RelativeLayout{
 
@@ -87,13 +86,13 @@ abstract class Indicator extends RelativeLayout{
         //If the indicator is hidden by the top of the screen, it is inverted and displaced downward.
         if(y < 0){
             y += Utils.getDP(getIndicatorHeight(), this);
-            ViewHelper.setScaleY(this, -1F);
-            ViewHelper.setScaleY(textView, -1F);
-            ViewHelper.setY(this, y);
+            ViewCompat.setScaleY(this, -1F);
+            ViewCompat.setScaleY(textView, -1F);
+            ViewCompat.setY(this, y);
         } else {
-            ViewHelper.setScaleY(this, 1F);
-            ViewHelper.setScaleY(textView, 1F);
-            ViewHelper.setY(this, y);
+            ViewCompat.setScaleY(this, 1F);
+            ViewCompat.setScaleY(textView, 1F);
+            ViewCompat.setY(this, y);
         }
     }
 

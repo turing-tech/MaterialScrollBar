@@ -22,12 +22,11 @@ import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.os.Build;
+import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
-
-import com.nineoldandroids.view.ViewHelper;
 
 public class DragScrollBar extends MaterialScrollBar<DragScrollBar>{
 
@@ -51,7 +50,7 @@ public class DragScrollBar extends MaterialScrollBar<DragScrollBar>{
             @Override
             public boolean onTouch(View v, MotionEvent event) {
             if (!hiddenByUser) {
-                if(event.getAction() == MotionEvent.ACTION_DOWN && event.getY() >= ViewHelper.getY(handle) - Utils.getDP(20, recyclerView.getContext()) && event.getY() <= ViewHelper.getY(handle) + handle.getHeight()){
+                if(event.getAction() == MotionEvent.ACTION_DOWN && event.getY() >= ViewCompat.getY(handle) - Utils.getDP(20, recyclerView.getContext()) && event.getY() <= ViewCompat.getY(handle) + handle.getHeight()){
                     held = true;
                 }
                 if ((event.getAction() == MotionEvent.ACTION_MOVE || event.getAction() == MotionEvent.ACTION_DOWN) && held) {

@@ -33,8 +33,6 @@ import android.view.animation.Animation;
 import android.view.animation.TranslateAnimation;
 import android.widget.RelativeLayout;
 
-import com.nineoldandroids.view.ViewHelper;
-
 import java.util.ArrayList;
 
 /*
@@ -145,7 +143,7 @@ abstract class MaterialScrollBar<T> extends RelativeLayout {
         lp.addRule(ALIGN_PARENT_RIGHT);
         background.setLayoutParams(lp);
         background.setBackgroundColor(ContextCompat.getColor(context, android.R.color.darker_gray));
-        ViewHelper.setAlpha(background, 0.4F);
+        ViewCompat.setAlpha(background, 0.4F);
         return(background);
     }
 
