@@ -26,7 +26,7 @@ maven {
 
 ```gradle
 dependencies {
-    compile 'com.turingtechnologies.materialscrollbar:lib:8.+'
+    compile 'com.turingtechnologies.materialscrollbar:lib:9.+'
 }
 ```
 ###Documentation
