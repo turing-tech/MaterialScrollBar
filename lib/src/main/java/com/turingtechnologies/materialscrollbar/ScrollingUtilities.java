@@ -50,8 +50,14 @@ class ScrollingUtilities {
         ViewCompat.setY(materialScrollBar.handle, scrollBarY);
         materialScrollBar.handle.invalidate();
         if(materialScrollBar.indicator != null){
-            materialScrollBar.indicator.setScroll(scrollBarY + materialScrollBar.getTop(), materialScrollBar.programmatic);
-            materialScrollBar.indicator.textView.setText(materialScrollBar.indicator.getTextElement(scrollPosState.rowIndex, materialScrollBar.recyclerView.getAdapter()));
+            materialScrollBar.indicator.setScroll(scrollBarY + materialScrollBar.getTop());
+            int element;
+            if (materialScrollBar.recyclerView.getLayoutManager() instanceof GridLayoutManager) {
+                element = scrollPosState.rowIndex * ((GridLayoutManager)materialScrollBar.recyclerView.getLayoutManager()).getSpanCount();
+            } else {
+                element = scrollPosState.rowIndex;
+            }
+            materialScrollBar.indicator.textView.setText(materialScrollBar.indicator.getTextElement(element, materialScrollBar.recyclerView.getAdapter()));
         }
     }
 
@@ -69,8 +75,7 @@ class ScrollingUtilities {
      * AvailableScrollBarHeight = Total height of the visible view - thumb height
      */
     protected int getAvailableScrollBarHeight() {
-        int visibleHeight = materialScrollBar.getHeight();
-        return visibleHeight - materialScrollBar.handle.getHeight();
+        return materialScrollBar.getHeight() - materialScrollBar.handle.getHeight();
     }
 
     public void scrollToPositionAtProgress(float touchFraction) {

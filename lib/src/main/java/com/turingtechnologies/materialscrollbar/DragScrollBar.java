@@ -16,12 +16,8 @@
 
 package com.turingtechnologies.materialscrollbar;
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
-import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.res.TypedArray;
-import android.os.Build;
 import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
@@ -31,6 +27,8 @@ import android.view.View;
 public class DragScrollBar extends MaterialScrollBar<DragScrollBar>{
 
     Boolean draggableFromAnywhere = false;
+    float handleOffset = 0;
+    float indicatorOffset = 0;
 
     public DragScrollBar(Context context, RecyclerView recyclerView, boolean lightOnTouch){
         super(context, recyclerView, lightOnTouch);
@@ -58,64 +56,28 @@ public class DragScrollBar extends MaterialScrollBar<DragScrollBar>{
 
     @Override
     void setTouchIntercept() {
+        final Handle handle = super.handle;
         OnTouchListener otl = new OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
             if (!hiddenByUser) {
                 if(event.getAction() == MotionEvent.ACTION_DOWN && validTouch(event)){
                     held = true;
+
+                    indicatorOffset = event.getY() - handle.getY() - handle.getLayoutParams().height / 2;
+                    float offset2 = event.getY() - handle.getY();
+                    float balance = handle.getY() / scrollUtils.getAvailableScrollBarHeight();
+                    handleOffset = (offset2 * balance) + (indicatorOffset * (1 - balance));
                 }
+                //On Down
                 if ((event.getAction() == MotionEvent.ACTION_MOVE || event.getAction() == MotionEvent.ACTION_DOWN) && held) {
-                    if (indicator != null && indicator.getVisibility() == INVISIBLE) {
-                        indicator.setVisibility(VISIBLE);
-                        if(Build.VERSION.SDK_INT >= 12){
-                            indicator.setAlpha(0F);
-                            indicator.animate().alpha(1F).setDuration(150).setListener(new AnimatorListenerAdapter() {
-                                @TargetApi(Build.VERSION_CODES.HONEYCOMB)
-                                @Override
-                                public void onAnimationEnd(Animator animation) {
-                                    super.onAnimationEnd(animation);
-
-                                    indicator.setAlpha(1F);
-                                }
-                            });
-                        }
-                    }
-                    int top = handle.getHeight() / 2;
-                    int bottom = recyclerView.getHeight() - Utils.getDP(72, recyclerView.getContext());
-                    float boundedY = Math.max(top, Math.min(bottom, event.getY()));
-                    scrollUtils.scrollToPositionAtProgress((boundedY - top) / (bottom - top));
-                    scrollUtils.scrollHandleAndIndicator();
-                    recyclerView.onScrolled(0, 0);
-
-                    if (lightOnTouch) {
-                        handle.setBackgroundColor(handleColour);
-                    }
-
+                    onDown(event);
                     fadeIn();
+                //On Up
                 } else {
+                    onUp();
+
                     held = false;
-                    if (indicator != null && indicator.getVisibility() == VISIBLE) {
-                        if (Build.VERSION.SDK_INT <= 12) {
-                            indicator.clearAnimation();
-                        }
-                        if(Build.VERSION.SDK_INT >= 12){
-                            indicator.animate().alpha(0F).setDuration(150).setListener(new AnimatorListenerAdapter() {
-                                @Override
-                                public void onAnimationEnd(Animator animation) {
-                                    super.onAnimationEnd(animation);
-
-                                    indicator.setVisibility(INVISIBLE);
-                                }
-                            });
-                        } else {
-                            indicator.setVisibility(INVISIBLE);
-                        }
-                    }
-
-                    if (lightOnTouch) {
-                        handle.setBackgroundColor(handleOffColour);
-                    }
 
                     fadeOut();
                 }
@@ -151,4 +113,14 @@ public class DragScrollBar extends MaterialScrollBar<DragScrollBar>{
 
     @Override
     void implementFlavourPreferences(TypedArray a) {}
+
+    @Override
+    float getHandleOffset(){
+        return draggableFromAnywhere ? 0 : handleOffset;
+    }
+
+    @Override
+    float getIndicatorOffset(){
+        return draggableFromAnywhere ? 0 : indicatorOffset;
+    }
 }

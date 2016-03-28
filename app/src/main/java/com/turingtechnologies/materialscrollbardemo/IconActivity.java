@@ -24,6 +24,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.turingtechnologies.materialscrollbar.CustomIndicator;
 import com.turingtechnologies.materialscrollbar.TouchScrollBar;
 
 public class IconActivity extends AppCompatActivity {
@@ -36,7 +37,7 @@ public class IconActivity extends AppCompatActivity {
         RecyclerView recyclerView = ((RecyclerView)findViewById(R.id.recyclerView));
         recyclerView.setAdapter(new IconAdapter(this));
         recyclerView.setLayoutManager(new GridLayoutManager(this, 4));
-        new TouchScrollBar(this, recyclerView, true).setHandleOffColour(Utils.fetchAccentColor(this));
+        new TouchScrollBar(this, recyclerView, true).setHandleOffColour(Utils.fetchAccentColor(this)).addIndicator(new CustomIndicator(this), true);
     }
 
     @Override

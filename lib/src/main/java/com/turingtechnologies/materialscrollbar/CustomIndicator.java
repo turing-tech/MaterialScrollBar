@@ -64,7 +64,7 @@ public class CustomIndicator extends Indicator {
     @Override
     void testAdapter(RecyclerView.Adapter adapter) {
         if(!(adapter instanceof ICustomAdapter)){
-            throw new CustomExceptions.AdapterNotSetupForIndicatorException("ICustomAdapter");
+            throw new CustomExceptions.AdapterNotSetupForIndicatorException(adapter.getClass(), "ICustomAdapter");
         }
     }
 

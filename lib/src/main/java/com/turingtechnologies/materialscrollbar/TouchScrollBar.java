@@ -16,12 +16,8 @@
 
 package com.turingtechnologies.materialscrollbar;
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
-import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.res.TypedArray;
-import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
 import android.support.v7.widget.RecyclerView;
@@ -68,48 +64,19 @@ public class TouchScrollBar extends MaterialScrollBar<TouchScrollBar>{
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 if(!hiddenByUser) {
+                    //On Down
                     if (event.getAction() != MotionEvent.ACTION_UP) {
-                        if (indicator != null && indicator.getVisibility() == INVISIBLE) {
-                            indicator.setVisibility(VISIBLE);
-                            if(Build.VERSION.SDK_INT >= 12){
-                                indicator.setAlpha(0F);
-                                indicator.animate().alpha(1F).setDuration(150).setListener(new AnimatorListenerAdapter() {
-                                    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
-                                    @Override
-                                    public void onAnimationEnd(Animator animation) {
-                                        super.onAnimationEnd(animation);
 
-                                        indicator.setAlpha(1F);
-                                    }
-                                });
-                            }
-                        }
-                        int top = handle.getHeight() / 2;
-                        int bottom = recyclerView.getHeight() - Utils.getDP(72, recyclerView.getContext());
-                        float boundedY = Math.max(top, Math.min(bottom, event.getY()));
-                        scrollUtils.scrollToPositionAtProgress((boundedY - top) / (bottom - top));
-                        scrollUtils.scrollHandleAndIndicator();
-                        recyclerView.onScrolled(0, 0);
-
-                        if(lightOnTouch){
-                            handle.setBackgroundColor(handleColour);
-                        }
+                        onDown(event);
 
                         if(hide){
                             uiHandler.removeCallbacks(fadeBar);
                             fadeIn();
                         }
+                    //On Up
                     } else {
-                        if(indicator != null && indicator.getVisibility() == VISIBLE){
-                            if(Build.VERSION.SDK_INT <= 12){
-                                indicator.clearAnimation();
-                            }
-                            indicator.setVisibility(INVISIBLE);
-                        }
 
-                        if(lightOnTouch){
-                            handle.setBackgroundColor(handleOffColour);
-                        }
+                        onUp();
 
                         if (hide) {
                             uiHandler.removeCallbacks(fadeBar);
@@ -156,6 +123,16 @@ public class TouchScrollBar extends MaterialScrollBar<TouchScrollBar>{
         if(a.hasValue(R.styleable.TouchScrollBar_hideDelayInMilliseconds)){
             hideDuration = (a.getInteger(R.styleable.TouchScrollBar_hideDelayInMilliseconds, 2500));
         }
+    }
+
+    @Override
+    float getHandleOffset(){
+        return 0;
+    }
+
+    @Override
+    float getIndicatorOffset(){
+        return 0;
     }
 
     /**

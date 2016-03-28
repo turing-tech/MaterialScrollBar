@@ -9,12 +9,19 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
-public class IconAdapter extends RecyclerView.Adapter<IconAdapter.ViewHolder> {
+import com.turingtechnologies.materialscrollbar.ICustomAdapter;
+
+public class IconAdapter extends RecyclerView.Adapter<IconAdapter.ViewHolder> implements ICustomAdapter {
 
     private Activity act;
 
     IconAdapter(Activity a){
         act = a;
+    }
+
+    @Override
+    public String getCustomStringForElement(int element) {
+        return SplashActivity.pkgLabelList.get(element);
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {

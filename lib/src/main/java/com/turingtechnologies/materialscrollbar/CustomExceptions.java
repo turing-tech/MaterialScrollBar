@@ -22,8 +22,8 @@ class CustomExceptions {
 
     static class AdapterNotSetupForIndicatorException extends RuntimeException {
 
-        AdapterNotSetupForIndicatorException(String shouldExtend){
-            super("In order to add this indicator, the adapter for your recyclerView MUST implement " + shouldExtend + ".");
+        AdapterNotSetupForIndicatorException(Class aClass, String shouldExtend){
+            super("In order to add this indicator, the adapter for your recyclerView, " + aClass.getName() + ", MUST implement " + shouldExtend + ".");
         }
 
     }

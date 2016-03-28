@@ -32,11 +32,13 @@ abstract class Indicator extends RelativeLayout{
     protected TextView textView;
     protected Context context;
     private boolean addSpace;
+    private MaterialScrollBar materialScrollBar;
 
     public Indicator(Context context) {
         super(context);
         this.context = context;
         textView = new TextView(context);
+        setVisibility(INVISIBLE);
     }
 
     public void setSizeCustom(int size){
@@ -49,7 +51,7 @@ abstract class Indicator extends RelativeLayout{
         setLayoutParams(lp);
     }
 
-    void linkToScrollBar(MaterialScrollBar materialScrollBar, boolean addSpace){
+    void linkToScrollBar(MaterialScrollBar msb, boolean addSpace){
         this.addSpace = addSpace;
         if(Build.VERSION.SDK_INT >= 16){
             setBackground(ContextCompat.getDrawable(context, R.drawable.indicator));
@@ -58,11 +60,10 @@ abstract class Indicator extends RelativeLayout{
         }
         RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(Utils.getDP(getIndicatorWidth(), this), Utils.getDP(getIndicatorHeight(), this));
         if(addSpace){
-            lp.setMargins(0, 0, Utils.getDP(15, this) + materialScrollBar.handle.getWidth(), 0);
+            lp.setMargins(0, 0, Utils.getDP(15, this) + msb.handle.getWidth(), 0);
         } else {
-            lp.setMargins(0, 0, Utils.getDP(2, this) + materialScrollBar.handle.getWidth(), 0);
+            lp.setMargins(0, 0, Utils.getDP(2, this) + msb.handle.getWidth(), 0);
         }
-        setVisibility(INVISIBLE);
 
         textView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, getTextSize());
         RelativeLayout.LayoutParams tvlp = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
@@ -70,26 +71,26 @@ abstract class Indicator extends RelativeLayout{
 
         addView(textView, tvlp);
 
-        ((GradientDrawable)getBackground()).setColor(materialScrollBar.handleColour);
+        ((GradientDrawable)getBackground()).setColor(msb.handleColour);
 
-        lp.addRule(ALIGN_RIGHT, materialScrollBar.getId());
-        ((ViewGroup)materialScrollBar.getParent()).addView(this, lp);
+        lp.addRule(ALIGN_RIGHT, msb.getId());
+        ((ViewGroup)msb.getParent()).addView(this, lp);
+
+        materialScrollBar = msb;
     }
 
     /**
      * Used by the materialScrollBar to move the indicator with the handle
      * @param y Position to which the indicator should move.
      */
-    void setScroll(float y, boolean programmatic){
-        //Displace the indicator so that the carrot extends from the centre of the handle.
-        y -= Utils.getDP(getIndicatorHeight() / 2, this);
-        //If the indicator is hidden by the top of the screen, it is inverted and displaced downward.
-        if(y < 0){
-            y += Utils.getDP(getIndicatorHeight(), this);
-            ViewCompat.setScaleY(this, -1F);
-            ViewCompat.setScaleY(textView, -1F);
-            ViewCompat.setY(this, y);
-        } else {
+    void setScroll(float y){
+        if(getVisibility() == VISIBLE){
+            y -= 75 - materialScrollBar.getIndicatorOffset() + Utils.getDP(getIndicatorHeight() / 2, this);
+
+            if(y < 5){
+                y = 5;
+            }
+
             ViewCompat.setScaleY(this, 1F);
             ViewCompat.setScaleY(textView, 1F);
             ViewCompat.setY(this, y);

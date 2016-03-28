@@ -16,6 +16,8 @@
 
 package com.turingtechnologies.materialscrollbar;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.res.TypedArray;
@@ -29,6 +31,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.util.TypedValue;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewParent;
@@ -94,7 +97,7 @@ abstract class MaterialScrollBar<T> extends RelativeLayout {
         programmatic = false;
         addView(setUpBackground(context));
         setUpProps(context, attributeSet);
-        addView(setUpHanlde(context, a.getBoolean(R.styleable.MaterialScrollBar_lightOnTouch, true)));
+        addView(setUpHandle(context, a.getBoolean(R.styleable.MaterialScrollBar_lightOnTouch, true)));
         if(!isInEditMode()){
             seekId = a.getResourceId(R.styleable.MaterialScrollBar_recyclerView, 0);
         }
@@ -111,7 +114,7 @@ abstract class MaterialScrollBar<T> extends RelativeLayout {
         }
         setId(R.id.reservedNamedId); //Gives the view an ID so that it can be found in the parent.
         addView(setUpBackground(context)); //Adds the background
-        addView(setUpHanlde(context, lightOnTouch)); //Adds the handle
+        addView(setUpHandle(context, lightOnTouch)); //Adds the handle
         LayoutParams layoutParams = new LayoutParams(Utils.getDP(20, this), ViewGroup.LayoutParams.MATCH_PARENT);
         layoutParams.addRule(ALIGN_RIGHT, recyclerView.getId());
         layoutParams.addRule(ALIGN_TOP, recyclerView.getId());
@@ -153,7 +156,7 @@ abstract class MaterialScrollBar<T> extends RelativeLayout {
     }
 
     //Dual case. Sets up handle.
-    Handle setUpHanlde(Context context, Boolean lightOnTouch){
+    Handle setUpHandle(Context context, Boolean lightOnTouch){
         handle = new Handle(context, getMode(), programmatic);
         RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(Utils.getDP(12, this),
                 Utils.getDP(72, this));
@@ -320,6 +323,10 @@ abstract class MaterialScrollBar<T> extends RelativeLayout {
     abstract boolean getHide();
 
     abstract void implementFlavourPreferences(TypedArray a);
+
+    abstract float getHandleOffset();
+
+    abstract float getIndicatorOffset();
 
     //CHAPTER III - CUSTOMISATION METHODS
 
@@ -585,6 +592,59 @@ abstract class MaterialScrollBar<T> extends RelativeLayout {
             anim.setFillAfter(true);
             startAnimation(anim);
             handle.collapseHandle();
+        }
+    }
+
+    protected void onDown(MotionEvent event){
+        if (indicator != null && indicator.getVisibility() == INVISIBLE) {
+            indicator.setVisibility(VISIBLE);
+            if(Build.VERSION.SDK_INT >= 12){
+                indicator.setAlpha(0F);
+                indicator.animate().alpha(1F).setDuration(150).setListener(new AnimatorListenerAdapter() {
+                    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                        super.onAnimationEnd(animation);
+
+                        indicator.setAlpha(1F);
+                    }
+                });
+            }
+        }
+
+        int top = handle.getHeight() / 2;
+        int bottom = recyclerView.getHeight() - Utils.getDP(72, recyclerView.getContext());
+        float boundedY = Math.max(top, Math.min(bottom, event.getY() - getHandleOffset()));
+        scrollUtils.scrollToPositionAtProgress((boundedY - top) / (bottom - top));
+        scrollUtils.scrollHandleAndIndicator();
+        recyclerView.onScrolled(0, 0);
+
+        if (lightOnTouch) {
+            handle.setBackgroundColor(handleColour);
+        }
+    }
+
+    protected void onUp(){
+        if (indicator != null && indicator.getVisibility() == VISIBLE) {
+            if (Build.VERSION.SDK_INT <= 12) {
+                indicator.clearAnimation();
+            }
+            if(Build.VERSION.SDK_INT >= 12){
+                indicator.animate().alpha(0F).setDuration(150).setListener(new AnimatorListenerAdapter() {
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                        super.onAnimationEnd(animation);
+
+                        indicator.setVisibility(INVISIBLE);
+                    }
+                });
+            } else {
+                indicator.setVisibility(INVISIBLE);
+            }
+        }
+
+        if (lightOnTouch) {
+            handle.setBackgroundColor(handleOffColour);
         }
     }
 

@@ -49,7 +49,7 @@ public class AlphabetIndicator extends Indicator{
     @Override
     void testAdapter(RecyclerView.Adapter adapter) {
         if(!(adapter instanceof INameableAdapter)){
-            throw new CustomExceptions.AdapterNotSetupForIndicatorException("INameableAdapter");
+            throw new CustomExceptions.AdapterNotSetupForIndicatorException(adapter.getClass(), "INameableAdapter");
         }
     }
 
