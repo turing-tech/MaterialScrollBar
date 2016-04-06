@@ -21,7 +21,7 @@ public class IconAdapter extends RecyclerView.Adapter<IconAdapter.ViewHolder> im
 
     @Override
     public String getCustomStringForElement(int element) {
-        return SplashActivity.pkgLabelList.get(element);
+        return AppData.pkgLabelList.get(element);
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
@@ -41,13 +41,13 @@ public class IconAdapter extends RecyclerView.Adapter<IconAdapter.ViewHolder> im
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        holder.icon.setImageDrawable(SplashActivity.pkgIconList.get(position));
+        holder.icon.setImageDrawable(AppData.pkgIconList.get(position));
     }
 
     @Override
     public int getItemCount() {
         try{
-            return SplashActivity.pkgLabelList.size();
+            return AppData.pkgLabelList.size();
         } catch (NullPointerException e){
             Intent i = new Intent(act, SplashActivity.class);
             i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);

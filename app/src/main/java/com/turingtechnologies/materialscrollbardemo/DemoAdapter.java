@@ -26,7 +26,7 @@ public class DemoAdapter extends RecyclerView.Adapter<DemoAdapter.ViewHolder> im
 
     @Override
     public Character getCharacterForElement(int element) {
-        Character c = SplashActivity.pkgLabelList.get(element).charAt(0);
+        Character c = AppData.pkgLabelList.get(element).charAt(0);
         if(Character.isDigit(c)){
             c = '#';
         }
@@ -35,12 +35,12 @@ public class DemoAdapter extends RecyclerView.Adapter<DemoAdapter.ViewHolder> im
 
     @Override
     public Date getDateForElement(int element) {
-        return new Date(SplashActivity.pkgDateList.get(element));
+        return new Date(AppData.pkgDateList.get(element));
     }
 
     @Override
     public String getCustomStringForElement(int element) {
-        return SplashActivity.pkgLabelList.get(element);
+        return AppData.pkgLabelList.get(element);
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
@@ -62,14 +62,14 @@ public class DemoAdapter extends RecyclerView.Adapter<DemoAdapter.ViewHolder> im
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        holder.label.setText(SplashActivity.pkgLabelList.get(position));
-        holder.icon.setImageDrawable(SplashActivity.pkgIconList.get(position));
+        holder.label.setText(AppData.pkgLabelList.get(position));
+        holder.icon.setImageDrawable(AppData.pkgIconList.get(position));
     }
 
     @Override
     public int getItemCount() {
         try{
-            return SplashActivity.pkgLabelList.size();
+            return AppData.pkgLabelList.size();
         } catch (NullPointerException e){
             Intent i = new Intent(act, SplashActivity.class);
             i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
