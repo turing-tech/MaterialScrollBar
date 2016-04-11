@@ -1,6 +1,19 @@
 apply plugin: 'com.android.library'
+apply plugin: 'com.github.dcendents.android-maven'
+apply plugin: 'com.jfrog.bintray'
 
-def version = '9.1.0'
+def version = '9.2.0'
+
+install {
+    repositories.mavenInstaller {
+        // This generates POM.xml with proper parameters
+        pom {
+            project {
+                packaging 'aar'
+            }
+        }
+    }
+}
 
 ext {
     bintrayRepo = 'maven'

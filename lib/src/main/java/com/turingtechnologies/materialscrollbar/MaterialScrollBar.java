@@ -71,7 +71,7 @@ abstract class MaterialScrollBar<T> extends RelativeLayout {
     Handle handle;
     int handleColour;
     int handleOffColour = Color.parseColor("#9c9c9c");
-    private boolean hidden = true;
+    protected boolean hidden = true;
     RecyclerView recyclerView;
     Indicator indicator;
     private int textColour = ContextCompat.getColor(getContext(), android.R.color.white);
