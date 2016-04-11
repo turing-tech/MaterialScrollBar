@@ -36,6 +36,8 @@ class ScrollingUtilities {
 
     private ScrollPositionState scrollPosState = new ScrollPositionState();
 
+    private int constant;
+
     private class ScrollPositionState {
         // The index of the first visible row
         private int rowIndex;
@@ -47,11 +49,13 @@ class ScrollingUtilities {
 
     protected void scrollHandleAndIndicator(){
         int scrollBarY;
-        if(customScroller == null){
-            scrollBarY = (int) getScrollPosition();
+        getCurScrollState();
+        if(customScroller != null){
+            constant = customScroller.getDepthForItem(materialScrollBar.recyclerView.getChildAdapterPosition(materialScrollBar.recyclerView.getChildAt(0)));
         } else {
-            scrollBarY = (int) customScroller.getScrollPositionForIndex(materialScrollBar.recyclerView.getChildAdapterPosition(materialScrollBar.recyclerView.getChildAt(0)));
+            constant = scrollPosState.rowHeight * scrollPosState.rowIndex;
         }
+        scrollBarY = (int) getScrollPosition();
         ViewCompat.setY(materialScrollBar.handle, scrollBarY);
         materialScrollBar.handle.invalidate();
         if(materialScrollBar.indicator != null){
@@ -68,7 +72,7 @@ class ScrollingUtilities {
 
     float getScrollPosition(){
         getCurScrollState();
-        int scrollY = materialScrollBar.getPaddingTop() + (scrollPosState.rowIndex * scrollPosState.rowHeight) - scrollPosState.rowTopOffset;
+        int scrollY = materialScrollBar.getPaddingTop() + constant - scrollPosState.rowTopOffset;
         return ((float) scrollY / getAvailableScrollHeight()) * getAvailableScrollBarHeight();
     }
 
@@ -118,7 +122,12 @@ class ScrollingUtilities {
 
     protected int getAvailableScrollHeight() {
         int visibleHeight = materialScrollBar.getHeight();
-        int scrollHeight = materialScrollBar.getPaddingTop() + getRowCount() * scrollPosState.rowHeight + materialScrollBar.getPaddingBottom();
+        int scrollHeight;
+        if(customScroller != null){
+            scrollHeight = materialScrollBar.getPaddingTop() + customScroller.getTotalDepth() + materialScrollBar.getPaddingBottom();
+        } else {
+            scrollHeight = materialScrollBar.getPaddingTop() + getRowCount() * scrollPosState.rowHeight + materialScrollBar.getPaddingBottom();
+        }
         return scrollHeight - visibleHeight;
     }
 
