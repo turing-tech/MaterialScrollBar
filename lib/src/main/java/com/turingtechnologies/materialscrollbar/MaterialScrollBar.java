@@ -83,6 +83,7 @@ abstract class MaterialScrollBar<T> extends RelativeLayout {
     boolean programmatic;
     ScrollingUtilities scrollUtils = new ScrollingUtilities(this);
     SwipeRefreshLayout swipeRefreshLayout;
+    private boolean customScroll = false;
 
     //CHAPTER I - INITIAL SETUP
 
@@ -330,6 +331,18 @@ abstract class MaterialScrollBar<T> extends RelativeLayout {
 
     //CHAPTER III - CUSTOMISATION METHODS
 
+    private void useCustomScrolling(){
+        if(!(recyclerView.getAdapter() instanceof  ICustomScroller)){
+            throw new CustomExceptions.AdapterNotSetupForCustomScrollingException(recyclerView.getAdapter().getClass());
+        }
+        scrollUtils.customScroller = (ICustomScroller) recyclerView.getAdapter();
+    }
+
+    public T shouldUseCustomScrolling(){
+        customScroll = true;
+        return (T)this;
+    }
+
     /**
      * Provides the ability to programmatically set the colour of the scrollbar handle.
      * @param colour to set the handle.
@@ -508,6 +521,9 @@ abstract class MaterialScrollBar<T> extends RelativeLayout {
                 view.post(new Runnable() {
                     @Override
                     public void run() {
+                        if(customScroll){
+                            useCustomScrolling();
+                        }
                         indicator.linkToScrollBar(view, addSpace);
                         indicator.setTextColour(textColour);
                     }

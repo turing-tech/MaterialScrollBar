@@ -65,7 +65,7 @@ public class AppData {
         }.execute();
     }
 
-    static void openMainActivity(AppCompatActivity activity){
+    private static void openMainActivity(AppCompatActivity activity){
         Intent main = new Intent(activity.getApplicationContext(), MainActivity.class);
         activity.startActivity(main);
     }

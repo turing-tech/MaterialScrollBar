@@ -16,7 +16,7 @@ import com.turingtechnologies.materialscrollbar.INameableAdapter;
 
 import java.util.Date;
 
-public class DemoAdapter extends RecyclerView.Adapter<DemoAdapter.ViewHolder> implements INameableAdapter, IDateableAdapter, ICustomAdapter{
+public class DemoAdapter extends RecyclerView.Adapter<DemoAdapter.ViewHolder> implements INameableAdapter, IDateableAdapter, ICustomAdapter {
 
     private Activity act;
 
