@@ -32,6 +32,7 @@ public class TouchScrollBar extends MaterialScrollBar<TouchScrollBar>{
     private boolean hide = true;
     private int hideDuration = 2500;
     private Handler uiHandler = new Handler(Looper.getMainLooper());
+    private boolean respondToTouch = true;
 
     private Runnable fadeBar = new Runnable() {
 
@@ -67,12 +68,15 @@ public class TouchScrollBar extends MaterialScrollBar<TouchScrollBar>{
                     //On Down
                     if (event.getAction() != MotionEvent.ACTION_UP) {
 
-                        onDown(event);
+                        if(!hidden || respondToTouch){
+                            onDown(event);
 
-                        if(hide){
-                            uiHandler.removeCallbacks(fadeBar);
-                            fadeIn();
+                            if(hide){
+                                uiHandler.removeCallbacks(fadeBar);
+                                fadeIn();
+                            }
                         }
+
                     //On Up
                     } else {
 
@@ -139,8 +143,10 @@ public class TouchScrollBar extends MaterialScrollBar<TouchScrollBar>{
      * Provides the ability to programmatically alter whether the scrollbar
      * should hide after a period of inactivity or not.
      * @param hide sets whether the bar should hide or not.
+     *
+     * This method is experimental
      */
-    public MaterialScrollBar setAutoHide(Boolean hide){
+    public TouchScrollBar setAutoHide(Boolean hide){
         if(!hide){
             TranslateAnimation anim = new TranslateAnimation(Animation.RELATIVE_TO_PARENT, 0.0f,
                     Animation.RELATIVE_TO_SELF, 0.0f, Animation.RELATIVE_TO_PARENT, 0.0f, Animation.RELATIVE_TO_PARENT, 0.0f);
@@ -151,6 +157,14 @@ public class TouchScrollBar extends MaterialScrollBar<TouchScrollBar>{
         //set here. I have no idea wtf is going on so if anyone could figure that out that'd be
         //great.
         this.hide = hide;
+        return this;
+    }
+
+    /**
+     * @param respondToTouchIfHidden Should the bar pop out and scroll if it is hidden?
+     */
+    public TouchScrollBar setRespondToTouchIfHidden(boolean respondToTouchIfHidden){
+        respondToTouch = respondToTouchIfHidden;
         return this;
     }
 }
