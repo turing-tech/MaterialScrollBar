@@ -331,7 +331,7 @@ abstract class MaterialScrollBar<T> extends RelativeLayout {
 
     //CHAPTER III - CUSTOMISATION METHODS
 
-    private void useCustomScrolling(){
+    private void isUsingCustomScrolling(){
         if(!(recyclerView.getAdapter() instanceof  ICustomScroller)){
             throw new CustomExceptions.AdapterNotSetupForCustomScrollingException(recyclerView.getAdapter().getClass());
         }
@@ -343,7 +343,7 @@ abstract class MaterialScrollBar<T> extends RelativeLayout {
      *
      * The adapter must implement {@link ICustomScroller}.
      */
-    public T shouldUseCustomScrolling(){
+    public T useCustomScrolling(){
         customScroll = true;
         return (T)this;
     }
@@ -527,7 +527,7 @@ abstract class MaterialScrollBar<T> extends RelativeLayout {
                     @Override
                     public void run() {
                         if(customScroll){
-                            useCustomScrolling();
+                            isUsingCustomScrolling();
                         }
                         indicator.linkToScrollBar(view, addSpace);
                         indicator.setTextColour(textColour);
