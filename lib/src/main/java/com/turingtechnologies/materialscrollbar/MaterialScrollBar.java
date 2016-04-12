@@ -345,6 +345,18 @@ abstract class MaterialScrollBar<T> extends RelativeLayout {
      */
     public T useCustomScrolling(){
         customScroll = true;
+        if (ViewCompat.isAttachedToWindow(this))
+            checkCustomScrollingInterface();
+        else
+            addOnLayoutChangeListener(new OnLayoutChangeListener()
+            {
+                @Override
+                public void onLayoutChange(View v, int left, int top, int right, int bottom, int oldLeft, int oldTop, int oldRight, int oldBottom)
+                {
+                    MaterialScrollBar.this.removeOnLayoutChangeListener(this);
+                    checkCustomScrollingInterface();
+                }
+            });
         return (T)this;
     }
 
@@ -526,9 +538,9 @@ abstract class MaterialScrollBar<T> extends RelativeLayout {
                 view.post(new Runnable() {
                     @Override
                     public void run() {
-                        if(customScroll){
-                            checkCustomScrollingInterface();
-                        }
+//                        if(customScroll){
+//                            checkCustomScrollingInterface();
+//                        }
                         indicator.linkToScrollBar(view, addSpace);
                         indicator.setTextColour(textColour);
                     }
