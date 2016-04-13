@@ -51,7 +51,7 @@ public class FastScrollerUtil
         final RecyclerView.LayoutManager lm = rv.getLayoutManager();
         if (lm != null && lm instanceof GridLayoutManager)
             return ((GridLayoutManager)lm).getSpanCount();
-        return null;
+        return 1;
     }
 
     public static boolean initSpanSizeLookup(final RecyclerView rv, final IHeaderAdapter adapter)
