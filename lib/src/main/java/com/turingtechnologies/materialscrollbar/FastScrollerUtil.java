@@ -21,10 +21,23 @@ public class FastScrollerUtil
 
     public interface IHeaderAdapter
     {
+        /**
+         * @param index Index or position of the view
+         * @return Is the view a the given index a header
+         */
         boolean isHeader(int index);
         int getItemCount();
+        /**
+         * Should define the manager variable and call {@link HeaderScrollManager#calcData(RecyclerView.Adapter)}
+         */
         void initScrollManager(int span);
+        /**
+         * @return The height of a header view
+         */
         int getHeaderHeight();
+        /**
+         * @return The height of a row
+         */
         int getRowHeight();
     }
 
