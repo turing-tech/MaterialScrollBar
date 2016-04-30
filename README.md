@@ -39,7 +39,7 @@ The 'scrollBar' can be implemented programatically or through XML.
 
 #####XML
 
-The Google Now Launcher Option
+Option 1
 
 ```xml
 <com.turingtechnologies.materialscrollbar.DragScrollBar
@@ -52,7 +52,7 @@ The Google Now Launcher Option
 
 or
 
-The Google Messenger Option
+Option 2
 
 ```xml
 <com.turingtechnologies.materialscrollbar.TouchScrollBar
@@ -71,13 +71,13 @@ Additonal optional attributes:
 * textColour - Colour
 * barThickness - Integer
 
-Please note that for both of these configurations, both recyclerView and lightOnTouch* must have a valid value. The recyclerView attribute should point to the id of the 'recyclerView' to which you want to link the scrollbar.
+Please note that for both of these configurations, both recyclerView and lightOnTouch* must have a valid value. The recyclerView attribute should point to the id of the `recyclerView` to which you want to link the scrollbar.
 
 \* lightOnTouch behaves as follows. A value of true will cause the handle to be grey until pressed, when it will become the normal accent colour (as set). A value of false will cause the handle to always have the accent colour, even when not being pressed.
 
 #####Programmatically
 
-The Google Now Launcher Option
+Option 1
 
 ```java
 DragScrollBar materialScrollBar = new DragScrollBar(this, recyclerView, {{lightOnTouch}});
@@ -85,7 +85,7 @@ DragScrollBar materialScrollBar = new DragScrollBar(this, recyclerView, {{lightO
 
 or
 
-The Google Messenger Option
+Option 2
 
 ```java
 TouchScrollBar materialScrollBar = new TouchScrollBar(this, recyclerView, {{lightOnTouch}});
@@ -100,6 +100,10 @@ materialScrollBar.setHandleColour([[Accent Colour]]);
 ```
 
 For devices running Lollipop and above, the accent colour will be read automatically. If you fail to provide an accent colour, devices running version of Android below Lollipop will default to a usable but bland grey colour.
+
+####My recyclerView elements aren't all the same size! What do I do?
+
+If you are in the situation of using headers of one size and elements of another, we've developed a solution speicifcally for you. Please follow the tutorial [here](https://github.com/krimin-killr21/MaterialScrollBar/wiki/Header-Tutorial).
 
 ####How to use - Indicator
 
