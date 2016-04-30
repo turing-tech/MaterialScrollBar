@@ -2,7 +2,7 @@ apply plugin: 'com.android.library'
 apply plugin: 'com.github.dcendents.android-maven'
 apply plugin: 'com.jfrog.bintray'
 
-def version = '9.2.0'
+def version = '9.3.0'
 
 install {
     repositories.mavenInstaller {
