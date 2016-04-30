@@ -32,21 +32,30 @@ class ScrollingUtilities {
         materialScrollBar = msb;
     }
 
+    ICustomScroller customScroller;
+
     private ScrollPositionState scrollPosState = new ScrollPositionState();
 
-    public class ScrollPositionState {
+    private int constant;
+
+    private class ScrollPositionState {
         // The index of the first visible row
-        public int rowIndex;
+        private int rowIndex;
         // The offset of the first visible row
-        public int rowTopOffset;
+        private int rowTopOffset;
         // The height of a given row (they are currently all the same height)
-        public int rowHeight;
+        private int rowHeight;
     }
 
     protected void scrollHandleAndIndicator(){
+        int scrollBarY;
         getCurScrollState();
-        int scrollY = materialScrollBar.getPaddingTop() + (scrollPosState.rowIndex * scrollPosState.rowHeight) - scrollPosState.rowTopOffset;
-        int scrollBarY = (int) (((float) scrollY / getAvailableScrollHeight()) * getAvailableScrollBarHeight());
+        if(customScroller != null){
+            constant = customScroller.getDepthForItem(materialScrollBar.recyclerView.getChildAdapterPosition(materialScrollBar.recyclerView.getChildAt(0)));
+        } else {
+            constant = scrollPosState.rowHeight * scrollPosState.rowIndex;
+        }
+        scrollBarY = (int) getScrollPosition();
         ViewCompat.setY(materialScrollBar.handle, scrollBarY);
         materialScrollBar.handle.invalidate();
         if(materialScrollBar.indicator != null){
@@ -59,6 +68,12 @@ class ScrollingUtilities {
             }
             materialScrollBar.indicator.textView.setText(materialScrollBar.indicator.getTextElement(element, materialScrollBar.recyclerView.getAdapter()));
         }
+    }
+
+    float getScrollPosition(){
+        getCurScrollState();
+        int scrollY = materialScrollBar.getPaddingTop() + constant - scrollPosState.rowTopOffset;
+        return ((float) scrollY / getAvailableScrollHeight()) * getAvailableScrollBarHeight();
     }
 
     int getRowCount(){
@@ -79,30 +94,40 @@ class ScrollingUtilities {
     }
 
     public void scrollToPositionAtProgress(float touchFraction) {
-        int spanCount = 1;
-        if(materialScrollBar.recyclerView.getLayoutManager() instanceof GridLayoutManager){
-            spanCount = ((GridLayoutManager) materialScrollBar.recyclerView.getLayoutManager()).getSpanCount();
+        if(customScroller == null) {
+            int spanCount = 1;
+            if (materialScrollBar.recyclerView.getLayoutManager() instanceof GridLayoutManager) {
+                spanCount = ((GridLayoutManager) materialScrollBar.recyclerView.getLayoutManager()).getSpanCount();
+            }
+
+            // Stop the scroller if it is scrolling
+            materialScrollBar.recyclerView.stopScroll();
+
+            getCurScrollState();
+
+            //The exact position of our desired item
+            int exactItemPos = (int) (getAvailableScrollHeight() * touchFraction);
+
+            //Scroll to the desired item. The offset used here is kind of hard to explain.
+            //If the position we wish to scroll to is, say, position 10.5, we scroll to position 10,
+            //and then offset by 0.5 * rowHeight. This is how we achieve smooth scrolling.
+            LinearLayoutManager layoutManager = ((LinearLayoutManager) materialScrollBar.recyclerView.getLayoutManager());
+            layoutManager.scrollToPositionWithOffset(spanCount * exactItemPos / scrollPosState.rowHeight,
+                    -(exactItemPos % scrollPosState.rowHeight));
+        } else {
+            LinearLayoutManager layoutManager = ((LinearLayoutManager) materialScrollBar.recyclerView.getLayoutManager());
+            layoutManager.scrollToPosition(customScroller.getItemIndexForScroll(touchFraction));
         }
-
-        // Stop the scroller if it is scrolling
-        materialScrollBar.recyclerView.stopScroll();
-
-        getCurScrollState();
-
-        //The exact position of our desired item
-        int exactItemPos = (int) (getAvailableScrollHeight() * touchFraction);
-
-        //Scroll to the desired item. The offset used here is kind of hard to explain.
-        //If the position we wish to scroll to is, say, position 10.5, we scroll to position 10,
-        //and then offset by 0.5 * rowHeight. This is how we achieve smooth scrolling.
-        LinearLayoutManager layoutManager = ((LinearLayoutManager) materialScrollBar.recyclerView.getLayoutManager());
-        layoutManager.scrollToPositionWithOffset(spanCount * exactItemPos / scrollPosState.rowHeight,
-                -(exactItemPos % scrollPosState.rowHeight));
     }
 
     protected int getAvailableScrollHeight() {
         int visibleHeight = materialScrollBar.getHeight();
-        int scrollHeight = materialScrollBar.getPaddingTop() + getRowCount() * scrollPosState.rowHeight + materialScrollBar.getPaddingBottom();
+        int scrollHeight;
+        if(customScroller != null){
+            scrollHeight = materialScrollBar.getPaddingTop() + customScroller.getTotalDepth() + materialScrollBar.getPaddingBottom();
+        } else {
+            scrollHeight = materialScrollBar.getPaddingTop() + getRowCount() * scrollPosState.rowHeight + materialScrollBar.getPaddingBottom();
+        }
         return scrollHeight - visibleHeight;
     }
 

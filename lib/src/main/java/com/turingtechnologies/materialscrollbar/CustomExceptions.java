@@ -44,4 +44,12 @@ class CustomExceptions {
 
     }
 
+    static class AdapterNotSetupForCustomScrollingException extends RuntimeException {
+
+        AdapterNotSetupForCustomScrollingException(Class aClass){
+            super("In order to use custom scrolling, the adapter for your recyclerView, " + aClass.getName() + ", MUST implement ICustomScroller.");
+        }
+
+    }
+
 }

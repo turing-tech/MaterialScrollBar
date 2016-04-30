@@ -83,6 +83,7 @@ abstract class MaterialScrollBar<T> extends RelativeLayout {
     boolean programmatic;
     ScrollingUtilities scrollUtils = new ScrollingUtilities(this);
     SwipeRefreshLayout swipeRefreshLayout;
+    private boolean customScroll = false;
 
     //CHAPTER I - INITIAL SETUP
 
@@ -330,6 +331,35 @@ abstract class MaterialScrollBar<T> extends RelativeLayout {
 
     //CHAPTER III - CUSTOMISATION METHODS
 
+    private void checkCustomScrollingInterface(){
+        if(!(recyclerView.getAdapter() instanceof  ICustomScroller)){
+            throw new CustomExceptions.AdapterNotSetupForCustomScrollingException(recyclerView.getAdapter().getClass());
+        }
+        scrollUtils.customScroller = (ICustomScroller) recyclerView.getAdapter();
+    }
+
+    /**
+     * The scrollBar should attempt to use dev provided scrolling logic and not default logic.
+     *
+     * The adapter must implement {@link ICustomScroller}.
+     */
+    public T useCustomScrolling(){
+        customScroll = true;
+        if (ViewCompat.isAttachedToWindow(this))
+            checkCustomScrollingInterface();
+        else
+            addOnLayoutChangeListener(new OnLayoutChangeListener()
+            {
+                @Override
+                public void onLayoutChange(View v, int left, int top, int right, int bottom, int oldLeft, int oldTop, int oldRight, int oldBottom)
+                {
+                    MaterialScrollBar.this.removeOnLayoutChangeListener(this);
+                    checkCustomScrollingInterface();
+                }
+            });
+        return (T)this;
+    }
+
     /**
      * Provides the ability to programmatically set the colour of the scrollbar handle.
      * @param colour to set the handle.
@@ -483,39 +513,26 @@ abstract class MaterialScrollBar<T> extends RelativeLayout {
      * @param addSpace Should space be put between the indicator and the bar or should they touch?
      */
     public T addIndicator(final Indicator indicator, final boolean addSpace) {
-        class attachListener implements Runnable {
 
-            MaterialScrollBar view;
-
-            attachListener(MaterialScrollBar v){
-                view = v;
-            }
-
-            @Override
-            public void run() {
-                while(!ViewCompat.isAttachedToWindow(view)) {
-
-                    try {
-                        Thread.sleep(100);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-
+        if(ViewCompat.isAttachedToWindow(this)){
+            this.indicator = indicator;
+            indicator.testAdapter(recyclerView.getAdapter());
+            indicator.linkToScrollBar(MaterialScrollBar.this, addSpace);
+            indicator.setTextColour(textColour);
+        } else {
+            addOnLayoutChangeListener(new OnLayoutChangeListener()
+            {
+                @Override
+                public void onLayoutChange(View v, int left, int top, int right, int bottom, int oldLeft, int oldTop, int oldRight, int oldBottom)
+                {
+                    MaterialScrollBar.this.indicator = indicator;
+                    indicator.testAdapter(recyclerView.getAdapter());
+                    indicator.linkToScrollBar(MaterialScrollBar.this, addSpace);
+                    indicator.setTextColour(textColour);
+                    MaterialScrollBar.this.removeOnLayoutChangeListener(this);
                 }
-
-                indicator.testAdapter(recyclerView.getAdapter());
-                view.indicator = indicator;
-                view.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        indicator.linkToScrollBar(view, addSpace);
-                        indicator.setTextColour(textColour);
-                    }
-                });
-
-            }
+            });
         }
-        new Thread(new attachListener(this)).start();
         return (T)this;
     }
 
