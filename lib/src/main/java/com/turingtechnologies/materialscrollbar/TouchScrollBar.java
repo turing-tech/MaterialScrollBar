@@ -121,11 +121,11 @@ public class TouchScrollBar extends MaterialScrollBar<TouchScrollBar>{
 
     @Override
     void implementFlavourPreferences(TypedArray a) {
-        if(a.hasValue(R.styleable.TouchScrollBar_autoHide)){
-            setAutoHide(a.getBoolean(R.styleable.TouchScrollBar_autoHide, true));
+        if(a.hasValue(R.styleable.TouchScrollBar_msb_autoHide)){
+            setAutoHide(a.getBoolean(R.styleable.TouchScrollBar_msb_autoHide, true));
         }
-        if(a.hasValue(R.styleable.TouchScrollBar_hideDelayInMilliseconds)){
-            hideDuration = (a.getInteger(R.styleable.TouchScrollBar_hideDelayInMilliseconds, 2500));
+        if(a.hasValue(R.styleable.TouchScrollBar_msb_hideDelayInMilliseconds)){
+            hideDuration = (a.getInteger(R.styleable.TouchScrollBar_msb_hideDelayInMilliseconds, 2500));
         }
     }
 

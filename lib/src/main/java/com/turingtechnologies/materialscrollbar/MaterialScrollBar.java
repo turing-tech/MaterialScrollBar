@@ -98,9 +98,9 @@ abstract class MaterialScrollBar<T> extends RelativeLayout {
         programmatic = false;
         addView(setUpBackground(context));
         setUpProps(context, attributeSet);
-        addView(setUpHandle(context, a.getBoolean(R.styleable.MaterialScrollBar_lightOnTouch, true)));
+        addView(setUpHandle(context, a.getBoolean(R.styleable.MaterialScrollBar_msb_lightOnTouch, true)));
         if(!isInEditMode()){
-            seekId = a.getResourceId(R.styleable.MaterialScrollBar_recyclerView, 0);
+            seekId = a.getResourceId(R.styleable.MaterialScrollBar_msb_recyclerView, 0);
         }
         implementPreferences();
         a.recycle();
@@ -133,11 +133,11 @@ abstract class MaterialScrollBar<T> extends RelativeLayout {
                 0, 0);
         ArrayList<String> missing = new ArrayList<>();
         //Ensures that a recyclerView is associated with the bar.
-        if(!a.hasValue(R.styleable.MaterialScrollBar_recyclerView)){
+        if(!a.hasValue(R.styleable.MaterialScrollBar_msb_recyclerView)){
             missing.add("recyclerView");
         }
         //Ensures that a preference is expressed for lightOnTouch.
-        if(!a.hasValue(R.styleable.MaterialScrollBar_lightOnTouch)){
+        if(!a.hasValue(R.styleable.MaterialScrollBar_msb_lightOnTouch)){
             missing.add("lightOnTouch");
         }
         if(missing.size() != 0){
@@ -182,20 +182,20 @@ abstract class MaterialScrollBar<T> extends RelativeLayout {
 
     //XML case only. Implements optional attributes.
     void implementPreferences(){
-        if(a.hasValue(R.styleable.MaterialScrollBar_barColour)){
-            setBarColour(a.getColor(R.styleable.MaterialScrollBar_barColour, 0));
+        if(a.hasValue(R.styleable.MaterialScrollBar_msb_barColour)){
+            setBarColour(a.getColor(R.styleable.MaterialScrollBar_msb_barColour, 0));
         }
-        if(a.hasValue(R.styleable.MaterialScrollBar_handleColour)){
-            setHandleColour(a.getColor(R.styleable.MaterialScrollBar_handleColour, 0));
+        if(a.hasValue(R.styleable.MaterialScrollBar_msb_handleColour)){
+            setHandleColour(a.getColor(R.styleable.MaterialScrollBar_msb_handleColour, 0));
         }
-        if(a.hasValue(R.styleable.MaterialScrollBar_handleOffColour)){
-            setHandleOffColour(a.getColor(R.styleable.MaterialScrollBar_handleOffColour, 0));
+        if(a.hasValue(R.styleable.MaterialScrollBar_msb_handleOffColour)){
+            setHandleOffColour(a.getColor(R.styleable.MaterialScrollBar_msb_handleOffColour, 0));
         }
-        if(a.hasValue(R.styleable.MaterialScrollBar_textColour)){
-            setTextColour(a.getColor(R.styleable.MaterialScrollBar_textColour, 0));
+        if(a.hasValue(R.styleable.MaterialScrollBar_msb_textColour)){
+            setTextColour(a.getColor(R.styleable.MaterialScrollBar_msb_textColour, 0));
         }
-        if(a.hasValue(R.styleable.MaterialScrollBar_barThickness)){
-            setBarThickness(a.getInteger(R.styleable.MaterialScrollBar_barThickness, 0));
+        if(a.hasValue(R.styleable.MaterialScrollBar_msb_barThickness)){
+            setBarThickness(a.getDimensionPixelSize(R.styleable.MaterialScrollBar_msb_barThickness, 0));
         }
         implementFlavourPreferences(a);
     }
@@ -541,7 +541,6 @@ abstract class MaterialScrollBar<T> extends RelativeLayout {
      * @param thickness The desired bar thickness.
      */
     public T setBarThickness(int thickness){
-        thickness = Utils.getDP(thickness, this);
         LayoutParams layoutParams = (LayoutParams) handle.getLayoutParams();
         layoutParams.width = thickness;
         handle.setLayoutParams(layoutParams);

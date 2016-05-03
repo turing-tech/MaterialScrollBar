@@ -13,8 +13,8 @@
     <com.turingtechnologies.materialscrollbar.DragScrollBar
         android:id="@+id/dragScrollBar"
         android:layout_width="wrap_content"
-        app:recyclerView="@id/recyclerView"
-        app:lightOnTouch="false"
+        app:msb_recyclerView="@id/recyclerView"
+        app:msb_lightOnTouch="false"
         android:layout_height="match_parent"
         android:layout_alignParentTop="true"
         android:layout_alignParentRight="true"
