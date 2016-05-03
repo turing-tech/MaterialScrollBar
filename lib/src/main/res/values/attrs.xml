@@ -19,17 +19,17 @@
 
     <declare-styleable name="MaterialScrollBar">
         <attr name="recyclerView" format="reference"/>
-        <attr name="lightOnTouch" format="boolean"/>
-        <attr name="handleColour" format="color"/>
-        <attr name="barColour" format="color"/>
-        <attr name="handleOffColour" format="color"/>
-        <attr name="textColour" format="color"/>
-        <attr name="barThickness" format="integer"/>
+        <attr name="lightOnTouch" format="boolean|reference"/>
+        <attr name="handleColour" format="color|reference"/>
+        <attr name="barColour" format="color|reference"/>
+        <attr name="handleOffColour" format="color|reference"/>
+        <attr name="textColour" format="color|reference"/>
+        <attr name="barThickness" format="dimension|reference"/>
     </declare-styleable>
 
     <declare-styleable name="TouchScrollBar">
-        <attr name="hideDelayInMilliseconds" format="integer"/>
-        <attr name="autoHide" format="boolean"/>
+        <attr name="hideDelayInMilliseconds" format="integer|reference"/>
+        <attr name="autoHide" format="boolean|reference"/>
     </declare-styleable>
 
 </resources>
