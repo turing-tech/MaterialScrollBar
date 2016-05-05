@@ -58,18 +58,18 @@ Option 2
 <com.turingtechnologies.materialscrollbar.TouchScrollBar
     android:id="@+id/touchScrollBar"
     android:layout_width="wrap_content"
-    app:recyclerView="@id/recyclerView"
-    app:lightOnTouch="[[boolean]]"
+    app:msb_recyclerView="@id/recyclerView"
+    app:msb_lightOnTouch="[[boolean]]"
     android:layout_height="match_parent" />
 ```
 
 Additonal optional attributes:
 
-* handleColour - Colour
-* barColour - Colour
-* handleOffColour - Colour
-* textColour - Colour
-* barThickness - Integer
+* msb_handleColour - Colour
+* msb_barColour - Colour
+* msb_handleOffColour - Colour
+* msb_textColour - Colour
+* msb_barThickness - Integer
 
 Please note that for both of these configurations, both recyclerView and lightOnTouch* must have a valid value. The recyclerView attribute should point to the id of the `recyclerView` to which you want to link the scrollbar.
 
