@@ -45,8 +45,8 @@ Option 1
 <com.turingtechnologies.materialscrollbar.DragScrollBar
     android:id="@+id/dragScrollBar"
     android:layout_width="wrap_content"
-    app:recyclerView="@id/recyclerView"
-    app:lightOnTouch="[[boolean]]"
+    app:msb_recyclerView="@id/recyclerView"
+    app:msb_lightOnTouch="[[boolean]]"
     android:layout_height="match_parent" />
 ```
 
