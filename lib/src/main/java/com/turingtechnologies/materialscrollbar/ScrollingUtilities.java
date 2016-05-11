@@ -59,14 +59,15 @@ class ScrollingUtilities {
         ViewCompat.setY(materialScrollBar.handle, scrollBarY);
         materialScrollBar.handle.invalidate();
         if(materialScrollBar.indicator != null){
-            materialScrollBar.indicator.setScroll(scrollBarY + materialScrollBar.getTop());
             int element;
             if (materialScrollBar.recyclerView.getLayoutManager() instanceof GridLayoutManager) {
                 element = scrollPosState.rowIndex * ((GridLayoutManager)materialScrollBar.recyclerView.getLayoutManager()).getSpanCount();
             } else {
                 element = scrollPosState.rowIndex;
             }
-            materialScrollBar.indicator.textView.setText(materialScrollBar.indicator.getTextElement(element, materialScrollBar.recyclerView.getAdapter()));
+            materialScrollBar.indicator.setText(element);
+
+            materialScrollBar.indicator.setScroll(scrollBarY + materialScrollBar.getTop());
         }
     }
 

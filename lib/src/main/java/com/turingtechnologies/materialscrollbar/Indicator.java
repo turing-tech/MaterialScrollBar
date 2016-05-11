@@ -91,9 +91,19 @@ abstract class Indicator extends RelativeLayout{
                 y = 5;
             }
 
-            ViewCompat.setScaleY(this, 1F);
-            ViewCompat.setScaleY(textView, 1F);
             ViewCompat.setY(this, y);
+        }
+    }
+
+    /**
+     * Sets the content text for the indicator and resizes if needed
+     */
+    void setText(int section){
+        String newText = getTextElement(section, materialScrollBar.recyclerView.getAdapter());
+        if (!textView.getText().equals(newText)){
+            textView.setText(newText);
+
+            LayoutWrapContentUpdater.wrapContentAgain(this);
         }
     }
 
