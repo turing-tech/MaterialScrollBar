@@ -1,6 +1,5 @@
 package com.turingtechnologies.materialscrollbar;
 
-import android.util.Log;
 import android.view.View;
 import android.view.View.MeasureSpec;
 import android.view.ViewGroup;
@@ -94,17 +93,14 @@ public class LayoutWrapContentUpdater
             if ( isWrapWidth  && nodeView.getMeasuredWidth() > 0 ) {
                 right = nodeView.getLeft() + nodeView.getMeasuredWidth();
                 changed = true;
-                Log.v(TAG, "+++ LayoutWrapContentUpdater recurseWrapContent set Width to "+ nodeView.getMeasuredWidth() +" of node Tag="+ nodeView.getTag() +" ["+ nodeView +"]");
             }
             if ( isWrapHeight && nodeView.getMeasuredHeight() > 0 ) {
                 bottom = nodeView.getTop() + nodeView.getMeasuredHeight();
                 changed = true;
-                Log.v(TAG, "+++ LayoutWrapContentUpdater recurseWrapContent set Height to "+ nodeView.getMeasuredHeight() +" of node Tag="+ nodeView.getTag() +" ["+ nodeView +"]");
             }
 
             if (changed) {
                 nodeView.layout( nodeView.getLeft(), nodeView.getTop(), right, bottom );
-                // FIXME: Adjust left & top position when gravity = "center" / "bottom" / "right"
             }
         }
 
