@@ -24,6 +24,8 @@ import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Build;
+import android.support.annotation.ColorInt;
+import android.support.annotation.ColorRes;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -374,7 +376,7 @@ abstract class MaterialScrollBar<T> extends RelativeLayout {
      * Provides the ability to programmatically set the colour of the scrollbar handle.
      * @param colour to set the handle.
      */
-    public T setHandleColour(int colour){
+    public T setHandleColour(@ColorInt int colour){
         handleColour = colour;
         setHandleColour();
         return (T)this;
@@ -384,7 +386,7 @@ abstract class MaterialScrollBar<T> extends RelativeLayout {
      * Provides the ability to programmatically set the colour of the scrollbar handle.
      * @param colourResId to set the handle.
      */
-    public T setHandleColourRes(int colourResId){
+    public T setHandleColourRes(@ColorRes int colourResId){
         handleColour = ContextCompat.getColor(getContext(), colourResId);
         setHandleColour();
         return (T)this;
@@ -415,7 +417,7 @@ abstract class MaterialScrollBar<T> extends RelativeLayout {
      * Provides the ability to programmatically set the colour of the scrollbar handle when unpressed. Only applies if lightOnTouch is true.
      * @param colour to set the handle when unpressed.
      */
-    public T setHandleOffColour(int colour){
+    public T setHandleOffColour(@ColorInt int colour){
         handleOffColour = colour;
         if(lightOnTouch){
             handle.setBackgroundColor(handleOffColour);
@@ -427,7 +429,7 @@ abstract class MaterialScrollBar<T> extends RelativeLayout {
      * Provides the ability to programmatically set the colour of the scrollbar handle when unpressed. Only applies if lightOnTouch is true.
      * @param colourResId to set the handle when unpressed.
      */
-    public T setHandleOffColourRes(int colourResId){
+    public T setHandleOffColourRes(@ColorRes int colourResId){
         handleOffColour = ContextCompat.getColor(getContext(), colourResId);
         if(lightOnTouch){
             handle.setBackgroundColor(handleOffColour);
@@ -448,7 +450,7 @@ abstract class MaterialScrollBar<T> extends RelativeLayout {
      * Provides the ability to programmatically set the colour of the scrollbar.
      * @param colour to set the bar.
      */
-    public T setBarColour(int colour){
+    public T setBarColour(@ColorInt int colour){
         background.setBackgroundColor(colour);
         return (T)this;
     }
@@ -457,7 +459,7 @@ abstract class MaterialScrollBar<T> extends RelativeLayout {
      * Provides the ability to programmatically set the colour of the scrollbar.
      * @param colourResId to set the bar.
      */
-    public T setBarColourRes(int colourResId){
+    public T setBarColourRes(@ColorRes int colourResId){
         background.setBackgroundColor(ContextCompat.getColor(getContext(), colourResId));
         return (T)this;
     }
@@ -466,7 +468,7 @@ abstract class MaterialScrollBar<T> extends RelativeLayout {
      * Provides the ability to programmatically set the text colour of the indicator. Will do nothing if there is no section indicator.
      * @param colour to set the text of the indicator.
      */
-    public T setTextColour(int colour){
+    public T setTextColour(@ColorInt int colour){
         textColour = colour;
         if(indicator != null){
             indicator.setTextColour(textColour);
@@ -479,7 +481,7 @@ abstract class MaterialScrollBar<T> extends RelativeLayout {
      * Provides the ability to programmatically set the text colour of the indicator. Will do nothing if there is no section indicator.
      * @param colourResId to set the text of the indicator.
      */
-    public T setTextColourRes(int colourResId){
+    public T setTextColourRes(@ColorRes int colourResId){
         textColour = ContextCompat.getColor(getContext(), colourResId);
         if(indicator != null){
             indicator.setTextColour(textColour);
