@@ -2,7 +2,7 @@ apply plugin: 'com.android.library'
 apply plugin: 'com.github.dcendents.android-maven'
 apply plugin: 'com.jfrog.bintray'
 
-def version = '10.0.3'
+def version = '10.1.0'
 
 install {
     repositories.mavenInstaller {
@@ -46,7 +46,7 @@ android {
     defaultConfig {
         minSdkVersion 11
         targetSdkVersion 24
-        versionCode 23
+        versionCode 24
         versionName version
     }
 }

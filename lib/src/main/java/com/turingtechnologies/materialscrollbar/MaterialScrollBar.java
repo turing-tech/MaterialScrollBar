@@ -134,10 +134,10 @@ abstract class MaterialScrollBar<T> extends RelativeLayout {
                 R.styleable.MaterialScrollBar,
                 0, 0);
         ArrayList<String> missing = new ArrayList<>();
-        //Ensures that a recyclerView is associated with the bar.
-        if(!a.hasValue(R.styleable.MaterialScrollBar_msb_recyclerView)){
-            missing.add("recyclerView");
-        }
+//        //Ensures that a recyclerView is associated with the bar.
+//        if(!a.hasValue(R.styleable.MaterialScrollBar_msb_recyclerView)){
+//            missing.add("recyclerView");
+//        }
         //Ensures that a preference is expressed for lightOnTouch.
         if(!a.hasValue(R.styleable.MaterialScrollBar_msb_lightOnTouch)){
             missing.add("lightOnTouch");
@@ -202,6 +202,17 @@ abstract class MaterialScrollBar<T> extends RelativeLayout {
         implementFlavourPreferences(a);
     }
 
+    public T setRecyclerView(RecyclerView rv){
+        if(seekId != 0){
+            throw new RuntimeException("There is already a recyclerView set by XML.");
+        } else if (recyclerView != null){
+            throw new RuntimeException("There is already a recyclerView set.");
+        }
+        recyclerView = rv;
+        generalSetup();
+        return (T)this;
+    }
+
     //XML case only. Waits for all of the views to be attached to the window and then implements general setup.
     //Waiting must occur so that the relevant recyclerview can be found.
     @Override
@@ -257,6 +268,10 @@ abstract class MaterialScrollBar<T> extends RelativeLayout {
     @Override
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
         super.onLayout(changed, l, t, r, b);
+
+        if(recyclerView == null){
+            throw new RuntimeException("You need to set a recyclerView for the scroll bar, either in the XML or using setRecyclerView().");
+        }
 
         if(sizeUnchecked && !isInEditMode()){
             scrollUtils.getCurScrollState();
