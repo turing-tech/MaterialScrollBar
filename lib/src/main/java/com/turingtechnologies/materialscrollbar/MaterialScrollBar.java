@@ -569,6 +569,11 @@ abstract class MaterialScrollBar<T> extends RelativeLayout {
         if(indicator != null){
             indicator.setSizeCustom(thickness);
         }
+
+        layoutParams = (LayoutParams) getLayoutParams();
+        layoutParams.width = thickness;
+        setLayoutParams(layoutParams);
+
         return (T)this;
     }
 
