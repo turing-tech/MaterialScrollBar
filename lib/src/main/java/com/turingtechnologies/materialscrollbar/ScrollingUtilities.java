@@ -149,8 +149,13 @@ class ScrollingUtilities {
         if (materialScrollBar.recyclerView.getLayoutManager() instanceof GridLayoutManager) {
             scrollPosState.rowIndex = scrollPosState.rowIndex / ((GridLayoutManager) materialScrollBar.recyclerView.getLayoutManager()).getSpanCount();
         }
-        scrollPosState.rowTopOffset = materialScrollBar.recyclerView.getLayoutManager().getDecoratedTop(child);
-        scrollPosState.rowHeight = child.getHeight();
+        if(child == null){
+            scrollPosState.rowTopOffset = 0;
+            scrollPosState.rowHeight = 0;
+        } else {
+            scrollPosState.rowTopOffset = materialScrollBar.recyclerView.getLayoutManager().getDecoratedTop(child);
+            scrollPosState.rowHeight = child.getHeight();
+        }
     }
 
 }
