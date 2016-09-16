@@ -86,6 +86,7 @@ abstract class MaterialScrollBar<T> extends RelativeLayout {
     ScrollingUtilities scrollUtils = new ScrollingUtilities(this);
     SwipeRefreshLayout swipeRefreshLayout;
     private boolean customScroll = false;
+    private OnLayoutChangeListener indicatorLayoutListener;
 
     //CHAPTER I - INITIAL SETUP
 
@@ -520,6 +521,9 @@ abstract class MaterialScrollBar<T> extends RelativeLayout {
      * Removes any indicator.
      */
     public T removeIndicator(){
+        if(this.indicator != null){
+            this.indicator.removeAllViews();
+        }
         this.indicator = null;
         return (T)this;
     }
@@ -537,7 +541,8 @@ abstract class MaterialScrollBar<T> extends RelativeLayout {
             indicator.linkToScrollBar(MaterialScrollBar.this, addSpace);
             indicator.setTextColour(textColour);
         } else {
-            addOnLayoutChangeListener(new OnLayoutChangeListener()
+            removeOnLayoutChangeListener(indicatorLayoutListener);
+            indicatorLayoutListener = new OnLayoutChangeListener()
             {
                 @Override
                 public void onLayoutChange(View v, int left, int top, int right, int bottom, int oldLeft, int oldTop, int oldRight, int oldBottom)
@@ -548,7 +553,8 @@ abstract class MaterialScrollBar<T> extends RelativeLayout {
                     indicator.setTextColour(textColour);
                     MaterialScrollBar.this.removeOnLayoutChangeListener(this);
                 }
-            });
+            };
+            addOnLayoutChangeListener(indicatorLayoutListener);
         }
         return (T)this;
     }

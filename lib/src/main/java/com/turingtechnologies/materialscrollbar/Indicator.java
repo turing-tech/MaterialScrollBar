@@ -99,7 +99,12 @@ abstract class Indicator extends RelativeLayout{
      * Sets the content text for the indicator and resizes if needed
      */
     void setText(int section){
-        String newText = getTextElement(section, materialScrollBar.recyclerView.getAdapter());
+        String newText;
+        try{
+            newText = getTextElement(section, materialScrollBar.recyclerView.getAdapter());
+        } catch (ArrayIndexOutOfBoundsException e){
+            newText = "Error";
+        }
         if (!textView.getText().equals(newText)){
             textView.setText(newText);
 
