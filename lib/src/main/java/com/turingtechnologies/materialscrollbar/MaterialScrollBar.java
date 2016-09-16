@@ -56,7 +56,7 @@ import java.util.ArrayList;
  * The two flavours of the MaterialScrollBar are the DragScrollBar and the TouchScrollBar. They both
  * extend this class. Implementations which are unique to each flavour are implemented through
  * abstraction. The use of the T generic is used to maintain the identity of the subclass when
- * chaining settings (ie. So that DragScrollBar(...).addIndicator(...) will return dragScrollBar and
+ * chaining settings (ie. So that DragScrollBar(...).setIndicator(...) will return dragScrollBar and
  * not MaterialScrollBar).
  *
  * The class can be instantiated programmatically or through XML. The framework for getting
@@ -533,7 +533,7 @@ abstract class MaterialScrollBar<T> extends RelativeLayout {
      *
      * @param addSpace Should space be put between the indicator and the bar or should they touch?
      */
-    public T addIndicator(final Indicator indicator, final boolean addSpace) {
+    public T setIndicator(final Indicator indicator, final boolean addSpace) {
 
         if(ViewCompat.isAttachedToWindow(this)){
             this.indicator = indicator;
