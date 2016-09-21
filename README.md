@@ -110,7 +110,7 @@ If you are in the situation of using headers of one size and elements of another
 To add an indicator, simply add the following line of code:
 
 ```java
-materialScrollBar.addIndicator({{Indicator}}, {{addSpace}});
+materialScrollBar.setIndicator({{Indicator}}, {{addSpace}});
 ```
 
 If you implemented the bar programmatically, simply get the object using `findViewById()` and then the scrollbar's id.
@@ -128,7 +128,7 @@ To use an indicator, you **MUST** make your 'recyclerView''s adapter implement t
 
 To implement an `AlphabetIndicator`, which displays one character usually corresponding to the first letter of each item, add the following to the end of your 'materialScrollBar' instantiation, or add it as a seperate line.
 ```java
-...addIndicator(new AlphabetIndicator(this));
+...setIndicator(new AlphabetIndicator(this));
 ```
 
 #####DateAndTimeIndicator
@@ -137,7 +137,7 @@ To implement an `AlphabetIndicator`, which displays one character usually corres
 
 To implement a `DateAndTimeIndicator`, which displays any combination of time, day of the month, month, and year, add the following to the end of your `materialScrollBar` instantiation, or add it as a seperate line.
 ```java
-...addIndicator(new DateAndTimeIndicator(this, {{includeYear}}, {{includeMonth}}, {{includeDay}}, {{includeTime}}));
+...setIndicator(new DateAndTimeIndicator(this, {{includeYear}}, {{includeMonth}}, {{includeDay}}, {{includeTime}}));
 ```
 
 All of the arguments are booleans (except for this first one obviously). The indicator will dynamically size, add punctuation, and localise for you. All you need to do is provide a `Date` object for each element in your adapter. You should almost always use miliseconds since the epoch unless you have a good reason not to. Otherwise, the library might crash.
@@ -148,7 +148,7 @@ All of the arguments are booleans (except for this first one obviously). The ind
 
 To implement a `CustomIndicator`, which displays any text you want, add the following to the end of your `materialScrollBar` instantiation, or add it as a seperate line.
 ```java
-...addIndicator(new CustomIndicator(this));
+...setIndicator(new CustomIndicator(this));
 ```
 
 ####Customisation Options
