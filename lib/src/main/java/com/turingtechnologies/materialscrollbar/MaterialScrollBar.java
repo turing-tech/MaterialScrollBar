@@ -235,6 +235,8 @@ abstract class MaterialScrollBar<T> extends RelativeLayout {
 
         identifySwipeRefreshParents();
 
+        checkCustomScrolling();
+
         //Hides the view
         TranslateAnimation anim = new TranslateAnimation(Animation.RELATIVE_TO_PARENT, 0.0f, Animation.RELATIVE_TO_SELF, getHideRatio(), Animation.RELATIVE_TO_PARENT, 0.0f, Animation.RELATIVE_TO_PARENT, 0.0f);
         anim.setDuration(0);
@@ -350,10 +352,12 @@ abstract class MaterialScrollBar<T> extends RelativeLayout {
     //CHAPTER III - CUSTOMISATION METHODS
 
     private void checkCustomScrollingInterface(){
-        if(!(recyclerView.getAdapter() instanceof  ICustomScroller)){
-            throw new CustomExceptions.AdapterNotSetupForCustomScrollingException(recyclerView.getAdapter().getClass());
+        if((recyclerView.getAdapter() instanceof  ICustomScroller)){
+            scrollUtils.customScroller = (ICustomScroller) recyclerView.getAdapter();
+            System.out.println("yes");
+        } else {
+            System.out.println("no");
         }
-        scrollUtils.customScroller = (ICustomScroller) recyclerView.getAdapter();
     }
 
     /**
@@ -361,8 +365,7 @@ abstract class MaterialScrollBar<T> extends RelativeLayout {
      *
      * The adapter must implement {@link ICustomScroller}.
      */
-    public T useCustomScrolling(){
-        customScroll = true;
+    private void checkCustomScrolling(){
         if (ViewCompat.isAttachedToWindow(this))
             checkCustomScrollingInterface();
         else
@@ -375,7 +378,6 @@ abstract class MaterialScrollBar<T> extends RelativeLayout {
                     checkCustomScrollingInterface();
                 }
             });
-        return (T)this;
     }
 
     /**
