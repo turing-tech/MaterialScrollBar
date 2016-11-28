@@ -1,7 +1,7 @@
 apply plugin: 'com.android.library'
 apply plugin: 'com.github.dcendents.android-maven'
 
-def libVersion = '10.1.5'
+def libVersion = '11.0.0'
 
 install {
     repositories.mavenInstaller {
