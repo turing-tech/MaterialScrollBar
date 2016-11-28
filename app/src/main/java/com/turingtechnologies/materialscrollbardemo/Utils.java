@@ -22,7 +22,7 @@ import android.util.TypedValue;
 
 public class Utils {
 
-    public static int fetchAccentColor(Context context) {
+    static int fetchAccentColor(Context context) {
         TypedValue typedValue = new TypedValue();
 
         TypedArray a = context.obtainStyledAttributes(typedValue.data, new int[] { R.attr.colorAccent });

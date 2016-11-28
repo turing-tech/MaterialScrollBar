@@ -85,7 +85,6 @@ abstract class MaterialScrollBar<T> extends RelativeLayout {
     boolean programmatic;
     ScrollingUtilities scrollUtils = new ScrollingUtilities(this);
     SwipeRefreshLayout swipeRefreshLayout;
-    private boolean customScroll = false;
     private OnLayoutChangeListener indicatorLayoutListener;
 
     //CHAPTER I - INITIAL SETUP
@@ -354,9 +353,6 @@ abstract class MaterialScrollBar<T> extends RelativeLayout {
     private void checkCustomScrollingInterface(){
         if((recyclerView.getAdapter() instanceof  ICustomScroller)){
             scrollUtils.customScroller = (ICustomScroller) recyclerView.getAdapter();
-            System.out.println("yes");
-        } else {
-            System.out.println("no");
         }
     }
 

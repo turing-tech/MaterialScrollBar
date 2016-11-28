@@ -11,7 +11,7 @@ import android.widget.ImageView;
 
 import com.turingtechnologies.materialscrollbar.ICustomAdapter;
 
-public class IconAdapter extends RecyclerView.Adapter<IconAdapter.ViewHolder> implements ICustomAdapter {
+class IconAdapter extends RecyclerView.Adapter<IconAdapter.ViewHolder> implements ICustomAdapter {
 
     private Activity act;
 
@@ -24,10 +24,10 @@ public class IconAdapter extends RecyclerView.Adapter<IconAdapter.ViewHolder> im
         return AppData.pkgLabelList.get(element);
     }
 
-    public static class ViewHolder extends RecyclerView.ViewHolder {
+    static class ViewHolder extends RecyclerView.ViewHolder {
         // each data item is just a string in this case
         public ImageView icon;
-        public ViewHolder(View v) {
+        ViewHolder(View v) {
             super(v);
             icon = (ImageView) v.findViewById(R.id.iconView);
         }

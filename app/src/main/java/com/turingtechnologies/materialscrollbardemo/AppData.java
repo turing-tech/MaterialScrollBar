@@ -12,12 +12,11 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-public class AppData {
+class AppData {
 
-    static List<ApplicationInfo> pkgAppsList;
+    private static List<ApplicationInfo> pkgAppsList;
     static ArrayList<String> pkgLabelList = new ArrayList<>();
     static ArrayList<Drawable> pkgIconList = new ArrayList<>();
-    static ArrayList<String> pkgPackageList = new ArrayList<>();
     static ArrayList<Long> pkgDateList = new ArrayList<>();
 
     static void processApps(final AppCompatActivity activity){
@@ -46,7 +45,6 @@ public class AppData {
                 });
                 for(ApplicationInfo appInfo : pkgAppsList){
                     pkgLabelList.add(appInfo.loadLabel(activity.getPackageManager()).toString());
-                    pkgPackageList.add(appInfo.packageName);
                     pkgIconList.add(appInfo.loadIcon(activity.getPackageManager()));
                     try {
                         pkgDateList.add(activity.getPackageManager().getPackageInfo(appInfo.packageName, 0).firstInstallTime);
