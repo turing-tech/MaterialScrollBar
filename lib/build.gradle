@@ -1,53 +1,6 @@
 apply plugin: 'com.android.library'
-apply plugin: 'com.github.dcendents.android-maven'
 
 def libVersion = '11.0.0'
-
-install {
-    repositories.mavenInstaller {
-        // This generates POM.xml with proper parameters
-        pom.project {
-            name 'MaterialScrollBar'
-
-            packaging 'aar'
-            groupId 'com.turingtechnologies.materialscrollbar'
-            artifactId 'lib'
-            version = libVersion
-
-            licenses{
-                license{
-                    name 'The Apache Software License, Version 2.0'
-                    url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
-                }
-            }
-        }
-    }
-}
-
-Properties properties = new Properties()
-properties.load(project.rootProject.file('local.properties').newDataInputStream())
-
-bintray {
-    user = properties.getProperty('BINTRAY_USER')
-    key = properties.getProperty('BINTRAY_KEY')
-
-    filesSpec { //When uploading any arbitrary files ('filesSpec' is a standard Gradle CopySpec)
-        from android.sourceSets.main.java.source
-    }
-
-    pkg {
-        repo = 'maven'
-        name = 'material-scroll-bar'
-
-        licenses = ["Apache-2.0"]
-
-        version{
-            name = libVersion
-            released = new Date()
-            vcsTag = libVersion
-        }
-    }
-}
 
 android {
     compileSdkVersion 25
