@@ -586,7 +586,11 @@ abstract class MaterialScrollBar<T> extends RelativeLayout {
      */
     public void setScrollBarHidden(boolean hidden){
         hiddenByUser = hidden;
-        fadeOut();
+        if(hiddenByUser){
+            setVisibility(GONE);
+        } else {
+            setVisibility(VISIBLE);
+        }
     }
 
     //CHAPTER IV - MISC METHODS
@@ -627,6 +631,7 @@ abstract class MaterialScrollBar<T> extends RelativeLayout {
      * Animates the bar into view
      */
     void fadeIn(){
+        System.out.println(hiddenByUser);
         if(hidden && getHide() && !hiddenByUser){
             hidden = false;
             TranslateAnimation anim = new TranslateAnimation(Animation.RELATIVE_TO_SELF, getHideRatio(), Animation.RELATIVE_TO_SELF, 0.0f, Animation.RELATIVE_TO_PARENT, 0.0f, Animation.RELATIVE_TO_PARENT, 0.0f);
