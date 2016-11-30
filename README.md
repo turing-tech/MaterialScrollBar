@@ -95,14 +95,6 @@ TouchScrollBar materialScrollBar = new TouchScrollBar(this, recyclerView, {{ligh
 
 where "recyclerView" is the object of the `recyclerView` to which you want to link the `scrollBar`. The difference between the two options is that the touch option hides after a cooldown period and touches anywhere on the track, whether on the button or not, scroll the view. The drag option on the other hand hides using the animation seen in the video and will only respond to touches on the handle. "lightOnTouch" can either be true or false. A value of true will cause the handle to be grey until pressed, when it will become the normal accent colour (as set). A value of false will cause the handle to always have the accent colour, even when not being pressed.
 
-It is also strongly recommended that you provide the accent colour if your app supports devices below Lollipop. You can do this by invoking:
-
-```java
-materialScrollBar.setHandleColour([[Accent Colour]]);
-```
-
-For devices running Lollipop and above, the accent colour will be read automatically. If you fail to provide an accent colour, devices running version of Android below Lollipop will default to a usable but bland grey colour.
-
 ####My recyclerView elements aren't all the same size! What do I do?
 
 If you are in the situation of using headers of one size and elements of another, we've developed a solution speicifcally for you. Please follow the tutorial [here](https://github.com/krimin-killr21/MaterialScrollBar/wiki/Header-Tutorial).
