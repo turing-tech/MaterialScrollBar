@@ -168,11 +168,7 @@ abstract class MaterialScrollBar<T> extends RelativeLayout {
 
         this.lightOnTouch = lightOnTouch;
         int colourToSet;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            handleColour = fetchAccentColour(context);
-        } else {
-            handleColour = Color.parseColor("#9c9c9c");
-        }
+        handleColour = fetchAccentColour(context);
         if(lightOnTouch){
             colourToSet = Color.parseColor("#9c9c9c");
         } else {
@@ -596,16 +592,15 @@ abstract class MaterialScrollBar<T> extends RelativeLayout {
     //CHAPTER IV - MISC METHODS
 
     //Fetch accent colour on devices running Lollipop or newer.
-    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-    private int fetchAccentColour(Context context) {
+    static int fetchAccentColour(Context context) {
         TypedValue typedValue = new TypedValue();
 
-        TypedArray b = context.obtainStyledAttributes(typedValue.data, new int[] { android.R.attr.colorAccent });
-        int colour = b.getColor(0, 0);
+        TypedArray a = context.obtainStyledAttributes(typedValue.data, new int[] { R.attr.colorAccent });
+        int color = a.getColor(0, 0);
 
-        b.recycle();
+        a.recycle();
 
-        return colour;
+        return color;
     }
 
     /**
