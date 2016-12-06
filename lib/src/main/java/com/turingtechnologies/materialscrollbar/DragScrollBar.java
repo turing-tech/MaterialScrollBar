@@ -30,6 +30,11 @@ public class DragScrollBar extends MaterialScrollBar<DragScrollBar>{
     float handleOffset = 0;
     float indicatorOffset = 0;
 
+    /**
+     * @deprecated Insert via XML instead. Will be removed in future version to be published in the
+     * month of December, 2016.
+     */
+    @Deprecated
     public DragScrollBar(Context context, RecyclerView recyclerView, boolean lightOnTouch){
         super(context, recyclerView, lightOnTouch);
     }

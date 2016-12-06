@@ -37,7 +37,7 @@ public class IconActivity extends AppCompatActivity {
         RecyclerView recyclerView = ((RecyclerView)findViewById(R.id.recyclerView));
         recyclerView.setAdapter(new IconAdapter(this));
         recyclerView.setLayoutManager(new GridLayoutManager(this, 4));
-        new TouchScrollBar(this, recyclerView, true).setIndicator(new CustomIndicator(this), true);
+        ((TouchScrollBar) findViewById(R.id.touchScrollBar)).setIndicator(new CustomIndicator(this), true);
     }
 
     @Override

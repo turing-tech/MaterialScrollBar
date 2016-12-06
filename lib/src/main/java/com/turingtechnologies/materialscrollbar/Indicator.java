@@ -33,6 +33,8 @@ abstract class Indicator extends RelativeLayout{
     protected Context context;
     private boolean addSpace;
     private MaterialScrollBar materialScrollBar;
+    private boolean rtl;
+    private int size;
 
     public Indicator(Context context) {
         super(context);
@@ -42,41 +44,59 @@ abstract class Indicator extends RelativeLayout{
     }
 
     public void setSizeCustom(int size){
-        RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams)getLayoutParams();
         if(addSpace){
-            lp.setMargins(0, 0, size + Utils.getDP(10, this), 0);
+           this.size =  size + Utils.getDP(10, this);
         } else {
-            lp.setMargins(0, 0, size, 0);
+            this.size =  size;
         }
-        setLayoutParams(lp);
+        setLayoutParams(refreshMargins((LayoutParams) getLayoutParams()));
+    }
+
+    void setRTL(boolean rtl){
+        this.rtl = rtl;
     }
 
     void linkToScrollBar(MaterialScrollBar msb, boolean addSpace){
         this.addSpace = addSpace;
+        materialScrollBar = msb;
+
+        if(addSpace){
+            size = Utils.getDP(15, this)  + materialScrollBar.handle.getWidth();
+        } else {
+            size = Utils.getDP(2, this)  + materialScrollBar.handle.getWidth();
+        }
+
         if(Build.VERSION.SDK_INT >= 16){
-            setBackground(ContextCompat.getDrawable(context, R.drawable.indicator));
+            setBackground(ContextCompat.getDrawable(context, rtl ? R.drawable.indicator_ltr : R.drawable.indicator));
         } else {
             setBackgroundDrawable(ContextCompat.getDrawable(context, R.drawable.indicator));
         }
-        RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(Utils.getDP(getIndicatorWidth(), this), Utils.getDP(getIndicatorHeight(), this));
-        if(addSpace){
-            lp.setMargins(0, 0, Utils.getDP(15, this) + msb.handle.getWidth(), 0);
-        } else {
-            lp.setMargins(0, 0, Utils.getDP(2, this) + msb.handle.getWidth(), 0);
-        }
+        LayoutParams lp = new LayoutParams(Utils.getDP(getIndicatorWidth(), this), Utils.getDP(getIndicatorHeight(), this));
+        lp = refreshMargins(lp);
 
         textView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, getTextSize());
-        RelativeLayout.LayoutParams tvlp = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        LayoutParams tvlp = new LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         tvlp.addRule(RelativeLayout.CENTER_IN_PARENT, RelativeLayout.TRUE);
 
         addView(textView, tvlp);
 
         ((GradientDrawable)getBackground()).setColor(msb.handleColour);
 
-        lp.addRule(ALIGN_RIGHT, msb.getId());
+        if (rtl) {
+            lp.addRule(ALIGN_LEFT, msb.getId());
+        } else {
+            lp.addRule(ALIGN_RIGHT, msb.getId());
+        }
         ((ViewGroup)msb.getParent()).addView(this, lp);
+    }
 
-        materialScrollBar = msb;
+    LayoutParams refreshMargins(LayoutParams lp){
+        if(rtl) {
+            lp.setMargins(size, 0, 0, 0);
+        } else {
+            lp.setMargins(0, 0, size, 0);
+        }
+        return lp;
     }
 
     /**

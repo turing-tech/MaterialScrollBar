@@ -37,9 +37,7 @@ Note: All customisation methods (`setAutoHide`, `setBarColour`, etc) return the 
 
 ####How to use - ScrollBar
 
-The 'scrollBar' can be implemented programatically or through XML.
-
-#####XML
+The library comes in two flavours, drag and touch. Try both out to see which you prefer.
 
 Option 1
 
@@ -72,28 +70,11 @@ Additonal optional attributes:
 * msb_handleOffColour - Colour
 * msb_textColour - Colour
 * msb_barThickness - Integer
+* msb_rightToLeft - Integer
 
 Please note that for both of these configurations, both recyclerView and lightOnTouch* must have a valid value. The recyclerView attribute should point to the id of the `recyclerView` to which you want to link the scrollbar.
 
 \* lightOnTouch behaves as follows. A value of true will cause the handle to be grey until pressed, when it will become the normal accent colour (as set). A value of false will cause the handle to always have the accent colour, even when not being pressed.
-
-#####Programmatically
-
-Option 1
-
-```java
-DragScrollBar materialScrollBar = new DragScrollBar(this, recyclerView, {{lightOnTouch}});
-```
-
-or
-
-Option 2
-
-```java
-TouchScrollBar materialScrollBar = new TouchScrollBar(this, recyclerView, {{lightOnTouch}});
-```
-
-where "recyclerView" is the object of the `recyclerView` to which you want to link the `scrollBar`. The difference between the two options is that the touch option hides after a cooldown period and touches anywhere on the track, whether on the button or not, scroll the view. The drag option on the other hand hides using the animation seen in the video and will only respond to touches on the handle. "lightOnTouch" can either be true or false. A value of true will cause the handle to be grey until pressed, when it will become the normal accent colour (as set). A value of false will cause the handle to always have the accent colour, even when not being pressed.
 
 ####My recyclerView elements aren't all the same size! What do I do?
 
@@ -104,16 +85,14 @@ If you are in the situation of using headers of one size and elements of another
 To add an indicator, simply add the following line of code:
 
 ```java
-materialScrollBar.setIndicator({{Indicator}}, {{addSpace}});
+scrollBar.setIndicator({{Indicator}}, {{addSpace}});
 ```
-
-If you implemented the bar programmatically, simply get the object using `findViewById()` and then the scrollbar's id.
 
 The indicator should be either `AlphatbetIndicator`, `DateAndTimeIndicator`, or `CustomIndicator`. See below for specific instructions per indicator.
 
 `{{addSpace}}` is a boolean which indicates whether there should be space in between the indicator and the bar. True adds space, as in the latest version of the Google Launcher, while false adds no space, as in the Android 5.1 system scrollbars.
 
-To use an indicator, you **MUST** make your 'recyclerView''s adapter implement the relevant interface. If you do not, the library will throw a runtime error informing you of your mistake. See documentation for the relevant interface.
+To use an indicator, you **MUST** make your `recyclerView`'s adapter implement the relevant interface. If you do not, the library will throw a runtime error informing you of your mistake. See documentation for the relevant interface.
 
 ####Indicators
 #####AlphabetIndicator

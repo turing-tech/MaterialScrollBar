@@ -17,6 +17,8 @@
 package com.turingtechnologies.materialscrollbar;
 
 import android.content.Context;
+import android.os.Build;
+import android.util.LayoutDirection;
 import android.util.TypedValue;
 import android.view.View;
 
@@ -38,5 +40,15 @@ class Utils {
      */
     static int getDP(int dp, Context c){
         return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, c.getResources().getDisplayMetrics());
+    }
+
+    /**
+     *
+     * @param c Context
+     * @return True if the current layout is RTL.
+     */
+    static boolean isRightToLeft(Context c) {
+        return Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT &&
+                c.getResources().getConfiguration().getLayoutDirection() == LayoutDirection.RTL;
     }
 }

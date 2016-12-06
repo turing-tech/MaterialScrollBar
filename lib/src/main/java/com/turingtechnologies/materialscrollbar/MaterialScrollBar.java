@@ -82,10 +82,12 @@ abstract class MaterialScrollBar<T> extends RelativeLayout {
     private TypedArray a;
     private int seekId = 0;
     //For some unknown reason, some behaviours are reversed when added programmatically versus xml. Can be handled but as yet not understood.
+    @Deprecated
     boolean programmatic;
     ScrollingUtilities scrollUtils = new ScrollingUtilities(this);
     SwipeRefreshLayout swipeRefreshLayout;
     private OnLayoutChangeListener indicatorLayoutListener;
+    private Boolean rtl = false;
 
     //CHAPTER I - INITIAL SETUP
 
@@ -98,9 +100,14 @@ abstract class MaterialScrollBar<T> extends RelativeLayout {
     MaterialScrollBar(Context context, AttributeSet attributeSet, int defStyle){
         super(context, attributeSet, defStyle);
         programmatic = false;
+
+
+        rtl = Utils.isRightToLeft(context);
+
         addView(setUpBackground(context));
         setUpProps(context, attributeSet);
         addView(setUpHandle(context, a.getBoolean(R.styleable.MaterialScrollBar_msb_lightOnTouch, true)));
+        setRightToLeft(Utils.isRightToLeft(context));
         if(!isInEditMode()){
             seekId = a.getResourceId(R.styleable.MaterialScrollBar_msb_recyclerView, 0);
         }
@@ -109,6 +116,12 @@ abstract class MaterialScrollBar<T> extends RelativeLayout {
     }
 
     //Programmatic Constructor
+
+    /**
+     * @deprecated Insert via XML instead. Will be removed in future version to be published in the
+     * month of December, 2016.
+     */
+    @Deprecated
     MaterialScrollBar(Context context, final RecyclerView recyclerView, boolean lightOnTouch){
         super(context);
         programmatic = true;
@@ -118,8 +131,13 @@ abstract class MaterialScrollBar<T> extends RelativeLayout {
         setId(R.id.reservedNamedId); //Gives the view an ID so that it can be found in the parent.
         addView(setUpBackground(context)); //Adds the background
         addView(setUpHandle(context, lightOnTouch)); //Adds the handle
+        setRightToLeft(Utils.isRightToLeft(context));
         LayoutParams layoutParams = new LayoutParams(Utils.getDP(20, this), ViewGroup.LayoutParams.MATCH_PARENT);
-        layoutParams.addRule(ALIGN_RIGHT, recyclerView.getId());
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+            layoutParams.addRule(ALIGN_END, recyclerView.getId());
+        } else {
+            layoutParams.addRule(ALIGN_RIGHT, recyclerView.getId());
+        }
         layoutParams.addRule(ALIGN_TOP, recyclerView.getId());
         layoutParams.addRule(ALIGN_BOTTOM, recyclerView.getId());
         ((ViewGroup) recyclerView.getParent()).addView(this, layoutParams); //Fits bar to right edge of the relevant view.
@@ -134,11 +152,6 @@ abstract class MaterialScrollBar<T> extends RelativeLayout {
                 R.styleable.MaterialScrollBar,
                 0, 0);
         ArrayList<String> missing = new ArrayList<>();
-//        //Ensures that a recyclerView is associated with the bar.
-//        if(!a.hasValue(R.styleable.MaterialScrollBar_msb_recyclerView)){
-//            missing.add("recyclerView");
-//        }
-        //Ensures that a preference is expressed for lightOnTouch.
         if(!a.hasValue(R.styleable.MaterialScrollBar_msb_lightOnTouch)){
             missing.add("lightOnTouch");
         }
@@ -195,6 +208,12 @@ abstract class MaterialScrollBar<T> extends RelativeLayout {
         if(a.hasValue(R.styleable.MaterialScrollBar_msb_barThickness)){
             setBarThickness(a.getDimensionPixelSize(R.styleable.MaterialScrollBar_msb_barThickness, 0));
         }
+        if(a.hasValue(R.styleable.MaterialScrollBar_msb_barThickness)){
+            setBarThickness(a.getDimensionPixelSize(R.styleable.MaterialScrollBar_msb_barThickness, 0));
+        }
+        if(a.hasValue(R.styleable.MaterialScrollBar_msb_rightToLeft)){
+            setRightToLeft(a.getBoolean(R.styleable.MaterialScrollBar_msb_rightToLeft, false));
+        }
         implementFlavourPreferences(a);
     }
 
@@ -233,7 +252,7 @@ abstract class MaterialScrollBar<T> extends RelativeLayout {
         checkCustomScrolling();
 
         //Hides the view
-        TranslateAnimation anim = new TranslateAnimation(Animation.RELATIVE_TO_PARENT, 0.0f, Animation.RELATIVE_TO_SELF, getHideRatio(), Animation.RELATIVE_TO_PARENT, 0.0f, Animation.RELATIVE_TO_PARENT, 0.0f);
+        TranslateAnimation anim = new TranslateAnimation(Animation.RELATIVE_TO_PARENT, 0.0f, Animation.RELATIVE_TO_SELF, rtl ? -getHideRatio() : getHideRatio(), Animation.RELATIVE_TO_PARENT, 0.0f, Animation.RELATIVE_TO_PARENT, 0.0f);
         anim.setDuration(0);
         anim.setFillAfter(true);
         hidden = true;
@@ -267,7 +286,7 @@ abstract class MaterialScrollBar<T> extends RelativeLayout {
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
         super.onLayout(changed, l, t, r, b);
 
-        if(recyclerView == null){
+        if(recyclerView == null && !isInEditMode()){
             throw new RuntimeException("You need to set a recyclerView for the scroll bar, either in the XML or using setRecyclerView().");
         }
 
@@ -532,6 +551,7 @@ abstract class MaterialScrollBar<T> extends RelativeLayout {
         if(ViewCompat.isAttachedToWindow(this)){
             this.indicator = indicator;
             indicator.testAdapter(recyclerView.getAdapter());
+            indicator.setRTL(rtl);
             indicator.linkToScrollBar(MaterialScrollBar.this, addSpace);
             indicator.setTextColour(textColour);
         } else {
@@ -543,6 +563,7 @@ abstract class MaterialScrollBar<T> extends RelativeLayout {
                 {
                     MaterialScrollBar.this.indicator = indicator;
                     indicator.testAdapter(recyclerView.getAdapter());
+                    indicator.setRTL(rtl);
                     indicator.linkToScrollBar(MaterialScrollBar.this, addSpace);
                     indicator.setTextColour(textColour);
                     MaterialScrollBar.this.removeOnLayoutChangeListener(this);
@@ -589,6 +610,18 @@ abstract class MaterialScrollBar<T> extends RelativeLayout {
         }
     }
 
+    /**
+     * Overrides the right-to-left settings for the scroll bar.
+     */
+    public void setRightToLeft(boolean rtl){
+        this.rtl = rtl;
+        handle.setRightToLeft(rtl);
+        if(indicator != null){
+            indicator.setRTL(rtl);
+            indicator.setLayoutParams(indicator.refreshMargins((LayoutParams) indicator.getLayoutParams()));
+        }
+    }
+
     //CHAPTER IV - MISC METHODS
 
     //Fetch accent colour on devices running Lollipop or newer.
@@ -608,7 +641,7 @@ abstract class MaterialScrollBar<T> extends RelativeLayout {
      */
     void fadeOut(){
         if(!hidden){
-            TranslateAnimation anim = new TranslateAnimation(Animation.RELATIVE_TO_PARENT, 0.0f, Animation.RELATIVE_TO_SELF, getHideRatio(), Animation.RELATIVE_TO_PARENT, 0.0f, Animation.RELATIVE_TO_PARENT, 0.0f);
+            TranslateAnimation anim = new TranslateAnimation(Animation.RELATIVE_TO_PARENT, 0.0f, Animation.RELATIVE_TO_SELF, rtl ? -getHideRatio() : getHideRatio(), Animation.RELATIVE_TO_PARENT, 0.0f, Animation.RELATIVE_TO_PARENT, 0.0f);
             anim.setDuration(150);
             anim.setFillAfter(true);
             hidden = true;
@@ -628,7 +661,7 @@ abstract class MaterialScrollBar<T> extends RelativeLayout {
     void fadeIn(){
         if(hidden && getHide() && !hiddenByUser){
             hidden = false;
-            TranslateAnimation anim = new TranslateAnimation(Animation.RELATIVE_TO_SELF, getHideRatio(), Animation.RELATIVE_TO_SELF, 0.0f, Animation.RELATIVE_TO_PARENT, 0.0f, Animation.RELATIVE_TO_PARENT, 0.0f);
+            TranslateAnimation anim = new TranslateAnimation(Animation.RELATIVE_TO_SELF, rtl ? -getHideRatio() : getHideRatio(), Animation.RELATIVE_TO_SELF, 0.0f, Animation.RELATIVE_TO_PARENT, 0.0f, Animation.RELATIVE_TO_PARENT, 0.0f);
             anim.setDuration(150);
             anim.setFillAfter(true);
             startAnimation(anim);

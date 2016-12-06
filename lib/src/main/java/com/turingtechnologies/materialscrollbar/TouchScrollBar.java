@@ -42,6 +42,11 @@ public class TouchScrollBar extends MaterialScrollBar<TouchScrollBar>{
         }
     };
 
+    /**
+     * @deprecated Insert via XML instead. Will be removed in future version to be published in the
+     * month of December, 2016.
+     */
+    @Deprecated
     public TouchScrollBar(Context context, RecyclerView recyclerView, boolean lightOnTouch){
         super(context, recyclerView, lightOnTouch);
     }
