@@ -37,25 +37,10 @@ public class AlphabetIndicator extends Indicator{
     }
 
     @Override
-    int getIndicatorHeight() {
-        return 75;
-    }
-
-    @Override
-    int getIndicatorWidth() {
-        return 75;
-    }
-
-    @Override
     void testAdapter(RecyclerView.Adapter adapter) {
         if(!(adapter instanceof INameableAdapter)){
             throw new CustomExceptions.AdapterNotSetupForIndicatorException(adapter.getClass(), "INameableAdapter");
         }
-    }
-
-    @Override
-    int getTextSize() {
-        return 40;
     }
 
 }

@@ -27,10 +27,11 @@ import android.support.v7.widget.RecyclerView;
 @SuppressLint("ViewConstructor")
 public class CustomIndicator extends Indicator {
 
-    private int textSize = 25;
-
     public CustomIndicator(Context context){
+
         super(context);
+
+        setTextSize(25);
     }
 
     @Override
@@ -41,7 +42,7 @@ public class CustomIndicator extends Indicator {
             return "";
         }
         Paint paint = new Paint();
-        paint.setTextSize(textSize);
+        paint.setTextSize(getTextSize());
         int width = Utils.getDP((int) paint.measureText(text), context) + Utils.getDP(30, context);
         if(width < Utils.getDP(75, context)){
             width = Utils.getDP(75, context);
@@ -52,30 +53,10 @@ public class CustomIndicator extends Indicator {
     }
 
     @Override
-    int getIndicatorHeight() {
-        return 75;
-    }
-
-    @Override
-    int getIndicatorWidth() {
-        return 0;
-    }
-
-    @Override
     void testAdapter(RecyclerView.Adapter adapter) {
         if(!(adapter instanceof ICustomAdapter)){
             throw new CustomExceptions.AdapterNotSetupForIndicatorException(adapter.getClass(), "ICustomAdapter");
         }
-    }
-
-    @Override
-    int getTextSize() {
-        return textSize;
-    }
-
-    public CustomIndicator setTextSize(int textSize){
-        this.textSize = textSize;
-        return this;
     }
 
 }

@@ -27,7 +27,7 @@ import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-abstract class Indicator extends RelativeLayout{
+public abstract class Indicator extends RelativeLayout{
 
     protected TextView textView;
     protected Context context;
@@ -136,18 +136,46 @@ abstract class Indicator extends RelativeLayout{
      * Used by the materialScrollBar to change the text colour for the indicator.
      * @param colour The desired text colour.
      */
-    void setTextColour(int colour){
+    public void setTextColour(int colour){
         textView.setTextColor(colour);
     }
 
     abstract String getTextElement(Integer currentSection, RecyclerView.Adapter adapter);
 
-    abstract int getIndicatorHeight();
-
-    abstract int getIndicatorWidth();
-
     abstract void testAdapter(RecyclerView.Adapter adapter);
 
-    abstract int getTextSize();
+    public int getIndicatorHeight()
+    {
+        return indicatorHeight;
+    }
+
+    public void setIndicatorHeight(int indicatorHeight)
+    {
+        this.indicatorHeight = indicatorHeight;
+    }
+
+    public int getIndicatorWidth()
+    {
+        return indicatorWidth;
+    }
+
+    public void setIndicatorWidth(int indicatorWidth)
+    {
+        this.indicatorWidth = indicatorWidth;
+    }
+
+    public int getTextSize()
+    {
+        return textSize;
+    }
+
+    public void setTextSize(int textSize)
+    {
+        this.textSize = textSize;
+    }
+
+    private int indicatorHeight = 75;
+    private int indicatorWidth = 75;
+    private int textSize = 40;
 
 }

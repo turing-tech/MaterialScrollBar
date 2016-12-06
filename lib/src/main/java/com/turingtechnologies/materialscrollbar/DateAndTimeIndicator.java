@@ -46,6 +46,7 @@ public class DateAndTimeIndicator extends Indicator {
         this.includeMonth = includeMonth;
         this.includeDay = includeDay;
         this.includeTime = includeTime;
+        setTextSize(28);
     }
 
     @Override
@@ -78,12 +79,7 @@ public class DateAndTimeIndicator extends Indicator {
     }
 
     @Override
-    int getIndicatorHeight() {
-        return 75;
-    }
-
-    @Override
-    int getIndicatorWidth() {
+    public int getIndicatorWidth() {
         int width = 62;
         if(includeYear){
             if(includeDay){
@@ -112,11 +108,6 @@ public class DateAndTimeIndicator extends Indicator {
         if(!(adapter instanceof IDateableAdapter)){
             throw new CustomExceptions.AdapterNotSetupForIndicatorException(adapter.getClass(), "IDateableAdapter");
         }
-    }
-
-    @Override
-    int getTextSize() {
-        return 28;
     }
 
 }
