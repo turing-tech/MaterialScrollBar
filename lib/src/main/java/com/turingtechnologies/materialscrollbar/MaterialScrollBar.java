@@ -101,9 +101,6 @@ abstract class MaterialScrollBar<T> extends RelativeLayout {
         super(context, attributeSet, defStyle);
         programmatic = false;
 
-
-        rtl = Utils.isRightToLeft(context);
-
         addView(setUpBackground(context));
         setUpProps(context, attributeSet);
         addView(setUpHandle(context, a.getBoolean(R.styleable.MaterialScrollBar_msb_lightOnTouch, true)));
