@@ -205,9 +205,6 @@ abstract class MaterialScrollBar<T> extends RelativeLayout {
         if(a.hasValue(R.styleable.MaterialScrollBar_msb_barThickness)){
             setBarThickness(a.getDimensionPixelSize(R.styleable.MaterialScrollBar_msb_barThickness, 0));
         }
-        if(a.hasValue(R.styleable.MaterialScrollBar_msb_barThickness)){
-            setBarThickness(a.getDimensionPixelSize(R.styleable.MaterialScrollBar_msb_barThickness, 0));
-        }
         if(a.hasValue(R.styleable.MaterialScrollBar_msb_rightToLeft)){
             setRightToLeft(a.getBoolean(R.styleable.MaterialScrollBar_msb_rightToLeft, false));
         }
