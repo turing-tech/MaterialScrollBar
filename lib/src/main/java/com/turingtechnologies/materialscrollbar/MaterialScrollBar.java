@@ -727,7 +727,7 @@ abstract class MaterialScrollBar<T> extends RelativeLayout {
             }
 
             //Disables any swipeRefreshLayout parent if the recyclerview is not at the top and enables it if it is.
-            if(swipeRefreshLayout != null){
+            if(swipeRefreshLayout != null && !swipeRefreshLayout.isRefreshing()){
                 if(((LinearLayoutManager)recyclerView.getLayoutManager()).findFirstCompletelyVisibleItemPosition() == 0){
                     swipeRefreshLayout.setEnabled(true);
                 } else {
