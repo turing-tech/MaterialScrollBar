@@ -19,7 +19,6 @@ package com.turingtechnologies.materialscrollbar;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.support.v4.view.ViewCompat;
-import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
@@ -29,15 +28,6 @@ public class DragScrollBar extends MaterialScrollBar<DragScrollBar>{
     Boolean draggableFromAnywhere = false;
     float handleOffset = 0;
     float indicatorOffset = 0;
-
-    /**
-     * @deprecated Insert via XML instead. Will be removed in future version to be published in the
-     * month of December, 2016.
-     */
-    @Deprecated
-    public DragScrollBar(Context context, RecyclerView recyclerView, boolean lightOnTouch){
-        super(context, recyclerView, lightOnTouch);
-    }
 
     public DragScrollBar(Context context, AttributeSet attributeSet, int defStyle){
         super(context, attributeSet, defStyle);
@@ -54,14 +44,14 @@ public class DragScrollBar extends MaterialScrollBar<DragScrollBar>{
         return this;
     }
 
-    //Tests to ensure that the touch is on the handle depending on the user preference
+    //Tests to ensure that the touch is on the handleThumb depending on the user preference
     private boolean validTouch(MotionEvent event){
-        return draggableFromAnywhere || (event.getY() >= ViewCompat.getY(handle) - Utils.getDP(20, recyclerView.getContext()) && event.getY() <= ViewCompat.getY(handle) + handle.getHeight());
+        return draggableFromAnywhere || (event.getY() >= ViewCompat.getY(handleThumb) - Utils.getDP(20, recyclerView.getContext()) && event.getY() <= ViewCompat.getY(handleThumb) + handleThumb.getHeight());
     }
 
     @Override
     void setTouchIntercept() {
-        final Handle handle = super.handle;
+        final Handle handle = super.handleThumb;
         OnTouchListener otl = new OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
@@ -101,11 +91,7 @@ public class DragScrollBar extends MaterialScrollBar<DragScrollBar>{
 
     @Override
     float getHideRatio() {
-        if(super.programmatic){
-            return .35F;
-        } else {
-            return .65F;
-        }
+        return .65F;
     }
 
     @Override

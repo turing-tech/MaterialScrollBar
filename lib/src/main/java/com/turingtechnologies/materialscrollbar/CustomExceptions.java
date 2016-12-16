@@ -16,8 +16,6 @@
 
 package com.turingtechnologies.materialscrollbar;
 
-import java.util.ArrayList;
-
 class CustomExceptions {
 
     static class AdapterNotSetupForIndicatorException extends RuntimeException {
@@ -30,9 +28,18 @@ class CustomExceptions {
 
     static class MissingAttributesException extends RuntimeException {
 
-         MissingAttributesException(ArrayList<String> missing){
-             super("You are missing the following required attributes from a scroll bar in your XML: " + missing);
+         MissingAttributesException(String[] missing){
+             super(makeMessage(missing));
+
          }
+
+        static String makeMessage(String[] missing){
+            String error = "You are missing the following required attributes from a scroll bar in your XML: ";
+            for(String attribute : missing){
+                error += attribute + ", ";
+            }
+            return error + ".";
+        }
 
     }
 

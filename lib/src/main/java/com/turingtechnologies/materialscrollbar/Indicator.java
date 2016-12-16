@@ -61,9 +61,9 @@ abstract class Indicator extends RelativeLayout{
         materialScrollBar = msb;
 
         if(addSpace){
-            size = Utils.getDP(15, this)  + materialScrollBar.handle.getWidth();
+            size = Utils.getDP(15, this)  + materialScrollBar.handleThumb.getWidth();
         } else {
-            size = Utils.getDP(2, this)  + materialScrollBar.handle.getWidth();
+            size = Utils.getDP(2, this)  + materialScrollBar.handleThumb.getWidth();
         }
 
         if(Build.VERSION.SDK_INT >= 16){
@@ -100,7 +100,7 @@ abstract class Indicator extends RelativeLayout{
     }
 
     /**
-     * Used by the materialScrollBar to move the indicator with the handle
+     * Used by the materialScrollBar to move the indicator with the handleThumb
      * @param y Position to which the indicator should move.
      */
     void setScroll(float y){

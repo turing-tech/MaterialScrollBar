@@ -31,17 +31,15 @@ public class Handle extends View {
     Integer mode;
     boolean expanded = false;
     Context context;
-    Boolean programmatic;
     Boolean rtl = false;
 
-    public Handle(Context c, int m, boolean pro){
+    public Handle(Context c, int m){
         super(c);
 
         context = c;
         mode = m;
         p.setFlags(Paint.ANTI_ALIAS_FLAG);
-        programmatic = pro;
-    }
+}
 
     void setRightToLeft(boolean rtl){
         this.rtl = rtl;
@@ -82,18 +80,10 @@ public class Handle extends View {
 
     private RectF makeRect(){
         if(rtl){
-            if(programmatic){
-                return new RectF(new Rect(getRight() - Utils.getDP(11, context),getTop(),getRight()-Utils.getDP(4, context),getBottom()));
-            } else {
-                return new RectF(new Rect(getRight() - Utils.getDP(6, context),getTop(),getRight()+Utils.getDP(4, context),getBottom()));
-            }
+            return new RectF(new Rect(getRight() - Utils.getDP(6, context),getTop(),getRight()+Utils.getDP(4, context),getBottom()));
 
         } else {
-            if(programmatic){
-                return new RectF(new Rect(getLeft() + Utils.getDP(11, context),getTop(),getLeft()+Utils.getDP(4, context),getBottom()));
-            } else {
-                return new RectF(new Rect(getLeft() - Utils.getDP(4, context),getTop(),getLeft() + Utils.getDP(6, context),getBottom()));
-            }
+            return new RectF(new Rect(getLeft() - Utils.getDP(4, context),getTop(),getLeft() + Utils.getDP(6, context),getBottom()));
         }
     }
 

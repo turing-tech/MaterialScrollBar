@@ -20,7 +20,6 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.os.Handler;
 import android.os.Looper;
-import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
@@ -41,15 +40,6 @@ public class TouchScrollBar extends MaterialScrollBar<TouchScrollBar>{
             fadeOut();
         }
     };
-
-    /**
-     * @deprecated Insert via XML instead. Will be removed in future version to be published in the
-     * month of December, 2016.
-     */
-    @Deprecated
-    public TouchScrollBar(Context context, RecyclerView recyclerView, boolean lightOnTouch){
-        super(context, recyclerView, lightOnTouch);
-    }
 
     public TouchScrollBar(Context context, AttributeSet attributeSet){
         super(context, attributeSet);

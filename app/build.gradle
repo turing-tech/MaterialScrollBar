@@ -2,18 +2,18 @@ apply plugin: 'com.android.application'
 
 android {
     compileSdkVersion 25
-    buildToolsVersion '25.0.1'
+    buildToolsVersion '25.0.2'
 
     defaultConfig {
         applicationId "com.turingtechnologies.materialscrollbardemo"
         minSdkVersion 11
         targetSdkVersion 25
-        versionCode 5
-        versionName "5.0"
+        versionCode 6
+        versionName "6.0"
     }
     buildTypes {
         release {
-            minifyEnabled false
+            minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
