@@ -70,7 +70,7 @@ Additonal optional attributes:
 * msb_handleOffColour - Colour
 * msb_textColour - Colour
 * msb_barThickness - Integer
-* msb_rightToLeft - Integer
+* msb_rightToLeft - Boolean
 
 Please note that for both of these configurations, both recyclerView and lightOnTouch* must have a valid value. The recyclerView attribute should point to the id of the `recyclerView` to which you want to link the scrollbar.
 
