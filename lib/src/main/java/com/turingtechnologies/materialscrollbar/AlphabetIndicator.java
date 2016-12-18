@@ -31,30 +31,30 @@ public class AlphabetIndicator extends Indicator{
     }
 
     @Override
-    String getTextElement(Integer currentSection, RecyclerView.Adapter adapter) {
+    protected String getTextElement(Integer currentSection, RecyclerView.Adapter adapter) {
         Character provided = ((INameableAdapter) adapter).getCharacterForElement(currentSection);
         return String.valueOf(Character.toUpperCase(provided));
     }
 
     @Override
-    int getIndicatorHeight() {
+    protected int getIndicatorHeight() {
         return 75;
     }
 
     @Override
-    int getIndicatorWidth() {
+    protected int getIndicatorWidth() {
         return 75;
     }
 
     @Override
-    void testAdapter(RecyclerView.Adapter adapter) {
+    protected void testAdapter(RecyclerView.Adapter adapter) {
         if(!(adapter instanceof INameableAdapter)){
             throw new CustomExceptions.AdapterNotSetupForIndicatorException(adapter.getClass(), "INameableAdapter");
         }
     }
 
     @Override
-    int getTextSize() {
+    protected int getTextSize() {
         return 40;
     }
 

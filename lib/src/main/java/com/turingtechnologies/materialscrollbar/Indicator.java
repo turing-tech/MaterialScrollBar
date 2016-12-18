@@ -27,7 +27,11 @@ import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-abstract class Indicator extends RelativeLayout{
+/**
+ * Devs should not normally need to extend this class. Just use {@link CustomIndicator} instead.
+ * However, this is public to leave the option open.
+ */
+public abstract class Indicator extends RelativeLayout{
 
     protected TextView textView;
     protected Context context;
@@ -43,7 +47,7 @@ abstract class Indicator extends RelativeLayout{
         setVisibility(INVISIBLE);
     }
 
-    public void setSizeCustom(int size){
+    void setSizeCustom(int size){
         if(addSpace){
            this.size =  size + Utils.getDP(10, this);
         } else {
@@ -140,14 +144,36 @@ abstract class Indicator extends RelativeLayout{
         textView.setTextColor(colour);
     }
 
-    abstract String getTextElement(Integer currentSection, RecyclerView.Adapter adapter);
+    /**
+     * @param currentSection The section that the indicator is indicating for.
+     * @param adapter The adapter of the attached {@link RecyclerView}.
+     * @return The text that should go in the indicator.
+     */
+    protected abstract String getTextElement(Integer currentSection, RecyclerView.Adapter adapter);
 
-    abstract int getIndicatorHeight();
+    /**
+     * @return The height of the indicator in px. If it is variable return any value and resize
+     * the view yourself.
+     */
+    protected abstract int getIndicatorHeight();
 
-    abstract int getIndicatorWidth();
+    /**
+     * @return The width of the indicator in px. If it is variable return any value and resize
+     * the view yourself.
+     */
+    protected abstract int getIndicatorWidth();
 
-    abstract void testAdapter(RecyclerView.Adapter adapter);
+    /**
+     * This method should test the adapter to make sure that it implements the needed interface(s).
+     * See {@link AlphabetIndicator#testAdapter(RecyclerView.Adapter)} for form.
+     *
+     * @param adapter The adapter of the attached {@link RecyclerView}.
+     */
+    protected abstract void testAdapter(RecyclerView.Adapter adapter);
 
-    abstract int getTextSize();
+    /**
+     * @return The size of text in the indicator.
+     */
+    protected abstract int getTextSize();
 
 }

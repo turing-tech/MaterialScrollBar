@@ -34,7 +34,7 @@ public class CustomIndicator extends Indicator {
     }
 
     @Override
-    String getTextElement(Integer currentSection, RecyclerView.Adapter adapter) {
+    protected String getTextElement(Integer currentSection, RecyclerView.Adapter adapter) {
         String text = ((ICustomAdapter)adapter).getCustomStringForElement(currentSection);
         LayoutParams layoutParams = (LayoutParams) getLayoutParams();
         if(layoutParams == null){
@@ -52,24 +52,24 @@ public class CustomIndicator extends Indicator {
     }
 
     @Override
-    int getIndicatorHeight() {
+    protected int getIndicatorHeight() {
         return 75;
     }
 
     @Override
-    int getIndicatorWidth() {
+    protected int getIndicatorWidth() {
         return 0;
     }
 
     @Override
-    void testAdapter(RecyclerView.Adapter adapter) {
+    protected void testAdapter(RecyclerView.Adapter adapter) {
         if(!(adapter instanceof ICustomAdapter)){
             throw new CustomExceptions.AdapterNotSetupForIndicatorException(adapter.getClass(), "ICustomAdapter");
         }
     }
 
     @Override
-    int getTextSize() {
+    protected int getTextSize() {
         return textSize;
     }
 
