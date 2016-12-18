@@ -49,7 +49,7 @@ public class DateAndTimeIndicator extends Indicator {
     }
 
     @Override
-    String getTextElement(Integer currentSection, RecyclerView.Adapter adapter) {
+    protected String getTextElement(Integer currentSection, RecyclerView.Adapter adapter) {
         Date date = ((IDateableAdapter) adapter).getDateForElement(currentSection);
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(date);
@@ -78,12 +78,12 @@ public class DateAndTimeIndicator extends Indicator {
     }
 
     @Override
-    int getIndicatorHeight() {
+    protected int getIndicatorHeight() {
         return 75;
     }
 
     @Override
-    int getIndicatorWidth() {
+    protected int getIndicatorWidth() {
         int width = 62;
         if(includeYear){
             if(includeDay){
@@ -108,14 +108,14 @@ public class DateAndTimeIndicator extends Indicator {
     }
 
     @Override
-    void testAdapter(RecyclerView.Adapter adapter) {
+    protected void testAdapter(RecyclerView.Adapter adapter) {
         if(!(adapter instanceof IDateableAdapter)){
             throw new CustomExceptions.AdapterNotSetupForIndicatorException(adapter.getClass(), "IDateableAdapter");
         }
     }
 
     @Override
-    int getTextSize() {
+    protected int getTextSize() {
         return 28;
     }
 
