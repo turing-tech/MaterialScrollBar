@@ -4,8 +4,6 @@
 
 An Android library that brings the Material Design 5.1 scrollbar to pre-5.1 devices. Designed for Android's `recyclerView`.
 
-Go see the wiki!
-
 ![](sample.png)
 
 [Video](https://youtu.be/F5glJeAFnA4)
@@ -16,7 +14,16 @@ Go see the wiki!
 
 [Donate](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=UH23JHQ8K4U2C)
 
-###Gradle
+##Table of Contents
+1. [Gradle](https://github.com/turing-tech/MaterialScrollBar#gradle)
+2. [Documentation](https://github.com/turing-tech/MaterialScrollBar#documentation)
+    1. [How to use](https://github.com/turing-tech/MaterialScrollBar#how-to-use)
+    2. [My recyclerView elements aren't all the same size! What do I do?](https://github.com/turing-tech/MaterialScrollBar#my-recyclerview-elements-arent-all-the-same-size-what-do-i-do)
+    3. [Indicators](https://github.com/turing-tech/MaterialScrollBar#indicators)
+    4. [Specific Indicators](https://github.com/turing-tech/MaterialScrollBar#specific-indicators)
+3. [License](https://github.com/turing-tech/MaterialScrollBar#license)
+
+##Gradle
 
 ```gradle
 allprojects {
@@ -31,15 +38,15 @@ dependencies {
     compile 'com.github.turing-tech:MaterialScrollBar:12.+'
 }
 ```
-###Documentation
+##Documentation
 
 Note: All customisation methods (`setAutoHide`, `setBarColour`, etc) return the `materialScrollBar`, so they can be chained together if wanted. Alternatively, you can just operate on a variable.
 
-####How to use - ScrollBar
+###How to use
 
 The library comes in two flavours, drag and touch. Try both out to see which you prefer.
 
-Option 1
+Option 1 - Drag
 
 ```xml
 <com.turingtechnologies.materialscrollbar.DragScrollBar
@@ -52,7 +59,7 @@ Option 1
 
 or
 
-Option 2
+Option 2 - Touch
 
 ```xml
 <com.turingtechnologies.materialscrollbar.TouchScrollBar
@@ -74,13 +81,15 @@ Additonal optional attributes:
 
 Please note that for both of these configurations, both recyclerView and lightOnTouch* must have a valid value. The recyclerView attribute should point to the id of the `recyclerView` to which you want to link the scrollbar.
 
-\* lightOnTouch behaves as follows. A value of true will cause the handle to be grey until pressed, when it will become the normal accent colour (as set). A value of false will cause the handle to always have the accent colour, even when not being pressed.
+\* lightOnTouch behaves like this: A value of true will cause the handle to be grey until pressed, when it will become the normal accent colour (as set). A value of false will cause the handle to always have the accent colour, even when not being pressed.
 
-####My recyclerView elements aren't all the same size! What do I do?
+###My recyclerView elements aren't all the same size! What do I do?
 
 If you are in the situation of using headers of one size and elements of another, we've developed a solution speicifcally for you. Please follow the tutorial [here](https://github.com/krimin-killr21/MaterialScrollBar/wiki/Header-Tutorial).
 
-####How to use - Indicator
+If you are in some other situation where you're elements are differently sized, implement [ICustomScroller](https://github.com/turing-tech/MaterialScrollBar/blob/master/lib/src/main/java/com/turingtechnologies/materialscrollbar/ICustomScroller.java) in your adapter and complete the included methods.
+
+###Indicators
 
 To add an indicator, simply add the following line of code:
 
@@ -94,8 +103,8 @@ The indicator should be either `AlphatbetIndicator`, `DateAndTimeIndicator`, or 
 
 To use an indicator, you **MUST** make your `recyclerView`'s adapter implement the relevant interface. If you do not, the library will throw a runtime error informing you of your mistake. See documentation for the relevant interface.
 
-####Indicators
-#####AlphabetIndicator
+###Specific Indicators
+**AlphabetIndicator**
 
 **Required Interface:** `INameableAdapter`
 
@@ -104,7 +113,7 @@ To implement an `AlphabetIndicator`, which displays one character usually corres
 ...setIndicator(new AlphabetIndicator(this));
 ```
 
-#####DateAndTimeIndicator
+**DateAndTimeIndicator**
 
 **Required Interface:** `IDateableAdapter`
 
@@ -115,7 +124,7 @@ To implement a `DateAndTimeIndicator`, which displays any combination of time, d
 
 All of the arguments are booleans (except for this first one obviously). The indicator will dynamically size, add punctuation, and localise for you. All you need to do is provide a `Date` object for each element in your adapter. You should almost always use miliseconds since the epoch unless you have a good reason not to. Otherwise, the library might crash.
 
-#####CustomIndicator
+**CustomIndicator**
 
 **Required Interface:** `ICustomAdapter`
 
@@ -124,11 +133,7 @@ To implement a `CustomIndicator`, which displays any text you want, add the foll
 ...setIndicator(new CustomIndicator(this));
 ```
 
-####Customisation Options
-
-For info on other methods, see the detailed documentation from the wiki: https://github.com/krimin-killr21/MaterialScrollBar/wiki/Documentation
-
-###License
+##License
 
 Material Scroll Bar:
 
