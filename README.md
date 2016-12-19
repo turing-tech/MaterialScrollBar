@@ -114,7 +114,7 @@ To use an indicator, you **MUST** make your `recyclerView`'s adapter implement t
 
 **Required Interface:** `INameableAdapter`
 
-To implement an `AlphabetIndicator`, which displays one character usually corresponding to the first letter of each item, add the following to the end of your 'materialScrollBar' instantiation, or add it as a seperate line.
+To implement an `AlphabetIndicator`, which displays one character usually corresponding to the first letter of each item, add the following to the end of your scroll bar instantiation, or add it as a seperate line.
 ```java
 ...setIndicator(new AlphabetIndicator(this));
 ```
@@ -123,7 +123,7 @@ To implement an `AlphabetIndicator`, which displays one character usually corres
 
 **Required Interface:** `IDateableAdapter`
 
-To implement a `DateAndTimeIndicator`, which displays any combination of time, day of the month, month, and year, add the following to the end of your `materialScrollBar` instantiation, or add it as a seperate line.
+To implement a `DateAndTimeIndicator`, which displays any combination of time, day of the month, month, and year, add the following to the end of your scroll bar instantiation, or add it as a seperate line.
 ```java
 ...setIndicator(new DateAndTimeIndicator(this, {{includeYear}}, {{includeMonth}}, {{includeDay}}, {{includeTime}}));
 ```
@@ -134,7 +134,7 @@ All of the arguments are booleans (except for this first one obviously). The ind
 
 **Required Interface:** `ICustomAdapter`
 
-To implement a `CustomIndicator`, which displays any text you want, add the following to the end of your `materialScrollBar` instantiation, or add it as a seperate line.
+To implement a `CustomIndicator`, which displays any text you want, add the following to the end of your scroll bar instantiation, or add it as a seperate line.
 ```java
 ...setIndicator(new CustomIndicator(this));
 ```
