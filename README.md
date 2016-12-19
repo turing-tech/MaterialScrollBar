@@ -83,11 +83,15 @@ Please note that for both of these configurations, both recyclerView and lightOn
 
 \* lightOnTouch behaves like this: A value of true will cause the handle to be grey until pressed, when it will become the normal accent colour (as set). A value of false will cause the handle to always have the accent colour, even when not being pressed.
 
+------
+
 ###My recyclerView elements aren't all the same size! What do I do?
 
 If you are in the situation of using headers of one size and elements of another, we've developed a solution speicifcally for you. Please follow the tutorial [here](https://github.com/krimin-killr21/MaterialScrollBar/wiki/Header-Tutorial).
 
 If you are in some other situation where you're elements are differently sized, implement [ICustomScroller](https://github.com/turing-tech/MaterialScrollBar/blob/master/lib/src/main/java/com/turingtechnologies/materialscrollbar/ICustomScroller.java) in your adapter and complete the included methods.
+
+------
 
 ###Indicators
 
@@ -102,6 +106,8 @@ The indicator should be either `AlphatbetIndicator`, `DateAndTimeIndicator`, or 
 `{{addSpace}}` is a boolean which indicates whether there should be space in between the indicator and the bar. True adds space, as in the latest version of the Google Launcher, while false adds no space, as in the Android 5.1 system scrollbars.
 
 To use an indicator, you **MUST** make your `recyclerView`'s adapter implement the relevant interface. If you do not, the library will throw a runtime error informing you of your mistake. See documentation for the relevant interface.
+
+------
 
 ###Specific Indicators
 **AlphabetIndicator**
