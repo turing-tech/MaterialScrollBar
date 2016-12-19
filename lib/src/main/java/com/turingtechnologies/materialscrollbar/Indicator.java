@@ -18,7 +18,6 @@ package com.turingtechnologies.materialscrollbar;
 
 import android.content.Context;
 import android.graphics.drawable.GradientDrawable;
-import android.os.Build;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.RecyclerView;
@@ -31,7 +30,8 @@ import android.widget.TextView;
  * Devs should not normally need to extend this class. Just use {@link CustomIndicator} instead.
  * However, this is public to leave the option open.
  */
-public abstract class Indicator extends RelativeLayout{
+@SuppressWarnings("unchecked")
+public abstract class Indicator<T> extends RelativeLayout{
 
     protected TextView textView;
     protected Context context;
@@ -70,11 +70,8 @@ public abstract class Indicator extends RelativeLayout{
             size = Utils.getDP(2, this)  + materialScrollBar.handleThumb.getWidth();
         }
 
-        if(Build.VERSION.SDK_INT >= 16){
-            setBackground(ContextCompat.getDrawable(context, rtl ? R.drawable.indicator_ltr : R.drawable.indicator));
-        } else {
-            setBackgroundDrawable(ContextCompat.getDrawable(context, R.drawable.indicator));
-        }
+        ViewCompat.setBackground(this, ContextCompat.getDrawable(context, rtl ? R.drawable.indicator_ltr : R.drawable.indicator));
+
         LayoutParams lp = new LayoutParams(Utils.getDP(getIndicatorWidth(), this), Utils.getDP(getIndicatorHeight(), this));
         lp = refreshMargins(lp);
 
@@ -125,7 +122,7 @@ public abstract class Indicator extends RelativeLayout{
     void setText(int section){
         String newText;
         try{
-            newText = getTextElement(section, materialScrollBar.recyclerView.getAdapter());
+            newText = getTextElement(section, (T) materialScrollBar.recyclerView.getAdapter());
         } catch (ArrayIndexOutOfBoundsException e){
             newText = "Error";
         }
@@ -133,6 +130,19 @@ public abstract class Indicator extends RelativeLayout{
             textView.setText(newText);
 
             LayoutWrapContentUpdater.wrapContentAgain(this);
+        }
+    }
+
+    /**
+     * This method should test the adapter to make sure that it implements the needed interface(s).
+     *
+     * @param adapter The adapter of the attached {@link RecyclerView}.
+     */
+    void testAdapter(RecyclerView.Adapter adapter){
+        try{
+            getTextElement(0, (T)adapter);
+        } catch (ClassCastException e){
+            throw new CustomExceptions.AdapterNotSetupForIndicatorException(adapter.getClass(), Utils.getGenericName(this));
         }
     }
 
@@ -149,7 +159,7 @@ public abstract class Indicator extends RelativeLayout{
      * @param adapter The adapter of the attached {@link RecyclerView}.
      * @return The text that should go in the indicator.
      */
-    protected abstract String getTextElement(Integer currentSection, RecyclerView.Adapter adapter);
+    protected abstract String getTextElement(Integer currentSection, T adapter);
 
     /**
      * @return The height of the indicator in px. If it is variable return any value and resize
@@ -162,14 +172,6 @@ public abstract class Indicator extends RelativeLayout{
      * the view yourself.
      */
     protected abstract int getIndicatorWidth();
-
-    /**
-     * This method should test the adapter to make sure that it implements the needed interface(s).
-     * See {@link AlphabetIndicator#testAdapter(RecyclerView.Adapter)} for form.
-     *
-     * @param adapter The adapter of the attached {@link RecyclerView}.
-     */
-    protected abstract void testAdapter(RecyclerView.Adapter adapter);
 
     /**
      * @return The size of text in the indicator.

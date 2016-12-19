@@ -16,6 +16,7 @@
 
 package com.turingtechnologies.materialscrollbar;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
@@ -24,6 +25,7 @@ import android.graphics.RectF;
 import android.graphics.Region;
 import android.view.View;
 
+@SuppressLint("ViewConstructor")
 public class Handle extends View {
 
     RectF rectF;
@@ -87,15 +89,16 @@ public class Handle extends View {
         }
     }
 
+    Rect boundRect = new Rect();
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
 
         if(mode == 0 && !expanded){
-            Rect newRect = canvas.getClipBounds();
-            newRect.inset(-Utils.getDP(30, context), 0); //make the rect larger
+            canvas.getClipBounds(boundRect);
+            boundRect.inset(-Utils.getDP(30, context), 0); //make the rect larger
 
-            canvas.clipRect(newRect, Region.Op.REPLACE);
+            canvas.clipRect(boundRect, Region.Op.REPLACE);
 
             canvas.drawArc(rectF, rtl ? 270F : 90F, 180F, false, p); //335
         }

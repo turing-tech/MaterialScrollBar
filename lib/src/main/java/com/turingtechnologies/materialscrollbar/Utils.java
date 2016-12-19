@@ -22,6 +22,8 @@ import android.util.LayoutDirection;
 import android.util.TypedValue;
 import android.view.View;
 
+import java.lang.reflect.ParameterizedType;
+
 class Utils {
 
     /**
@@ -50,5 +52,9 @@ class Utils {
     static boolean isRightToLeft(Context c) {
         return Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT &&
                 c.getResources().getConfiguration().getLayoutDirection() == LayoutDirection.RTL;
+    }
+
+    static <T> String getGenericName(T object){
+        return ((Class<T>) ((ParameterizedType) object.getClass().getGenericSuperclass()).getActualTypeArguments()[0]).getSimpleName();
     }
 }

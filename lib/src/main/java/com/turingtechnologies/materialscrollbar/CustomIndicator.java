@@ -19,13 +19,12 @@ package com.turingtechnologies.materialscrollbar;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Paint;
-import android.support.v7.widget.RecyclerView;
 
 /**
  * Indicator which should be used in all other cases.
  */
 @SuppressLint("ViewConstructor")
-public class CustomIndicator extends Indicator {
+public class CustomIndicator extends Indicator<ICustomAdapter> {
 
     private int textSize = 25;
 
@@ -34,8 +33,8 @@ public class CustomIndicator extends Indicator {
     }
 
     @Override
-    protected String getTextElement(Integer currentSection, RecyclerView.Adapter adapter) {
-        String text = ((ICustomAdapter)adapter).getCustomStringForElement(currentSection);
+    protected String getTextElement(Integer currentSection, ICustomAdapter adapter) {
+        String text = adapter.getCustomStringForElement(currentSection);
         LayoutParams layoutParams = (LayoutParams) getLayoutParams();
         if(layoutParams == null){
             return "";
@@ -59,13 +58,6 @@ public class CustomIndicator extends Indicator {
     @Override
     protected int getIndicatorWidth() {
         return 0;
-    }
-
-    @Override
-    protected void testAdapter(RecyclerView.Adapter adapter) {
-        if(!(adapter instanceof ICustomAdapter)){
-            throw new CustomExceptions.AdapterNotSetupForIndicatorException(adapter.getClass(), "ICustomAdapter");
-        }
     }
 
     @Override

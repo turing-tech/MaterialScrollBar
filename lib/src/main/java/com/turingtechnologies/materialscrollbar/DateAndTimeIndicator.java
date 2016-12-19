@@ -18,7 +18,6 @@ package com.turingtechnologies.materialscrollbar;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.support.v7.widget.RecyclerView;
 import android.text.format.DateFormat;
 
 import java.text.DateFormatSymbols;
@@ -29,7 +28,7 @@ import java.util.Date;
  * Indicator which should be used to display dates and/or times. Automatically sizes and localises.
  */
 @SuppressLint("ViewConstructor")
-public class DateAndTimeIndicator extends Indicator {
+public class DateAndTimeIndicator extends Indicator<IDateableAdapter> {
 
     private String[] months = new DateFormatSymbols().getMonths();
 
@@ -49,8 +48,8 @@ public class DateAndTimeIndicator extends Indicator {
     }
 
     @Override
-    protected String getTextElement(Integer currentSection, RecyclerView.Adapter adapter) {
-        Date date = ((IDateableAdapter) adapter).getDateForElement(currentSection);
+    protected String getTextElement(Integer currentSection, IDateableAdapter adapter) {
+        Date date = adapter.getDateForElement(currentSection);
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(date);
         String text = "";
@@ -105,13 +104,6 @@ public class DateAndTimeIndicator extends Indicator {
             }
         }
         return width;
-    }
-
-    @Override
-    protected void testAdapter(RecyclerView.Adapter adapter) {
-        if(!(adapter instanceof IDateableAdapter)){
-            throw new CustomExceptions.AdapterNotSetupForIndicatorException(adapter.getClass(), "IDateableAdapter");
-        }
     }
 
     @Override
