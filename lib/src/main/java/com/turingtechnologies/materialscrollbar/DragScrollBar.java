@@ -19,6 +19,7 @@ package com.turingtechnologies.materialscrollbar;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.support.v4.view.ViewCompat;
+import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
@@ -35,6 +36,10 @@ public class DragScrollBar extends MaterialScrollBar<DragScrollBar>{
 
     public DragScrollBar(Context context, AttributeSet attributeSet){
         super(context, attributeSet);
+    }
+
+    public DragScrollBar(Context context, RecyclerView recyclerView){
+        super(context, recyclerView);
     }
 
     boolean held = false;

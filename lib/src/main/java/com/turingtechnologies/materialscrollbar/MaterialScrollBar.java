@@ -91,6 +91,20 @@ abstract class MaterialScrollBar<T> extends RelativeLayout {
 
     //CHAPTER I - INITIAL SETUP
 
+    //Programmatic constructor
+    MaterialScrollBar(Context context, RecyclerView recyclerView){
+        super(context);
+
+        this.recyclerView = recyclerView;
+
+        addView(setUpHandleTrack(context)); //Adds the handle track
+        addView(setUpHandle(context, false)); //Adds the handle
+
+        setRightToLeft(Utils.isRightToLeft(context)); //Detects and applies the Right-To-Left status of the app
+
+        generalSetup();
+    }
+
     //Style-less XML Constructor
     MaterialScrollBar(Context context, AttributeSet attributeSet){
         this(context, attributeSet, 0);
@@ -227,15 +241,17 @@ abstract class MaterialScrollBar<T> extends RelativeLayout {
     void identifySwipeRefreshParents(){
         boolean cycle = true;
         ViewParent parent = getParent();
-        while(cycle){
-            if(parent instanceof SwipeRefreshLayout){
-                swipeRefreshLayout = (SwipeRefreshLayout)parent;
-                cycle = false;
-            } else {
-                if(parent.getParent() == null){
+        if(parent != null){
+            while(cycle){
+                if(parent instanceof SwipeRefreshLayout){
+                    swipeRefreshLayout = (SwipeRefreshLayout)parent;
                     cycle = false;
                 } else {
-                    parent = parent.getParent();
+                    if(parent.getParent() == null){
+                        cycle = false;
+                    } else {
+                        parent = parent.getParent();
+                    }
                 }
             }
         }
