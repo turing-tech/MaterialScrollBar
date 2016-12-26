@@ -24,7 +24,7 @@ import android.graphics.Paint;
  * Indicator which should be used in all other cases.
  */
 @SuppressLint("ViewConstructor")
-public class CustomIndicator extends Indicator<ICustomAdapter> {
+public class CustomIndicator extends Indicator<ICustomAdapter, CustomIndicator> {
 
     private int textSize = 25;
 

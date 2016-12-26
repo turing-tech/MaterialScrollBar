@@ -38,8 +38,8 @@ public class DragScrollBar extends MaterialScrollBar<DragScrollBar>{
         super(context, attributeSet);
     }
 
-    public DragScrollBar(Context context, RecyclerView recyclerView){
-        super(context, recyclerView);
+    public DragScrollBar(Context context, RecyclerView recyclerView, boolean lightOnTouch){
+        super(context, recyclerView, lightOnTouch);
     }
 
     boolean held = false;

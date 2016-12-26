@@ -50,8 +50,8 @@ public class TouchScrollBar extends MaterialScrollBar<TouchScrollBar>{
         super(context, attributeSet, defStyle);
     }
 
-    public TouchScrollBar(Context context, RecyclerView recyclerView){
-        super(context, recyclerView);
+    public TouchScrollBar(Context context, RecyclerView recyclerView, boolean lightOnTouch){
+        super(context, recyclerView, lightOnTouch);
     }
 
     public TouchScrollBar setHideDuration(int duration){

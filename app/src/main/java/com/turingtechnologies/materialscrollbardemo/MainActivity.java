@@ -1,6 +1,7 @@
 package com.turingtechnologies.materialscrollbardemo;
 
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -22,7 +23,9 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setAdapter(new DemoAdapter(this));
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         ((DragScrollBar)findViewById(R.id.dragScrollBar))
-                .setIndicator(new AlphabetIndicator(this), true);
+                .setIndicator(new AlphabetIndicator(this)
+                    .setTypeface(Typeface.createFromAsset(getAssets(), "fonts/Comic_Sans.ttf")),
+                true);
     }
 
     @Override

@@ -23,7 +23,7 @@ import android.content.Context;
  * Indicator which should be used when only one character will be displayed at a time.
  */
 @SuppressLint("ViewConstructor")
-public class AlphabetIndicator extends Indicator<INameableAdapter>{
+public class AlphabetIndicator extends Indicator<INameableAdapter, AlphabetIndicator>{
 
     public AlphabetIndicator (Context c){
         super(c);

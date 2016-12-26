@@ -28,7 +28,7 @@ import java.util.Date;
  * Indicator which should be used to display dates and/or times. Automatically sizes and localises.
  */
 @SuppressLint("ViewConstructor")
-public class DateAndTimeIndicator extends Indicator<IDateableAdapter> {
+public class DateAndTimeIndicator extends Indicator<IDateableAdapter, DateAndTimeIndicator> {
 
     private String[] months = new DateFormatSymbols().getMonths();
 

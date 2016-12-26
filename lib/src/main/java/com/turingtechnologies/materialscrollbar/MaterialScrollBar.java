@@ -92,13 +92,13 @@ abstract class MaterialScrollBar<T> extends RelativeLayout {
     //CHAPTER I - INITIAL SETUP
 
     //Programmatic constructor
-    MaterialScrollBar(Context context, RecyclerView recyclerView){
+    MaterialScrollBar(Context context, RecyclerView recyclerView, boolean lightOnTouch){
         super(context);
 
         this.recyclerView = recyclerView;
 
         addView(setUpHandleTrack(context)); //Adds the handle track
-        addView(setUpHandle(context, false)); //Adds the handle
+        addView(setUpHandle(context, lightOnTouch)); //Adds the handle
 
         setRightToLeft(Utils.isRightToLeft(context)); //Detects and applies the Right-To-Left status of the app
 

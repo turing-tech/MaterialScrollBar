@@ -17,6 +17,7 @@
 package com.turingtechnologies.materialscrollbar;
 
 import android.content.Context;
+import android.graphics.Typeface;
 import android.graphics.drawable.GradientDrawable;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewCompat;
@@ -29,9 +30,12 @@ import android.widget.TextView;
 /**
  * Devs should not normally need to extend this class. Just use {@link CustomIndicator} instead.
  * However, this is public to leave the option open.
+ *
+ * T is the interface needed in the corresponding {@link RecyclerView.Adapter}.
+ * U is the sub-class of indicator.
  */
 @SuppressWarnings("unchecked")
-public abstract class Indicator<T> extends RelativeLayout{
+public abstract class Indicator<T, U> extends RelativeLayout{
 
     protected TextView textView;
     protected Context context;
@@ -144,6 +148,11 @@ public abstract class Indicator<T> extends RelativeLayout{
         } catch (ClassCastException e){
             throw new CustomExceptions.AdapterNotSetupForIndicatorException(adapter.getClass(), Utils.getGenericName(this));
         }
+    }
+
+    public U setTypeface(Typeface typeface){
+        textView.setTypeface(typeface);
+        return (U)this;
     }
 
     /**
