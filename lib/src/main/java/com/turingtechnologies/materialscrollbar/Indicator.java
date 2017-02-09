@@ -1,5 +1,5 @@
 /*
- *  Copyright © 2016, Turing Technologies, an unincorporated organisation of Wynne Plaga
+ *  Copyright © 2016-2017, Turing Technologies, an unincorporated organisation of Wynne Plaga
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -22,6 +22,7 @@ import android.graphics.drawable.GradientDrawable;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
@@ -35,7 +36,7 @@ import android.widget.TextView;
  * U is the sub-class of indicator.
  */
 @SuppressWarnings("unchecked")
-public abstract class Indicator<T, U> extends RelativeLayout{
+public abstract class Indicator<T, U extends Indicator> extends RelativeLayout{
 
     protected TextView textView;
     protected Context context;
@@ -126,7 +127,13 @@ public abstract class Indicator<T, U> extends RelativeLayout{
     void setText(int section){
         String newText;
         try{
-            newText = getTextElement(section, (T) materialScrollBar.recyclerView.getAdapter());
+            T adapter = (T) materialScrollBar.recyclerView.getAdapter();
+            if  (adapter == null) {
+                Log.e("MaterialScrollBarLib", "The adapter for your recyclerView has not been set; " +
+                        "skipping indicator layout.");
+                return;
+            }
+            newText = getTextElement(section, adapter);
         } catch (ArrayIndexOutOfBoundsException e){
             newText = "Error";
         }
@@ -144,9 +151,17 @@ public abstract class Indicator<T, U> extends RelativeLayout{
      */
     void testAdapter(RecyclerView.Adapter adapter){
         try{
+            if  (adapter == null) {
+                Log.e("MaterialScrollBarLib", "The adapter for your recyclerView has not been set; " +
+                        "skipping indicator layout.");
+                return;
+            }
             getTextElement(0, (T)adapter);
         } catch (ClassCastException e){
-            throw new CustomExceptions.AdapterNotSetupForIndicatorException(adapter.getClass(), Utils.getGenericName(this));
+            throw new IllegalArgumentException(
+                    "In order to add this indicator, the adapter for your recyclerView, "
+                            + adapter.getClass().getName()
+                            + ", MUST implement " + Utils.getGenericName(this) + ".");
         }
     }
 

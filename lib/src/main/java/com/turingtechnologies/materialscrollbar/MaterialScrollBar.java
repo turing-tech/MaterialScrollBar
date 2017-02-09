@@ -1,5 +1,5 @@
 /*
- *  Copyright © 2016, Turing Technologies, an unincorporated organisation of Wynne Plaga
+ *  Copyright © 2016-2017, Turing Technologies, an unincorporated organisation of Wynne Plaga
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -131,7 +131,8 @@ abstract class MaterialScrollBar<T> extends RelativeLayout {
                 R.styleable.MaterialScrollBar,
                 0, 0);
         if(!a.hasValue(R.styleable.MaterialScrollBar_msb_lightOnTouch)){
-            throw new CustomExceptions.MissingAttributesException(new String[]{"lightOnTouch"});
+            throw new IllegalStateException(
+                    "You are missing the following required attributes from a scroll bar in your XML: lightOnTouch");
         }
 
         if(!isInEditMode()){
@@ -230,7 +231,11 @@ abstract class MaterialScrollBar<T> extends RelativeLayout {
         checkCustomScrolling();
 
         //Hides the view
-        TranslateAnimation anim = new TranslateAnimation(Animation.RELATIVE_TO_PARENT, 0.0f, Animation.RELATIVE_TO_SELF, rtl ? -getHideRatio() : getHideRatio(), Animation.RELATIVE_TO_PARENT, 0.0f, Animation.RELATIVE_TO_PARENT, 0.0f);
+        TranslateAnimation anim = new TranslateAnimation(
+                Animation.RELATIVE_TO_PARENT, 0.0f,
+                Animation.RELATIVE_TO_SELF, rtl ? -getHideRatio() : getHideRatio(),
+                Animation.RELATIVE_TO_PARENT, 0.0f,
+                Animation.RELATIVE_TO_PARENT, 0.0f);
         anim.setDuration(0);
         anim.setFillAfter(true);
         hidden = true;
@@ -622,7 +627,11 @@ abstract class MaterialScrollBar<T> extends RelativeLayout {
      */
     void fadeOut(){
         if(!hidden){
-            TranslateAnimation anim = new TranslateAnimation(Animation.RELATIVE_TO_PARENT, 0.0f, Animation.RELATIVE_TO_SELF, rtl ? -getHideRatio() : getHideRatio(), Animation.RELATIVE_TO_PARENT, 0.0f, Animation.RELATIVE_TO_PARENT, 0.0f);
+            TranslateAnimation anim = new TranslateAnimation(
+                    Animation.RELATIVE_TO_PARENT, 0.0f,
+                    Animation.RELATIVE_TO_SELF, rtl ? -getHideRatio() : getHideRatio(),
+                    Animation.RELATIVE_TO_PARENT, 0.0f,
+                    Animation.RELATIVE_TO_PARENT, 0.0f);
             anim.setDuration(150);
             anim.setFillAfter(true);
             hidden = true;
@@ -642,7 +651,11 @@ abstract class MaterialScrollBar<T> extends RelativeLayout {
     void fadeIn(){
         if(hidden && getHide() && !hiddenByUser){
             hidden = false;
-            TranslateAnimation anim = new TranslateAnimation(Animation.RELATIVE_TO_SELF, rtl ? -getHideRatio() : getHideRatio(), Animation.RELATIVE_TO_SELF, 0.0f, Animation.RELATIVE_TO_PARENT, 0.0f, Animation.RELATIVE_TO_PARENT, 0.0f);
+            TranslateAnimation anim = new TranslateAnimation(
+                    Animation.RELATIVE_TO_SELF, rtl ? -getHideRatio() : getHideRatio(),
+                    Animation.RELATIVE_TO_SELF, 0.0f,
+                    Animation.RELATIVE_TO_PARENT, 0.0f,
+                    Animation.RELATIVE_TO_PARENT, 0.0f);
             anim.setDuration(150);
             anim.setFillAfter(true);
             startAnimation(anim);
@@ -651,7 +664,7 @@ abstract class MaterialScrollBar<T> extends RelativeLayout {
     }
 
     protected void onDown(MotionEvent event){
-        if (indicator != null && indicator.getVisibility() == INVISIBLE) {
+        if (indicator != null && indicator.getVisibility() == INVISIBLE && recyclerView.getAdapter() != null) {
             indicator.setVisibility(VISIBLE);
             if(Build.VERSION.SDK_INT >= 12){
                 indicator.setAlpha(0F);

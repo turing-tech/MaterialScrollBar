@@ -20,5 +20,5 @@ allprojects {
         maven { url 'https://jitpack.io' }
     }
 
-    project.ext.supportLibVersion = '25.1.0'
+    project.ext.supportLibVersion = '25.1.1'
 }

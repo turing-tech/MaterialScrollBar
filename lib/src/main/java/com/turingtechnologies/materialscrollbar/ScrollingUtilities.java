@@ -1,5 +1,5 @@
 /*
- *  Copyright © 2016, Turing Technologies, an unincorporated organisation of Wynne Plaga
+ *  Copyright © 2016-2017, Turing Technologies, an unincorporated organisation of Wynne Plaga
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -19,6 +19,7 @@ package com.turingtechnologies.materialscrollbar;
 import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
+import android.util.Log;
 import android.view.View;
 
 /*
@@ -142,6 +143,12 @@ class ScrollingUtilities {
         scrollPosState.rowIndex = -1;
         scrollPosState.rowTopOffset = -1;
         scrollPosState.rowHeight = -1;
+
+        if  (materialScrollBar.recyclerView.getAdapter() == null) {
+            Log.e("MaterialScrollBarLib", "The adapter for your recyclerView has not been set; " +
+                    "skipping layout.");
+            return;
+        }
 
         int itemCount = materialScrollBar.recyclerView.getAdapter().getItemCount();
 

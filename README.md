@@ -143,7 +143,7 @@ To implement a `CustomIndicator`, which displays any text you want, add the foll
 
 Material Scroll Bar:
 
-    Copyright 2016 Turing Technologies, an unincorporated orginisation of Wynne Plaga.
+    Copyright 2016-2017 Turing Technologies, an unincorporated orginisation of Wynne Plaga.
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
