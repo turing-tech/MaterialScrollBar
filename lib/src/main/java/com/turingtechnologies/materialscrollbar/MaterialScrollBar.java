@@ -62,7 +62,7 @@ import android.widget.RelativeLayout;
  * instance of the bar.
  */
 @SuppressWarnings({"unchecked", "unused"})
-abstract class MaterialScrollBar<T> extends RelativeLayout {
+public abstract class MaterialScrollBar<T> extends RelativeLayout {
 
     //Component Views
     private View handleTrack;
@@ -198,9 +198,9 @@ abstract class MaterialScrollBar<T> extends RelativeLayout {
 
     public T setRecyclerView(RecyclerView rv){
         if(seekId != 0){
-            throw new RuntimeException("There is already a recyclerView set by XML.");
+            throw new IllegalStateException("There is already a recyclerView set by XML.");
         } else if (recyclerView != null){
-            throw new RuntimeException("There is already a recyclerView set.");
+            throw new IllegalStateException("There is already a recyclerView set.");
         }
         recyclerView = rv;
         generalSetup();
