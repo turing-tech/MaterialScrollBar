@@ -14,8 +14,9 @@ public interface IScrollBar<T>
 
     void setEnabled(boolean enabled);
 
+    T setHandleColour(String colour);
     T setHandleColour(@ColorInt int colour);
-
+    T setHandleColourRes(@ColorRes int colourResId);
     T setHandleOffColour(String colour);
     T setHandleOffColour(@ColorInt int colour);
     T setHandleOffColourRes(@ColorRes int colourResId);

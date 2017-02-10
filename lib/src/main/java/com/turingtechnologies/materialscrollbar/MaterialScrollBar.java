@@ -386,6 +386,7 @@ abstract class MaterialScrollBar<T> extends RelativeLayout implements IScrollBar
      * Provides the ability to programmatically set the colour of the scrollbar handleThumb.
      * @param colour to set the handleThumb.
      */
+    @Override
     public T setHandleColour(String colour){
         handleColour = Color.parseColor(colour);
         setHandleColour();
@@ -396,6 +397,7 @@ abstract class MaterialScrollBar<T> extends RelativeLayout implements IScrollBar
      * Provides the ability to programmatically set the colour of the scrollbar handleThumb.
      * @param colour to set the handleThumb.
      */
+    @Override
     public T setHandleColour(@ColorInt int colour){
         handleColour = colour;
         setHandleColour();
@@ -406,6 +408,7 @@ abstract class MaterialScrollBar<T> extends RelativeLayout implements IScrollBar
      * Provides the ability to programmatically set the colour of the scrollbar handleThumb.
      * @param colourResId to set the handleThumb.
      */
+    @Override
     public T setHandleColourRes(@ColorRes int colourResId){
         handleColour = ContextCompat.getColor(getContext(), colourResId);
         setHandleColour();
