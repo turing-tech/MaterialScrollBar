@@ -62,7 +62,7 @@ import android.widget.RelativeLayout;
  * instance of the bar.
  */
 @SuppressWarnings({"unchecked", "unused"})
-abstract class MaterialScrollBar<T> extends RelativeLayout {
+abstract class MaterialScrollBar<T> extends RelativeLayout implements IScrollBar<T> {
 
     //Component Views
     private View handleTrack;
@@ -87,6 +87,7 @@ abstract class MaterialScrollBar<T> extends RelativeLayout {
 
     //Misc
     private OnLayoutChangeListener indicatorLayoutListener;
+    private boolean enabled = true;
 
 
     //CHAPTER I - INITIAL SETUP
@@ -196,6 +197,7 @@ abstract class MaterialScrollBar<T> extends RelativeLayout {
         implementFlavourPreferences(a);
     }
 
+    @Override
     public T setRecyclerView(RecyclerView rv){
         if(seekId != 0){
             throw new RuntimeException("There is already a recyclerView set by XML.");
@@ -270,6 +272,10 @@ abstract class MaterialScrollBar<T> extends RelativeLayout {
     @Override
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
         super.onLayout(changed, l, t, r, b);
+
+        if (!enabled) {
+            return;
+        }
 
         if(recyclerView == null && !isInEditMode()){
             throw new RuntimeException("You need to set a recyclerView for the scroll bar, either in the XML or using setRecyclerView().");
@@ -419,6 +425,7 @@ abstract class MaterialScrollBar<T> extends RelativeLayout {
      * Provides the ability to programmatically set the colour of the scrollbar handleThumb when unpressed. Only applies if lightOnTouch is true.
      * @param colour to set the handleThumb when unpressed.
      */
+    @Override
     public T setHandleOffColour(String colour){
         handleOffColour = Color.parseColor(colour);
         if(lightOnTouch){
@@ -431,6 +438,7 @@ abstract class MaterialScrollBar<T> extends RelativeLayout {
      * Provides the ability to programmatically set the colour of the scrollbar handleThumb when unpressed. Only applies if lightOnTouch is true.
      * @param colour to set the handleThumb when unpressed.
      */
+    @Override
     public T setHandleOffColour(@ColorInt int colour){
         handleOffColour = colour;
         if(lightOnTouch){
@@ -443,6 +451,7 @@ abstract class MaterialScrollBar<T> extends RelativeLayout {
      * Provides the ability to programmatically set the colour of the scrollbar handleThumb when unpressed. Only applies if lightOnTouch is true.
      * @param colourResId to set the handleThumb when unpressed.
      */
+    @Override
     public T setHandleOffColourRes(@ColorRes int colourResId){
         handleOffColour = ContextCompat.getColor(getContext(), colourResId);
         if(lightOnTouch){
@@ -455,6 +464,7 @@ abstract class MaterialScrollBar<T> extends RelativeLayout {
      * Provides the ability to programmatically set the colour of the scrollbar.
      * @param colour to set the bar.
      */
+    @Override
     public T setBarColour(String colour){
         handleTrack.setBackgroundColor(Color.parseColor(colour));
         return (T)this;
@@ -464,6 +474,7 @@ abstract class MaterialScrollBar<T> extends RelativeLayout {
      * Provides the ability to programmatically set the colour of the scrollbar.
      * @param colour to set the bar.
      */
+    @Override
     public T setBarColour(@ColorInt int colour){
         handleTrack.setBackgroundColor(colour);
         return (T)this;
@@ -473,6 +484,7 @@ abstract class MaterialScrollBar<T> extends RelativeLayout {
      * Provides the ability to programmatically set the colour of the scrollbar.
      * @param colourResId to set the bar.
      */
+    @Override
     public T setBarColourRes(@ColorRes int colourResId){
         handleTrack.setBackgroundColor(ContextCompat.getColor(getContext(), colourResId));
         return (T)this;
@@ -482,6 +494,7 @@ abstract class MaterialScrollBar<T> extends RelativeLayout {
      * Provides the ability to programmatically set the text colour of the indicator. Will do nothing if there is no section indicator.
      * @param colour to set the text of the indicator.
      */
+    @Override
     public T setTextColour(@ColorInt int colour){
         textColour = colour;
         if(indicator != null){
@@ -495,6 +508,7 @@ abstract class MaterialScrollBar<T> extends RelativeLayout {
      * Provides the ability to programmatically set the text colour of the indicator. Will do nothing if there is no section indicator.
      * @param colourResId to set the text of the indicator.
      */
+    @Override
     public T setTextColourRes(@ColorRes int colourResId){
         textColour = ContextCompat.getColor(getContext(), colourResId);
         if(indicator != null){
@@ -507,6 +521,7 @@ abstract class MaterialScrollBar<T> extends RelativeLayout {
      * Provides the ability to programmatically set the text colour of the indicator. Will do nothing if there is no section indicator.
      * @param colour to set the text of the indicator.
      */
+    @Override
     public T setTextColour(String colour){
         textColour = Color.parseColor(colour);
         if(indicator != null){
@@ -518,6 +533,7 @@ abstract class MaterialScrollBar<T> extends RelativeLayout {
     /**
      * Removes any indicator.
      */
+    @Override
     public T removeIndicator(){
         if(this.indicator != null){
             this.indicator.removeAllViews();
@@ -531,6 +547,7 @@ abstract class MaterialScrollBar<T> extends RelativeLayout {
      *
      * @param addSpaceSide Should space be put between the indicator and the bar or should they touch?
      */
+    @Override
     public T setIndicator(final Indicator indicator, final boolean addSpaceSide) {
         if(ViewCompat.isAttachedToWindow(this)){
             setupIndicator(indicator, addSpaceSide);
@@ -661,6 +678,17 @@ abstract class MaterialScrollBar<T> extends RelativeLayout {
             startAnimation(anim);
             handleThumb.collapseHandle();
         }
+    }
+
+    /**
+     * Enables or disables this scrollbar completely
+     *
+     * A disabled scrollbar must not be attached to a RecyclerView and does not draw anything
+     * ATTENTION: Currently, this MUST be called before the view is drawn!
+     */
+    @Override
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
     }
 
     protected void onDown(MotionEvent event){
