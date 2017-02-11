@@ -87,7 +87,6 @@ public abstract class MaterialScrollBar<T> extends RelativeLayout {
 
     //Misc
     private OnLayoutChangeListener indicatorLayoutListener;
-    private boolean enabled = true;
 
 
     //CHAPTER I - INITIAL SETUP
@@ -271,10 +270,6 @@ public abstract class MaterialScrollBar<T> extends RelativeLayout {
     @Override
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
         super.onLayout(changed, l, t, r, b);
-
-        if (!enabled) {
-            return;
-        }
 
         if(recyclerView == null && !isInEditMode()){
             throw new RuntimeException("You need to set a recyclerView for the scroll bar, either in the XML or using setRecyclerView().");
