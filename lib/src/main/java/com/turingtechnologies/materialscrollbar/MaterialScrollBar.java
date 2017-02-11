@@ -663,17 +663,6 @@ public abstract class MaterialScrollBar<T> extends RelativeLayout {
         }
     }
 
-    /**
-     * Enables or disables this scrollbar completely
-     *
-     * A disabled scrollbar must not be attached to a RecyclerView and does not draw anything
-     * ATTENTION: Currently, this MUST be called before the view is drawn!
-     */
-    @Override
-    public void setEnabled(boolean enabled) {
-        this.enabled = enabled;
-    }
-
     protected void onDown(MotionEvent event){
         if (indicator != null && indicator.getVisibility() == INVISIBLE && recyclerView.getAdapter() != null) {
             indicator.setVisibility(VISIBLE);
