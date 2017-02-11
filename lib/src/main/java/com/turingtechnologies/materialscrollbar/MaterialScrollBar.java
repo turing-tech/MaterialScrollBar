@@ -62,7 +62,7 @@ import android.widget.RelativeLayout;
  * instance of the bar.
  */
 @SuppressWarnings({"unchecked", "unused"})
-abstract class MaterialScrollBar<T> extends RelativeLayout implements IScrollBar<T> {
+public abstract class MaterialScrollBar<T> extends RelativeLayout {
 
     //Component Views
     private View handleTrack;
@@ -197,7 +197,6 @@ abstract class MaterialScrollBar<T> extends RelativeLayout implements IScrollBar
         implementFlavourPreferences(a);
     }
 
-    @Override
     public T setRecyclerView(RecyclerView rv){
         if(seekId != 0){
             throw new RuntimeException("There is already a recyclerView set by XML.");
@@ -386,7 +385,6 @@ abstract class MaterialScrollBar<T> extends RelativeLayout implements IScrollBar
      * Provides the ability to programmatically set the colour of the scrollbar handleThumb.
      * @param colour to set the handleThumb.
      */
-    @Override
     public T setHandleColour(String colour){
         handleColour = Color.parseColor(colour);
         setHandleColour();
@@ -397,7 +395,6 @@ abstract class MaterialScrollBar<T> extends RelativeLayout implements IScrollBar
      * Provides the ability to programmatically set the colour of the scrollbar handleThumb.
      * @param colour to set the handleThumb.
      */
-    @Override
     public T setHandleColour(@ColorInt int colour){
         handleColour = colour;
         setHandleColour();
@@ -408,7 +405,6 @@ abstract class MaterialScrollBar<T> extends RelativeLayout implements IScrollBar
      * Provides the ability to programmatically set the colour of the scrollbar handleThumb.
      * @param colourResId to set the handleThumb.
      */
-    @Override
     public T setHandleColourRes(@ColorRes int colourResId){
         handleColour = ContextCompat.getColor(getContext(), colourResId);
         setHandleColour();
@@ -428,7 +424,6 @@ abstract class MaterialScrollBar<T> extends RelativeLayout implements IScrollBar
      * Provides the ability to programmatically set the colour of the scrollbar handleThumb when unpressed. Only applies if lightOnTouch is true.
      * @param colour to set the handleThumb when unpressed.
      */
-    @Override
     public T setHandleOffColour(String colour){
         handleOffColour = Color.parseColor(colour);
         if(lightOnTouch){
@@ -441,7 +436,6 @@ abstract class MaterialScrollBar<T> extends RelativeLayout implements IScrollBar
      * Provides the ability to programmatically set the colour of the scrollbar handleThumb when unpressed. Only applies if lightOnTouch is true.
      * @param colour to set the handleThumb when unpressed.
      */
-    @Override
     public T setHandleOffColour(@ColorInt int colour){
         handleOffColour = colour;
         if(lightOnTouch){
@@ -454,7 +448,6 @@ abstract class MaterialScrollBar<T> extends RelativeLayout implements IScrollBar
      * Provides the ability to programmatically set the colour of the scrollbar handleThumb when unpressed. Only applies if lightOnTouch is true.
      * @param colourResId to set the handleThumb when unpressed.
      */
-    @Override
     public T setHandleOffColourRes(@ColorRes int colourResId){
         handleOffColour = ContextCompat.getColor(getContext(), colourResId);
         if(lightOnTouch){
@@ -467,7 +460,6 @@ abstract class MaterialScrollBar<T> extends RelativeLayout implements IScrollBar
      * Provides the ability to programmatically set the colour of the scrollbar.
      * @param colour to set the bar.
      */
-    @Override
     public T setBarColour(String colour){
         handleTrack.setBackgroundColor(Color.parseColor(colour));
         return (T)this;
@@ -477,7 +469,6 @@ abstract class MaterialScrollBar<T> extends RelativeLayout implements IScrollBar
      * Provides the ability to programmatically set the colour of the scrollbar.
      * @param colour to set the bar.
      */
-    @Override
     public T setBarColour(@ColorInt int colour){
         handleTrack.setBackgroundColor(colour);
         return (T)this;
@@ -487,7 +478,6 @@ abstract class MaterialScrollBar<T> extends RelativeLayout implements IScrollBar
      * Provides the ability to programmatically set the colour of the scrollbar.
      * @param colourResId to set the bar.
      */
-    @Override
     public T setBarColourRes(@ColorRes int colourResId){
         handleTrack.setBackgroundColor(ContextCompat.getColor(getContext(), colourResId));
         return (T)this;
@@ -497,7 +487,6 @@ abstract class MaterialScrollBar<T> extends RelativeLayout implements IScrollBar
      * Provides the ability to programmatically set the text colour of the indicator. Will do nothing if there is no section indicator.
      * @param colour to set the text of the indicator.
      */
-    @Override
     public T setTextColour(@ColorInt int colour){
         textColour = colour;
         if(indicator != null){
@@ -511,7 +500,6 @@ abstract class MaterialScrollBar<T> extends RelativeLayout implements IScrollBar
      * Provides the ability to programmatically set the text colour of the indicator. Will do nothing if there is no section indicator.
      * @param colourResId to set the text of the indicator.
      */
-    @Override
     public T setTextColourRes(@ColorRes int colourResId){
         textColour = ContextCompat.getColor(getContext(), colourResId);
         if(indicator != null){
@@ -524,7 +512,6 @@ abstract class MaterialScrollBar<T> extends RelativeLayout implements IScrollBar
      * Provides the ability to programmatically set the text colour of the indicator. Will do nothing if there is no section indicator.
      * @param colour to set the text of the indicator.
      */
-    @Override
     public T setTextColour(String colour){
         textColour = Color.parseColor(colour);
         if(indicator != null){
@@ -536,7 +523,6 @@ abstract class MaterialScrollBar<T> extends RelativeLayout implements IScrollBar
     /**
      * Removes any indicator.
      */
-    @Override
     public T removeIndicator(){
         if(this.indicator != null){
             this.indicator.removeAllViews();
@@ -550,7 +536,6 @@ abstract class MaterialScrollBar<T> extends RelativeLayout implements IScrollBar
      *
      * @param addSpaceSide Should space be put between the indicator and the bar or should they touch?
      */
-    @Override
     public T setIndicator(final Indicator indicator, final boolean addSpaceSide) {
         if(ViewCompat.isAttachedToWindow(this)){
             setupIndicator(indicator, addSpaceSide);
