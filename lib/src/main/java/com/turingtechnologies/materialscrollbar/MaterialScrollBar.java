@@ -219,6 +219,11 @@ public abstract class MaterialScrollBar<T> extends RelativeLayout {
         }
     }
 
+    public void swapRecyclerView(RecyclerView rv) {
+        recyclerView = rv;
+        generalSetup();
+    }
+
     //General setup.
     private void generalSetup(){
         recyclerView.setVerticalScrollBarEnabled(false); // disable any existing scrollbars
