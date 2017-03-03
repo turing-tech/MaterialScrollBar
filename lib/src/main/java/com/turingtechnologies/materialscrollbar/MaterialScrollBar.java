@@ -610,7 +610,7 @@ public abstract class MaterialScrollBar<T> extends RelativeLayout {
 
     //CHAPTER IV - MISC METHODS
 
-    //Fetch accent colour on devices running Lollipop or newer.
+    //Fetch accent colour.
     static int fetchAccentColour(Context context) {
         TypedValue typedValue = new TypedValue();
 

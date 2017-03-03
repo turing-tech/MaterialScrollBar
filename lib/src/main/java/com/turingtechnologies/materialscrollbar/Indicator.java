@@ -19,6 +19,7 @@ package com.turingtechnologies.materialscrollbar;
 import android.content.Context;
 import android.graphics.Typeface;
 import android.graphics.drawable.GradientDrawable;
+import android.support.annotation.ColorInt;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.RecyclerView;
@@ -174,7 +175,7 @@ public abstract class Indicator<T, U extends Indicator> extends RelativeLayout{
      * Used by the materialScrollBar to change the text colour for the indicator.
      * @param colour The desired text colour.
      */
-    void setTextColour(int colour){
+    void setTextColour(@ColorInt int colour){
         textView.setTextColor(colour);
     }
 
