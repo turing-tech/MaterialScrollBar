@@ -114,22 +114,21 @@ public abstract class MaterialScrollBar<T> extends RelativeLayout {
     MaterialScrollBar(Context context, AttributeSet attributeSet, int defStyle){
         super(context, attributeSet, defStyle);
 
-        setUpProps(context, attributeSet); //Discovers and applies XML attributes
+        setUpProps(context, attributeSet); //Discovers and applies some XML attributes
 
         addView(setUpHandleTrack(context)); //Adds the handle track
         addView(setUpHandle(context, a.getBoolean(R.styleable.MaterialScrollBar_msb_lightOnTouch, true))); //Adds the handle
-
-        a.recycle();
 
         setRightToLeft(Utils.isRightToLeft(context)); //Detects and applies the Right-To-Left status of the app
     }
 
     //Unpacks XML attributes and ensures that no mandatory attributes are missing, then applies them.
-    void setUpProps(Context context, AttributeSet attrs){
+    void setUpProps(Context context, AttributeSet attributes){
         a = context.getTheme().obtainStyledAttributes(
-                attrs,
+                attributes,
                 R.styleable.MaterialScrollBar,
                 0, 0);
+
         if(!a.hasValue(R.styleable.MaterialScrollBar_msb_lightOnTouch)){
             throw new IllegalStateException(
                     "You are missing the following required attributes from a scroll bar in your XML: lightOnTouch");
@@ -138,8 +137,6 @@ public abstract class MaterialScrollBar<T> extends RelativeLayout {
         if(!isInEditMode()){
             seekId = a.getResourceId(R.styleable.MaterialScrollBar_msb_recyclerView, 0); //Discovers and saves the ID of the recyclerView
         }
-
-        implementPreferences();
     }
 
     //Sets up bar.
@@ -229,6 +226,10 @@ public abstract class MaterialScrollBar<T> extends RelativeLayout {
         identifySwipeRefreshParents();
 
         checkCustomScrolling();
+
+        implementPreferences();
+
+        a.recycle();
 
         //Hides the view
         TranslateAnimation anim = new TranslateAnimation(
