@@ -26,7 +26,7 @@ import android.content.Context;
 public class AlphabetIndicator extends Indicator<INameableAdapter, AlphabetIndicator>{
 
     public AlphabetIndicator (Context c){
-        super(c);
+        super(c, INameableAdapter.class);
     }
 
     @Override

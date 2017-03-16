@@ -35,6 +35,7 @@ import android.widget.TextView;
  *
  * T is the interface needed in the corresponding {@link RecyclerView.Adapter}.
  * U is the sub-class of indicator.
+ * The second parameter for the constructor is the class of T.
  */
 @SuppressWarnings("unchecked")
 public abstract class Indicator<T, U extends Indicator> extends RelativeLayout{
@@ -45,12 +46,15 @@ public abstract class Indicator<T, U extends Indicator> extends RelativeLayout{
     private MaterialScrollBar materialScrollBar;
     private boolean rtl;
     private int size;
+    private Class<T> adapterClass;
 
-    public Indicator(Context context) {
+    public Indicator(Context context, Class<T> adapter) {
         super(context);
         this.context = context;
         textView = new TextView(context);
         setVisibility(INVISIBLE);
+
+        adapterClass = adapter;
     }
 
     void setSizeCustom(int size){
@@ -146,19 +150,17 @@ public abstract class Indicator<T, U extends Indicator> extends RelativeLayout{
     }
 
     /**
-     * This method should test the adapter to make sure that it implements the needed interface(s).
+     * This method tests the adapter to make sure that it implements the needed interface.
      *
      * @param adapter The adapter of the attached {@link RecyclerView}.
      */
-    void testAdapter(RecyclerView.Adapter adapter){
-        try{
-            if  (adapter == null) {
-                Log.e("MaterialScrollBarLib", "The adapter for your recyclerView has not been set; " +
-                        "skipping indicator layout.");
-                return;
-            }
-            getTextElement(0, (T)adapter);
-        } catch (ClassCastException e){
+    void testAdapter(RecyclerView.Adapter adapter) {
+        if  (adapter == null) {
+            Log.e("MaterialScrollBarLib", "The adapter for your recyclerView has not been set; " +
+                    "skipping indicator layout.");
+            return;
+        }
+        if(!adapterClass.isInstance(adapter)){
             throw new IllegalArgumentException(
                     "In order to add this indicator, the adapter for your recyclerView, "
                             + adapter.getClass().getName()
