@@ -87,6 +87,7 @@ public abstract class MaterialScrollBar<T> extends RelativeLayout {
 
     //Misc
     private OnLayoutChangeListener indicatorLayoutListener;
+    private Runnable onSetup;
 
 
     //CHAPTER I - INITIAL SETUP
@@ -101,6 +102,11 @@ public abstract class MaterialScrollBar<T> extends RelativeLayout {
         addView(setUpHandle(context, lightOnTouch)); //Adds the handle
 
         setRightToLeft(Utils.isRightToLeft(context)); //Detects and applies the Right-To-Left status of the app
+
+        onSetup = new Runnable() {
+            @Override
+            public void run() {}
+        };
 
         generalSetup();
     }
@@ -120,6 +126,15 @@ public abstract class MaterialScrollBar<T> extends RelativeLayout {
         addView(setUpHandle(context, a.getBoolean(R.styleable.MaterialScrollBar_msb_lightOnTouch, true))); //Adds the handle
 
         setRightToLeft(Utils.isRightToLeft(context)); //Detects and applies the Right-To-Left status of the app
+
+        onSetup = new Runnable() {
+            @Override
+            public void run() {
+                implementPreferences();
+            }
+        };
+
+        implementFlavourPreferences(a);
     }
 
     //Unpacks XML attributes and ensures that no mandatory attributes are missing, then applies them.
@@ -190,7 +205,6 @@ public abstract class MaterialScrollBar<T> extends RelativeLayout {
         if(a.hasValue(R.styleable.MaterialScrollBar_msb_rightToLeft)){
             setRightToLeft(a.getBoolean(R.styleable.MaterialScrollBar_msb_rightToLeft, false));
         }
-        implementFlavourPreferences(a);
     }
 
     public T setRecyclerView(RecyclerView rv){
@@ -227,7 +241,7 @@ public abstract class MaterialScrollBar<T> extends RelativeLayout {
 
         checkCustomScrolling();
 
-        implementPreferences();
+        onSetup.run();
 
         a.recycle();
 
