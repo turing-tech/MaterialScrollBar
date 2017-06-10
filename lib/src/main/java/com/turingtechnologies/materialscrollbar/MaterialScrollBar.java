@@ -78,6 +78,7 @@ public abstract class MaterialScrollBar<T> extends RelativeLayout {
     private TypedArray a; //XML attributes
     private Boolean rtl = false;
     boolean hiddenByUser = false;
+    private float fastScrollSnapPercent = 0;
 
     //Associated Objects
     RecyclerView recyclerView;
@@ -88,6 +89,7 @@ public abstract class MaterialScrollBar<T> extends RelativeLayout {
     //Misc
     private OnLayoutChangeListener indicatorLayoutListener;
     private Runnable onSetup;
+    private float previousScrollPercent = 0;
 
 
     //CHAPTER I - INITIAL SETUP
@@ -277,6 +279,10 @@ public abstract class MaterialScrollBar<T> extends RelativeLayout {
         }
     }
 
+    boolean isScrollChangeLargeEnoughForFastScroll(float currentScrollPercent) {
+        return Math.abs(currentScrollPercent - previousScrollPercent) > fastScrollSnapPercent;
+    }
+
     boolean sizeUnchecked = true;
 
     //Checks each time the bar is laid out. If there are few enough view that
@@ -369,6 +375,20 @@ public abstract class MaterialScrollBar<T> extends RelativeLayout {
         if((recyclerView.getAdapter() instanceof  ICustomScroller)){
             scrollUtils.customScroller = (ICustomScroller) recyclerView.getAdapter();
         }
+    }
+
+    /**
+     * With very long lists, it may be advantageous to put a buffer on the drag bar to give the
+     * user some time to actually see the scroll handle and the content. This will make the
+     * bar less "smooth scrolling" and instead, snap to specific scroll percents. This could
+     * be useful for the {@link DateAndTimeIndicator} style scrollbars, where you don't need to see
+     * every single date available.
+     *
+     * @param snapPercent percentage that the fast scroll bar should snap to.
+     */
+    public T setFastScrollSnapPercent(float snapPercent) {
+        fastScrollSnapPercent = snapPercent;
+        return (T)this;
     }
 
     /**
@@ -698,9 +718,15 @@ public abstract class MaterialScrollBar<T> extends RelativeLayout {
         int top = handleThumb.getHeight() / 2;
         int bottom = recyclerView.getHeight() - Utils.getDP(72, recyclerView.getContext());
         float boundedY = Math.max(top, Math.min(bottom, event.getY() - getHandleOffset()));
-        scrollUtils.scrollToPositionAtProgress((boundedY - top) / (bottom - top));
-        scrollUtils.scrollHandleAndIndicator();
-        recyclerView.onScrolled(0, 0);
+
+        float currentScrollPercent = (boundedY - top) / (bottom - top);
+        if (isScrollChangeLargeEnoughForFastScroll(currentScrollPercent) ||
+                currentScrollPercent == 0 || currentScrollPercent == 1) {
+            previousScrollPercent = currentScrollPercent;
+            scrollUtils.scrollToPositionAtProgress(currentScrollPercent);
+            scrollUtils.scrollHandleAndIndicator();
+            recyclerView.onScrolled(0, 0);
+        }
 
         if (lightOnTouch) {
             handleThumb.setBackgroundColor(handleColour);
