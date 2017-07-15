@@ -88,7 +88,6 @@ public abstract class MaterialScrollBar<T> extends RelativeLayout {
 
     //Misc
     private OnLayoutChangeListener indicatorLayoutListener;
-    private Runnable onSetup;
     private float previousScrollPercent = 0;
     Boolean draggableFromAnywhere = false;
 
@@ -104,11 +103,6 @@ public abstract class MaterialScrollBar<T> extends RelativeLayout {
         addView(setUpHandle(context, lightOnTouch)); //Adds the handle
 
         setRightToLeft(Utils.isRightToLeft(context)); //Detects and applies the Right-To-Left status of the app
-
-        onSetup = new Runnable() {
-            @Override
-            public void run() {}
-        };
 
         generalSetup();
     }
@@ -129,14 +123,11 @@ public abstract class MaterialScrollBar<T> extends RelativeLayout {
 
         setRightToLeft(Utils.isRightToLeft(context)); //Detects and applies the Right-To-Left status of the app
 
-        onSetup = new Runnable() {
-            @Override
-            public void run() {
-                implementPreferences();
-            }
-        };
+        implementPreferences();
 
         implementFlavourPreferences(a);
+
+        a.recycle();
     }
 
     //Unpacks XML attributes and ensures that no mandatory attributes are missing, then applies them.
@@ -242,10 +233,6 @@ public abstract class MaterialScrollBar<T> extends RelativeLayout {
         identifySwipeRefreshParents();
 
         checkCustomScrolling();
-
-        onSetup.run();
-
-        a.recycle();
 
         //Hides the view
         TranslateAnimation anim = new TranslateAnimation(

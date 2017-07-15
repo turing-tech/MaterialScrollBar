@@ -1,6 +1,6 @@
 apply plugin: 'com.android.library'
 
-def libVersion = '12.3.5'
+def libVersion = '12.3.6'
 
 android {
     compileSdkVersion 25
@@ -38,6 +38,6 @@ artifacts {
 }
 
 dependencies {
-    compile "com.android.support:recyclerview-v7:${supportLibVersion}"
-    compile "com.android.support:design:${supportLibVersion}"
+    implementation "com.android.support:recyclerview-v7:${supportLibVersion}"
+    implementation "com.android.support:design:${supportLibVersion}"
 }

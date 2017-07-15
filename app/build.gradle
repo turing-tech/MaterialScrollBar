@@ -20,9 +20,9 @@ android {
 }
 
 dependencies {
-    compile project(':lib')
-    compile "com.android.support:recyclerview-v7:${supportLibVersion}"
-    compile 'com.pnikosis:materialish-progress:1.7'
-    compile "com.android.support:design:${supportLibVersion}"
-    compile "com.android.support:appcompat-v7:${supportLibVersion}"
+    implementation project(':lib')
+    implementation "com.android.support:recyclerview-v7:${supportLibVersion}"
+    implementation 'com.pnikosis:materialish-progress:1.7'
+    implementation "com.android.support:design:${supportLibVersion}"
+    implementation "com.android.support:appcompat-v7:${supportLibVersion}"
 }
