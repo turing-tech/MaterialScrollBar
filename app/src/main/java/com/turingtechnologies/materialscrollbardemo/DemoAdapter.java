@@ -46,7 +46,7 @@ class DemoAdapter extends RecyclerView.Adapter<DemoAdapter.ViewHolder> implement
     static class ViewHolder extends RecyclerView.ViewHolder {
         // each data item is just a string in this case
         TextView label;
-        public ImageView icon;
+        ImageView icon;
         ViewHolder(View v) {
             super(v);
             label = (TextView) v.findViewById(R.id.textView);

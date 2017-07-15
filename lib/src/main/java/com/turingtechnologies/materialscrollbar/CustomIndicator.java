@@ -29,7 +29,7 @@ public class CustomIndicator extends Indicator<ICustomAdapter, CustomIndicator> 
     private int textSize = 25;
 
     public CustomIndicator(Context context){
-        super(context);
+        super(context, ICustomAdapter.class);
     }
 
     @Override

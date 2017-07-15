@@ -14,7 +14,7 @@ An Android library that brings the Material Design 5.1 scrollbar to pre-5.1 devi
 
 [Donate](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=UH23JHQ8K4U2C)
 
-##Table of Contents
+## Table of Contents
 1. [Gradle](https://github.com/turing-tech/MaterialScrollBar#gradle)
 2. [Documentation](https://github.com/turing-tech/MaterialScrollBar#documentation)
     1. [How to use](https://github.com/turing-tech/MaterialScrollBar#how-to-use)
@@ -23,7 +23,7 @@ An Android library that brings the Material Design 5.1 scrollbar to pre-5.1 devi
     4. [Specific Indicators](https://github.com/turing-tech/MaterialScrollBar#specific-indicators)
 3. [License](https://github.com/turing-tech/MaterialScrollBar#license)
 
-##Gradle
+## Gradle
 
 ```gradle
 allprojects {
@@ -38,11 +38,11 @@ dependencies {
     compile 'com.github.turing-tech:MaterialScrollBar:12.+'
 }
 ```
-##Documentation
+## Documentation
 
 Note: All customisation methods (`setAutoHide`, `setBarColour`, etc) return the `materialScrollBar`, so they can be chained together if wanted. Alternatively, you can just operate on a variable.
 
-###How to use
+### How to use
 
 The library comes in two flavours, drag and touch. Try both out to see which you prefer.
 
@@ -85,7 +85,7 @@ Please note that for both of these configurations, both recyclerView and lightOn
 
 ------
 
-###My recyclerView elements aren't all the same size! What do I do?
+### My recyclerView elements aren't all the same size! What do I do?
 
 If you are in the situation of using headers of one size and elements of another, we've developed a solution speicifcally for you. Please follow the tutorial [here](https://github.com/krimin-killr21/MaterialScrollBar/wiki/Header-Tutorial).
 
@@ -93,7 +93,7 @@ If you are in some other situation where you're elements are differently sized, 
 
 ------
 
-###Indicators
+### Indicators
 
 To add an indicator, simply add the following line of code:
 
@@ -109,7 +109,7 @@ To use an indicator, you **MUST** make your `recyclerView`'s adapter implement t
 
 ------
 
-###Specific Indicators
+### Specific Indicators
 **AlphabetIndicator**
 
 **Required Interface:** `INameableAdapter`
@@ -139,7 +139,7 @@ To implement a `CustomIndicator`, which displays any text you want, add the foll
 ...setIndicator(new CustomIndicator(this));
 ```
 
-##License
+## License
 
 Material Scroll Bar:
 

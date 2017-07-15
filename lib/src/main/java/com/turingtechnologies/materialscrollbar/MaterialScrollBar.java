@@ -78,6 +78,7 @@ public abstract class MaterialScrollBar<T> extends RelativeLayout {
     private TypedArray a; //XML attributes
     private Boolean rtl = false;
     boolean hiddenByUser = false;
+    private float fastScrollSnapPercent = 0;
 
     //Associated Objects
     RecyclerView recyclerView;
@@ -87,6 +88,8 @@ public abstract class MaterialScrollBar<T> extends RelativeLayout {
 
     //Misc
     private OnLayoutChangeListener indicatorLayoutListener;
+    private Runnable onSetup;
+    private float previousScrollPercent = 0;
 
 
     //CHAPTER I - INITIAL SETUP
@@ -102,6 +105,11 @@ public abstract class MaterialScrollBar<T> extends RelativeLayout {
 
         setRightToLeft(Utils.isRightToLeft(context)); //Detects and applies the Right-To-Left status of the app
 
+        onSetup = new Runnable() {
+            @Override
+            public void run() {}
+        };
+
         generalSetup();
     }
 
@@ -114,22 +122,30 @@ public abstract class MaterialScrollBar<T> extends RelativeLayout {
     MaterialScrollBar(Context context, AttributeSet attributeSet, int defStyle){
         super(context, attributeSet, defStyle);
 
-        setUpProps(context, attributeSet); //Discovers and applies XML attributes
+        setUpProps(context, attributeSet); //Discovers and applies some XML attributes
 
         addView(setUpHandleTrack(context)); //Adds the handle track
         addView(setUpHandle(context, a.getBoolean(R.styleable.MaterialScrollBar_msb_lightOnTouch, true))); //Adds the handle
 
-        a.recycle();
-
         setRightToLeft(Utils.isRightToLeft(context)); //Detects and applies the Right-To-Left status of the app
+
+        onSetup = new Runnable() {
+            @Override
+            public void run() {
+                implementPreferences();
+            }
+        };
+
+        implementFlavourPreferences(a);
     }
 
     //Unpacks XML attributes and ensures that no mandatory attributes are missing, then applies them.
-    void setUpProps(Context context, AttributeSet attrs){
+    void setUpProps(Context context, AttributeSet attributes){
         a = context.getTheme().obtainStyledAttributes(
-                attrs,
+                attributes,
                 R.styleable.MaterialScrollBar,
                 0, 0);
+
         if(!a.hasValue(R.styleable.MaterialScrollBar_msb_lightOnTouch)){
             throw new IllegalStateException(
                     "You are missing the following required attributes from a scroll bar in your XML: lightOnTouch");
@@ -138,8 +154,6 @@ public abstract class MaterialScrollBar<T> extends RelativeLayout {
         if(!isInEditMode()){
             seekId = a.getResourceId(R.styleable.MaterialScrollBar_msb_recyclerView, 0); //Discovers and saves the ID of the recyclerView
         }
-
-        implementPreferences();
     }
 
     //Sets up bar.
@@ -193,7 +207,6 @@ public abstract class MaterialScrollBar<T> extends RelativeLayout {
         if(a.hasValue(R.styleable.MaterialScrollBar_msb_rightToLeft)){
             setRightToLeft(a.getBoolean(R.styleable.MaterialScrollBar_msb_rightToLeft, false));
         }
-        implementFlavourPreferences(a);
     }
 
     public T setRecyclerView(RecyclerView rv){
@@ -230,6 +243,10 @@ public abstract class MaterialScrollBar<T> extends RelativeLayout {
 
         checkCustomScrolling();
 
+        onSetup.run();
+
+        a.recycle();
+
         //Hides the view
         TranslateAnimation anim = new TranslateAnimation(
                 Animation.RELATIVE_TO_PARENT, 0.0f,
@@ -260,6 +277,10 @@ public abstract class MaterialScrollBar<T> extends RelativeLayout {
                 }
             }
         }
+    }
+
+    boolean isScrollChangeLargeEnoughForFastScroll(float currentScrollPercent) {
+        return Math.abs(currentScrollPercent - previousScrollPercent) > fastScrollSnapPercent;
     }
 
     boolean sizeUnchecked = true;
@@ -354,6 +375,20 @@ public abstract class MaterialScrollBar<T> extends RelativeLayout {
         if((recyclerView.getAdapter() instanceof  ICustomScroller)){
             scrollUtils.customScroller = (ICustomScroller) recyclerView.getAdapter();
         }
+    }
+
+    /**
+     * With very long lists, it may be advantageous to put a buffer on the drag bar to give the
+     * user some time to actually see the scroll handle and the content. This will make the
+     * bar less "smooth scrolling" and instead, snap to specific scroll percents. This could
+     * be useful for the {@link DateAndTimeIndicator} style scrollbars, where you don't need to see
+     * every single date available.
+     *
+     * @param snapPercent percentage that the fast scroll bar should snap to.
+     */
+    public T setFastScrollSnapPercent(float snapPercent) {
+        fastScrollSnapPercent = snapPercent;
+        return (T)this;
     }
 
     /**
@@ -610,7 +645,7 @@ public abstract class MaterialScrollBar<T> extends RelativeLayout {
 
     //CHAPTER IV - MISC METHODS
 
-    //Fetch accent colour on devices running Lollipop or newer.
+    //Fetch accent colour.
     static int fetchAccentColour(Context context) {
         TypedValue typedValue = new TypedValue();
 
@@ -683,9 +718,15 @@ public abstract class MaterialScrollBar<T> extends RelativeLayout {
         int top = handleThumb.getHeight() / 2;
         int bottom = recyclerView.getHeight() - Utils.getDP(72, recyclerView.getContext());
         float boundedY = Math.max(top, Math.min(bottom, event.getY() - getHandleOffset()));
-        scrollUtils.scrollToPositionAtProgress((boundedY - top) / (bottom - top));
-        scrollUtils.scrollHandleAndIndicator();
-        recyclerView.onScrolled(0, 0);
+
+        float currentScrollPercent = (boundedY - top) / (bottom - top);
+        if (isScrollChangeLargeEnoughForFastScroll(currentScrollPercent) ||
+                currentScrollPercent == 0 || currentScrollPercent == 1) {
+            previousScrollPercent = currentScrollPercent;
+            scrollUtils.scrollToPositionAtProgress(currentScrollPercent);
+            scrollUtils.scrollHandleAndIndicator();
+            recyclerView.onScrolled(0, 0);
+        }
 
         if (lightOnTouch) {
             handleThumb.setBackgroundColor(handleColour);

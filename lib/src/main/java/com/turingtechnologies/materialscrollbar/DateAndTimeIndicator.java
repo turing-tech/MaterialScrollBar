@@ -39,7 +39,7 @@ public class DateAndTimeIndicator extends Indicator<IDateableAdapter, DateAndTim
     private Context context;
 
     public DateAndTimeIndicator(Context c, boolean includeYear, boolean includeMonth, boolean includeDay, boolean includeTime){
-        super(c);
+        super(c, IDateableAdapter.class);
         context = c;
         this.includeYear = includeYear;
         this.includeMonth = includeMonth;
