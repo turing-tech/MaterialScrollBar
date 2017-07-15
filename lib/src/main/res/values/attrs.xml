@@ -26,6 +26,7 @@
         <attr name="msb_textColour" format="color|reference"/>
         <attr name="msb_barThickness" format="dimension|reference"/>
         <attr name="msb_rightToLeft" format="boolean|reference"/>
+        <attr name="msb_placedInCoordinator" format="boolean|reference"/>
     </declare-styleable>
 
     <declare-styleable name="TouchScrollBar">

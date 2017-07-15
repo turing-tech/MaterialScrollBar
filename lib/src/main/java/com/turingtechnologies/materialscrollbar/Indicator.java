@@ -20,11 +20,13 @@ import android.content.Context;
 import android.graphics.Typeface;
 import android.graphics.drawable.GradientDrawable;
 import android.support.annotation.ColorInt;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.util.TypedValue;
+import android.view.Gravity;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -63,14 +65,14 @@ public abstract class Indicator<T, U extends Indicator> extends RelativeLayout{
         } else {
             this.size =  size;
         }
-        setLayoutParams(refreshMargins((LayoutParams) getLayoutParams()));
+        setLayoutParams(refreshMargins((MarginLayoutParams) getLayoutParams()));
     }
 
     void setRTL(boolean rtl){
         this.rtl = rtl;
     }
 
-    void linkToScrollBar(MaterialScrollBar msb, boolean addSpace){
+    void linkToScrollBar(MaterialScrollBar msb, boolean addSpace, boolean placedInCoordinator){
         this.addSpace = addSpace;
         materialScrollBar = msb;
 
@@ -82,8 +84,27 @@ public abstract class Indicator<T, U extends Indicator> extends RelativeLayout{
 
         ViewCompat.setBackground(this, ContextCompat.getDrawable(context, rtl ? R.drawable.indicator_ltr : R.drawable.indicator));
 
-        LayoutParams lp = new LayoutParams(Utils.getDP(getIndicatorWidth(), this), Utils.getDP(getIndicatorHeight(), this));
-        lp = refreshMargins(lp);
+        ViewGroup.LayoutParams layoutParams;
+        if (placedInCoordinator) {//msb.getParent() instanceof CoordinatorLayout) {
+            CoordinatorLayout.LayoutParams lp = new CoordinatorLayout.LayoutParams(Utils.getDP(getIndicatorWidth(), this), Utils.getDP(getIndicatorHeight(), this));
+            lp = refreshMargins(lp);
+            if (rtl) {
+                lp.gravity = Gravity.LEFT;
+            } else {
+                lp.gravity = Gravity.RIGHT;
+            }
+            layoutParams = lp;
+        } else
+            {
+            LayoutParams lp = new LayoutParams(Utils.getDP(getIndicatorWidth(), this), Utils.getDP(getIndicatorHeight(), this));
+            lp = refreshMargins(lp);
+            if (rtl) {
+                lp.addRule(ALIGN_LEFT, msb.getId());
+            } else {
+                lp.addRule(ALIGN_RIGHT, msb.getId());
+            }
+            layoutParams = lp;
+        }
 
         textView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, getTextSize());
         LayoutParams tvlp = new LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
@@ -93,15 +114,11 @@ public abstract class Indicator<T, U extends Indicator> extends RelativeLayout{
 
         ((GradientDrawable)getBackground()).setColor(msb.handleColour);
 
-        if (rtl) {
-            lp.addRule(ALIGN_LEFT, msb.getId());
-        } else {
-            lp.addRule(ALIGN_RIGHT, msb.getId());
-        }
-        ((ViewGroup)msb.getParent()).addView(this, lp);
+
+        ((ViewGroup)msb.getParent()).addView(this, layoutParams);
     }
 
-    LayoutParams refreshMargins(LayoutParams lp){
+    <LP extends MarginLayoutParams> LP refreshMargins(LP lp){
         if(rtl) {
             lp.setMargins(size, 0, 0, 0);
         } else {

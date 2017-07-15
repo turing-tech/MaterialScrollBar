@@ -26,6 +26,7 @@ import android.graphics.drawable.GradientDrawable;
 import android.os.Build;
 import android.support.annotation.ColorInt;
 import android.support.annotation.ColorRes;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -33,6 +34,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.util.TypedValue;
+import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewParent;
@@ -91,6 +93,7 @@ public abstract class MaterialScrollBar<T> extends RelativeLayout {
     private Runnable onSetup;
     private float previousScrollPercent = 0;
     Boolean draggableFromAnywhere = false;
+    private boolean placedInCoordinator = false;
 
     //CHAPTER I - INITIAL SETUP
 
@@ -153,15 +156,25 @@ public abstract class MaterialScrollBar<T> extends RelativeLayout {
 
         if(!isInEditMode()){
             seekId = a.getResourceId(R.styleable.MaterialScrollBar_msb_recyclerView, 0); //Discovers and saves the ID of the recyclerView
+
+            if(a.hasValue(R.styleable.MaterialScrollBar_msb_placedInCoordinator)){
+                placedInCoordinator = a.getBoolean(R.styleable.MaterialScrollBar_msb_placedInCoordinator, false);
+            }
         }
     }
 
     //Sets up bar.
     View setUpHandleTrack(Context context){
         handleTrack = new View(context);
-        LayoutParams lp = new RelativeLayout.LayoutParams(Utils.getDP(12, this), LayoutParams.MATCH_PARENT);
-        lp.addRule(ALIGN_PARENT_RIGHT);
-        handleTrack.setLayoutParams(lp);
+        if (placedInCoordinator) {//getParent() instanceof CoordinatorLayout) {
+            CoordinatorLayout.LayoutParams lp = new CoordinatorLayout.LayoutParams(Utils.getDP(12, this), LayoutParams.MATCH_PARENT);
+            lp.gravity = Gravity.RIGHT;
+            handleTrack.setLayoutParams(lp);
+        } else {
+            LayoutParams lp = new RelativeLayout.LayoutParams(Utils.getDP(12, this), LayoutParams.MATCH_PARENT);
+            lp.addRule(ALIGN_PARENT_RIGHT);
+            handleTrack.setLayoutParams(lp);
+        }
         handleTrack.setBackgroundColor(ContextCompat.getColor(context, android.R.color.darker_gray));
         ViewCompat.setAlpha(handleTrack, 0.4F);
         return(handleTrack);
@@ -170,10 +183,17 @@ public abstract class MaterialScrollBar<T> extends RelativeLayout {
     //Sets up handleThumb.
     Handle setUpHandle(Context context, Boolean lightOnTouch){
         handleThumb = new Handle(context, getMode());
-        RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(Utils.getDP(12, this),
-                Utils.getDP(72, this));
-        lp.addRule(ALIGN_PARENT_RIGHT);
-        handleThumb.setLayoutParams(lp);
+        if (placedInCoordinator) {// (getParent() instanceof CoordinatorLayout) {
+            CoordinatorLayout.LayoutParams lp = new CoordinatorLayout.LayoutParams(Utils.getDP(12, this),
+                    Utils.getDP(72, this));
+            lp.gravity = Gravity.RIGHT;
+            handleThumb.setLayoutParams(lp);
+        } else {
+            RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(Utils.getDP(12, this),
+                    Utils.getDP(72, this));
+            lp.addRule(ALIGN_PARENT_RIGHT);
+            handleThumb.setLayoutParams(lp);
+        }
 
         this.lightOnTouch = lightOnTouch;
         int colourToSet;
@@ -591,7 +611,7 @@ public abstract class MaterialScrollBar<T> extends RelativeLayout {
         MaterialScrollBar.this.indicator = indicator;
         indicator.testAdapter(recyclerView.getAdapter());
         indicator.setRTL(rtl);
-        indicator.linkToScrollBar(MaterialScrollBar.this, addSpaceSide);
+        indicator.linkToScrollBar(MaterialScrollBar.this, addSpaceSide, placedInCoordinator);
         indicator.setTextColour(textColour);
     }
 
