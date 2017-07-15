@@ -26,7 +26,6 @@ import android.view.View;
 
 public class DragScrollBar extends MaterialScrollBar<DragScrollBar>{
 
-    Boolean draggableFromAnywhere = false;
     float handleOffset = 0;
     float indicatorOffset = 0;
 
@@ -44,16 +43,6 @@ public class DragScrollBar extends MaterialScrollBar<DragScrollBar>{
 
     boolean held = false;
 
-    public DragScrollBar setDraggableFromAnywhere(boolean draggableFromAnywhere){
-        this.draggableFromAnywhere = draggableFromAnywhere;
-        return this;
-    }
-
-    //Tests to ensure that the touch is on the handleThumb depending on the user preference
-    private boolean validTouch(MotionEvent event){
-        return draggableFromAnywhere || (event.getY() >= ViewCompat.getY(handleThumb) - Utils.getDP(20, recyclerView.getContext()) && event.getY() <= ViewCompat.getY(handleThumb) + handleThumb.getHeight());
-    }
-
     @Override
     void setTouchIntercept() {
         final Handle handle = super.handleThumb;
@@ -61,7 +50,15 @@ public class DragScrollBar extends MaterialScrollBar<DragScrollBar>{
             @Override
             public boolean onTouch(View v, MotionEvent event) {
             if (!hiddenByUser) {
-                if(event.getAction() == MotionEvent.ACTION_DOWN && validTouch(event)){
+
+                boolean valid = validTouch(event);
+
+                // check valid touch region only on action down => otherwise the check will fail if users scrolls very fast
+                if (event.getAction() == MotionEvent.ACTION_DOWN && !valid) {
+                    return false;
+                }
+
+                if(event.getAction() == MotionEvent.ACTION_DOWN && valid){
                     held = true;
 
                     indicatorOffset = event.getY() - handle.getY() - handle.getLayoutParams().height / 2;

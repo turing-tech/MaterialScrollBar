@@ -90,7 +90,7 @@ public abstract class MaterialScrollBar<T> extends RelativeLayout {
     private OnLayoutChangeListener indicatorLayoutListener;
     private Runnable onSetup;
     private float previousScrollPercent = 0;
-
+    Boolean draggableFromAnywhere = false;
 
     //CHAPTER I - INITIAL SETUP
 
@@ -643,6 +643,13 @@ public abstract class MaterialScrollBar<T> extends RelativeLayout {
         }
     }
 
+    /**
+     * define if the scrollbar is draggable from anywhere or only from the handle itself
+     */
+    public void setDraggableFromAnywhere(boolean draggableFromAnywhere){
+        this.draggableFromAnywhere = draggableFromAnywhere;
+    }
+
     //CHAPTER IV - MISC METHODS
 
     //Fetch accent colour.
@@ -755,6 +762,11 @@ public abstract class MaterialScrollBar<T> extends RelativeLayout {
         if (lightOnTouch) {
             handleThumb.setBackgroundColor(handleOffColour);
         }
+    }
+
+    //Tests to ensure that the touch is on the handleThumb depending on the user preference
+    protected boolean validTouch(MotionEvent event){
+        return draggableFromAnywhere || (event.getY() >= ViewCompat.getY(handleThumb) - Utils.getDP(20, recyclerView.getContext()) && event.getY() <= ViewCompat.getY(handleThumb) + handleThumb.getHeight());
     }
 
     class scrollListener extends RecyclerView.OnScrollListener {

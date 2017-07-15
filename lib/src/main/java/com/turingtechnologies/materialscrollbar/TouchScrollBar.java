@@ -20,6 +20,7 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.os.Handler;
 import android.os.Looper;
+import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
@@ -64,7 +65,15 @@ public class TouchScrollBar extends MaterialScrollBar<TouchScrollBar>{
         setOnTouchListener(new OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                if(!hiddenByUser) {
+                if (!hiddenByUser) {
+
+                    boolean valid = validTouch(event);
+
+                    // check valid touch region only on action down => otherwise the check will fail if users scrolls very fast
+                    if (event.getAction() == MotionEvent.ACTION_DOWN && !valid) {
+                        return false;
+                    }
+
                     //On Down
                     if (event.getAction() != MotionEvent.ACTION_UP) {
 
