@@ -1,5 +1,5 @@
 /*
- *  Copyright © 2016, Turing Technologies, an unincorporated organisation of Wynne Plaga
+ *  Copyright © 2016-2017, Turing Technologies, an unincorporated organisation of Wynne Plaga
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -35,13 +35,10 @@ import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.ViewParent;
 import android.view.animation.Animation;
 import android.view.animation.TranslateAnimation;
 import android.widget.RelativeLayout;
-
-import java.util.ArrayList;
 
 /*
  * Table Of Contents:
@@ -56,38 +53,59 @@ import java.util.ArrayList;
  * The two flavours of the MaterialScrollBar are the DragScrollBar and the TouchScrollBar. They both
  * extend this class. Implementations which are unique to each flavour are implemented through
  * abstraction. The use of the T generic is used to maintain the identity of the subclass when
- * chaining settings (ie. So that DragScrollBar(...).addIndicator(...) will return dragScrollBar and
+ * chaining settings (ie. So that DragScrollBar(...).setIndicator(...) will return dragScrollBar and
  * not MaterialScrollBar).
  *
- * The class can be instantiated programmatically or through XML. The framework for getting
- * everything set up the same regardless of the source is below. The methods are annotated to
- * indicate which invocation option uses which methods.
+ * The class can be instantiated only through XML.
  *
  * Scrolling logic is computed separably in ScrollingUtilities. A unique instance is made for each
  * instance of the bar.
  */
-@SuppressWarnings("unchecked")
-abstract class MaterialScrollBar<T> extends RelativeLayout {
+@SuppressWarnings({"unchecked", "unused"})
+public abstract class MaterialScrollBar<T> extends RelativeLayout {
 
-    private View background;
-    Handle handle;
+    //Component Views
+    private View handleTrack;
+    Handle handleThumb;
+    Indicator indicator;
+
+    //Characteristics
     int handleColour;
     int handleOffColour = Color.parseColor("#9c9c9c");
     protected boolean hidden = true;
-    RecyclerView recyclerView;
-    Indicator indicator;
     private int textColour = ContextCompat.getColor(getContext(), android.R.color.white);
     boolean lightOnTouch;
+    private TypedArray a; //XML attributes
+    private Boolean rtl = false;
     boolean hiddenByUser = false;
-    private TypedArray a;
-    private int seekId = 0;
-    //For some unknown reason, some behaviours are reversed when added programmatically versus xml. Can be handled but as yet not understood.
-    boolean programmatic;
+    private float fastScrollSnapPercent = 0;
+
+    //Associated Objects
+    RecyclerView recyclerView;
+    private int seekId = 0; //ID of the associated RecyclerView
     ScrollingUtilities scrollUtils = new ScrollingUtilities(this);
     SwipeRefreshLayout swipeRefreshLayout;
-    private boolean customScroll = false;
+
+    //Misc
+    private OnLayoutChangeListener indicatorLayoutListener;
+    private float previousScrollPercent = 0;
+    Boolean draggableFromAnywhere = false;
 
     //CHAPTER I - INITIAL SETUP
+
+    //Programmatic constructor
+    MaterialScrollBar(Context context, RecyclerView recyclerView, boolean lightOnTouch){
+        super(context);
+
+        this.recyclerView = recyclerView;
+
+        addView(setUpHandleTrack(context)); //Adds the handle track
+        addView(setUpHandle(context, lightOnTouch)); //Adds the handle
+
+        setRightToLeft(Utils.isRightToLeft(context)); //Detects and applies the Right-To-Left status of the app
+
+        generalSetup();
+    }
 
     //Style-less XML Constructor
     MaterialScrollBar(Context context, AttributeSet attributeSet){
@@ -97,92 +115,70 @@ abstract class MaterialScrollBar<T> extends RelativeLayout {
     //Styled XML Constructor
     MaterialScrollBar(Context context, AttributeSet attributeSet, int defStyle){
         super(context, attributeSet, defStyle);
-        programmatic = false;
-        addView(setUpBackground(context));
-        setUpProps(context, attributeSet);
-        addView(setUpHandle(context, a.getBoolean(R.styleable.MaterialScrollBar_msb_lightOnTouch, true)));
-        if(!isInEditMode()){
-            seekId = a.getResourceId(R.styleable.MaterialScrollBar_msb_recyclerView, 0);
-        }
+
+        setUpProps(context, attributeSet); //Discovers and applies some XML attributes
+
+        addView(setUpHandleTrack(context)); //Adds the handle track
+        addView(setUpHandle(context, a.getBoolean(R.styleable.MaterialScrollBar_msb_lightOnTouch, true))); //Adds the handle
+
+        setRightToLeft(Utils.isRightToLeft(context)); //Detects and applies the Right-To-Left status of the app
+
         implementPreferences();
+
+        implementFlavourPreferences(a);
+
         a.recycle();
     }
 
-    //Programmatic Constructor
-    MaterialScrollBar(Context context, final RecyclerView recyclerView, boolean lightOnTouch){
-        super(context);
-        programmatic = true;
-        if(!(recyclerView.getParent() instanceof RelativeLayout)){
-            throw new CustomExceptions.UnsupportedParentException();
-        }
-        setId(R.id.reservedNamedId); //Gives the view an ID so that it can be found in the parent.
-        addView(setUpBackground(context)); //Adds the background
-        addView(setUpHandle(context, lightOnTouch)); //Adds the handle
-        LayoutParams layoutParams = new LayoutParams(Utils.getDP(20, this), ViewGroup.LayoutParams.MATCH_PARENT);
-        layoutParams.addRule(ALIGN_RIGHT, recyclerView.getId());
-        layoutParams.addRule(ALIGN_TOP, recyclerView.getId());
-        layoutParams.addRule(ALIGN_BOTTOM, recyclerView.getId());
-        ((ViewGroup) recyclerView.getParent()).addView(this, layoutParams); //Fits bar to right edge of the relevant view.
-        this.recyclerView = recyclerView;
-        generalSetup();
-    }
-
-    //XML case only. Unpacks XML attributes and ensures that no mandatory attributes are missing.
-    void setUpProps(Context context, AttributeSet attrs){
+    //Unpacks XML attributes and ensures that no mandatory attributes are missing, then applies them.
+    void setUpProps(Context context, AttributeSet attributes){
         a = context.getTheme().obtainStyledAttributes(
-                attrs,
+                attributes,
                 R.styleable.MaterialScrollBar,
                 0, 0);
-        ArrayList<String> missing = new ArrayList<>();
-        //Ensures that a recyclerView is associated with the bar.
-        if(!a.hasValue(R.styleable.MaterialScrollBar_msb_recyclerView)){
-            missing.add("recyclerView");
-        }
-        //Ensures that a preference is expressed for lightOnTouch.
+
         if(!a.hasValue(R.styleable.MaterialScrollBar_msb_lightOnTouch)){
-            missing.add("lightOnTouch");
+            throw new IllegalStateException(
+                    "You are missing the following required attributes from a scroll bar in your XML: lightOnTouch");
         }
-        if(missing.size() != 0){
-            throw new CustomExceptions.MissingAttributesException(missing);
+
+        if(!isInEditMode()){
+            seekId = a.getResourceId(R.styleable.MaterialScrollBar_msb_recyclerView, 0); //Discovers and saves the ID of the recyclerView
         }
     }
 
-    //Dual case. Sets up bar.
-    View setUpBackground(Context context){
-        background = new View(context);
+    //Sets up bar.
+    View setUpHandleTrack(Context context){
+        handleTrack = new View(context);
         LayoutParams lp = new RelativeLayout.LayoutParams(Utils.getDP(12, this), LayoutParams.MATCH_PARENT);
         lp.addRule(ALIGN_PARENT_RIGHT);
-        background.setLayoutParams(lp);
-        background.setBackgroundColor(ContextCompat.getColor(context, android.R.color.darker_gray));
-        ViewCompat.setAlpha(background, 0.4F);
-        return(background);
+        handleTrack.setLayoutParams(lp);
+        handleTrack.setBackgroundColor(ContextCompat.getColor(context, android.R.color.darker_gray));
+        ViewCompat.setAlpha(handleTrack, 0.4F);
+        return(handleTrack);
     }
 
-    //Dual case. Sets up handle.
+    //Sets up handleThumb.
     Handle setUpHandle(Context context, Boolean lightOnTouch){
-        handle = new Handle(context, getMode(), programmatic);
+        handleThumb = new Handle(context, getMode());
         RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(Utils.getDP(12, this),
                 Utils.getDP(72, this));
         lp.addRule(ALIGN_PARENT_RIGHT);
-        handle.setLayoutParams(lp);
+        handleThumb.setLayoutParams(lp);
 
         this.lightOnTouch = lightOnTouch;
         int colourToSet;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            handleColour = fetchAccentColour(context);
-        } else {
-            handleColour = Color.parseColor("#9c9c9c");
-        }
+        handleColour = fetchAccentColour(context);
         if(lightOnTouch){
             colourToSet = Color.parseColor("#9c9c9c");
         } else {
             colourToSet = handleColour;
         }
-        handle.setBackgroundColor(colourToSet);
-        return handle;
+        handleThumb.setBackgroundColor(colourToSet);
+        return handleThumb;
     }
 
-    //XML case only. Implements optional attributes.
+    //Implements optional attributes.
     void implementPreferences(){
         if(a.hasValue(R.styleable.MaterialScrollBar_msb_barColour)){
             setBarColour(a.getColor(R.styleable.MaterialScrollBar_msb_barColour, 0));
@@ -199,10 +195,23 @@ abstract class MaterialScrollBar<T> extends RelativeLayout {
         if(a.hasValue(R.styleable.MaterialScrollBar_msb_barThickness)){
             setBarThickness(a.getDimensionPixelSize(R.styleable.MaterialScrollBar_msb_barThickness, 0));
         }
-        implementFlavourPreferences(a);
+        if(a.hasValue(R.styleable.MaterialScrollBar_msb_rightToLeft)){
+            setRightToLeft(a.getBoolean(R.styleable.MaterialScrollBar_msb_rightToLeft, false));
+        }
     }
 
-    //XML case only. Waits for all of the views to be attached to the window and then implements general setup.
+    public T setRecyclerView(RecyclerView rv){
+        if(seekId != 0){
+            throw new IllegalStateException("There is already a recyclerView set by XML.");
+        } else if (recyclerView != null){
+            throw new IllegalStateException("There is already a recyclerView set.");
+        }
+        recyclerView = rv;
+        generalSetup();
+        return (T)this;
+    }
+
+    //Waits for all of the views to be attached to the window and then implements general setup.
     //Waiting must occur so that the relevant recyclerview can be found.
     @Override
     protected void onAttachedToWindow() {
@@ -214,7 +223,7 @@ abstract class MaterialScrollBar<T> extends RelativeLayout {
         }
     }
 
-    //Dual case. General setup.
+    //General setup.
     private void generalSetup(){
         recyclerView.setVerticalScrollBarEnabled(false); // disable any existing scrollbars
         recyclerView.addOnScrollListener(new scrollListener()); // lets us read when the recyclerView scrolls
@@ -223,8 +232,14 @@ abstract class MaterialScrollBar<T> extends RelativeLayout {
 
         identifySwipeRefreshParents();
 
+        checkCustomScrolling();
+
         //Hides the view
-        TranslateAnimation anim = new TranslateAnimation(Animation.RELATIVE_TO_PARENT, 0.0f, Animation.RELATIVE_TO_SELF, getHideRatio(), Animation.RELATIVE_TO_PARENT, 0.0f, Animation.RELATIVE_TO_PARENT, 0.0f);
+        TranslateAnimation anim = new TranslateAnimation(
+                Animation.RELATIVE_TO_PARENT, 0.0f,
+                Animation.RELATIVE_TO_SELF, rtl ? -getHideRatio() : getHideRatio(),
+                Animation.RELATIVE_TO_PARENT, 0.0f,
+                Animation.RELATIVE_TO_PARENT, 0.0f);
         anim.setDuration(0);
         anim.setFillAfter(true);
         hidden = true;
@@ -235,18 +250,24 @@ abstract class MaterialScrollBar<T> extends RelativeLayout {
     void identifySwipeRefreshParents(){
         boolean cycle = true;
         ViewParent parent = getParent();
-        while(cycle){
-            if(parent instanceof SwipeRefreshLayout){
-                swipeRefreshLayout = (SwipeRefreshLayout)parent;
-                cycle = false;
-            } else {
-                if(parent.getParent() == null){
+        if(parent != null){
+            while(cycle){
+                if(parent instanceof SwipeRefreshLayout){
+                    swipeRefreshLayout = (SwipeRefreshLayout)parent;
                     cycle = false;
                 } else {
-                    parent = parent.getParent();
+                    if(parent.getParent() == null){
+                        cycle = false;
+                    } else {
+                        parent = parent.getParent();
+                    }
                 }
             }
         }
+    }
+
+    boolean isScrollChangeLargeEnoughForFastScroll(float currentScrollPercent) {
+        return Math.abs(currentScrollPercent - previousScrollPercent) > fastScrollSnapPercent;
     }
 
     boolean sizeUnchecked = true;
@@ -258,14 +279,18 @@ abstract class MaterialScrollBar<T> extends RelativeLayout {
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
         super.onLayout(changed, l, t, r, b);
 
+        if(recyclerView == null && !isInEditMode()){
+            throw new RuntimeException("You need to set a recyclerView for the scroll bar, either in the XML or using setRecyclerView().");
+        }
+
         if(sizeUnchecked && !isInEditMode()){
             scrollUtils.getCurScrollState();
             if(scrollUtils.getAvailableScrollHeight() <= 0){
-                background.setVisibility(GONE);
-                handle.setVisibility(GONE);
+                handleTrack.setVisibility(GONE);
+                handleThumb.setVisibility(GONE);
             } else {
-                background.setVisibility(VISIBLE);
-                handle.setVisibility(VISIBLE);
+                handleTrack.setVisibility(VISIBLE);
+                handleThumb.setVisibility(VISIBLE);
                 sizeUnchecked = false;
             }
         }
@@ -334,10 +359,23 @@ abstract class MaterialScrollBar<T> extends RelativeLayout {
     //CHAPTER III - CUSTOMISATION METHODS
 
     private void checkCustomScrollingInterface(){
-        if(!(recyclerView.getAdapter() instanceof  ICustomScroller)){
-            throw new CustomExceptions.AdapterNotSetupForCustomScrollingException(recyclerView.getAdapter().getClass());
+        if((recyclerView.getAdapter() instanceof  ICustomScroller)){
+            scrollUtils.customScroller = (ICustomScroller) recyclerView.getAdapter();
         }
-        scrollUtils.customScroller = (ICustomScroller) recyclerView.getAdapter();
+    }
+
+    /**
+     * With very long lists, it may be advantageous to put a buffer on the drag bar to give the
+     * user some time to actually see the scroll handle and the content. This will make the
+     * bar less "smooth scrolling" and instead, snap to specific scroll percents. This could
+     * be useful for the {@link DateAndTimeIndicator} style scrollbars, where you don't need to see
+     * every single date available.
+     *
+     * @param snapPercent percentage that the fast scroll bar should snap to.
+     */
+    public T setFastScrollSnapPercent(float snapPercent) {
+        fastScrollSnapPercent = snapPercent;
+        return (T)this;
     }
 
     /**
@@ -345,8 +383,7 @@ abstract class MaterialScrollBar<T> extends RelativeLayout {
      *
      * The adapter must implement {@link ICustomScroller}.
      */
-    public T useCustomScrolling(){
-        customScroll = true;
+    private void checkCustomScrolling(){
         if (ViewCompat.isAttachedToWindow(this))
             checkCustomScrollingInterface();
         else
@@ -359,12 +396,11 @@ abstract class MaterialScrollBar<T> extends RelativeLayout {
                     checkCustomScrollingInterface();
                 }
             });
-        return (T)this;
     }
 
     /**
-     * Provides the ability to programmatically set the colour of the scrollbar handle.
-     * @param colour to set the handle.
+     * Provides the ability to programmatically set the colour of the scrollbar handleThumb.
+     * @param colour to set the handleThumb.
      */
     public T setHandleColour(String colour){
         handleColour = Color.parseColor(colour);
@@ -373,8 +409,8 @@ abstract class MaterialScrollBar<T> extends RelativeLayout {
     }
 
     /**
-     * Provides the ability to programmatically set the colour of the scrollbar handle.
-     * @param colour to set the handle.
+     * Provides the ability to programmatically set the colour of the scrollbar handleThumb.
+     * @param colour to set the handleThumb.
      */
     public T setHandleColour(@ColorInt int colour){
         handleColour = colour;
@@ -383,8 +419,8 @@ abstract class MaterialScrollBar<T> extends RelativeLayout {
     }
 
     /**
-     * Provides the ability to programmatically set the colour of the scrollbar handle.
-     * @param colourResId to set the handle.
+     * Provides the ability to programmatically set the colour of the scrollbar handleThumb.
+     * @param colourResId to set the handleThumb.
      */
     public T setHandleColourRes(@ColorRes int colourResId){
         handleColour = ContextCompat.getColor(getContext(), colourResId);
@@ -397,42 +433,42 @@ abstract class MaterialScrollBar<T> extends RelativeLayout {
             ((GradientDrawable)indicator.getBackground()).setColor(handleColour);
         }
         if(!lightOnTouch){
-            handle.setBackgroundColor(handleColour);
+            handleThumb.setBackgroundColor(handleColour);
         }
     }
 
     /**
-     * Provides the ability to programmatically set the colour of the scrollbar handle when unpressed. Only applies if lightOnTouch is true.
-     * @param colour to set the handle when unpressed.
+     * Provides the ability to programmatically set the colour of the scrollbar handleThumb when unpressed. Only applies if lightOnTouch is true.
+     * @param colour to set the handleThumb when unpressed.
      */
     public T setHandleOffColour(String colour){
         handleOffColour = Color.parseColor(colour);
         if(lightOnTouch){
-            handle.setBackgroundColor(handleOffColour);
+            handleThumb.setBackgroundColor(handleOffColour);
         }
         return (T)this;
     }
 
     /**
-     * Provides the ability to programmatically set the colour of the scrollbar handle when unpressed. Only applies if lightOnTouch is true.
-     * @param colour to set the handle when unpressed.
+     * Provides the ability to programmatically set the colour of the scrollbar handleThumb when unpressed. Only applies if lightOnTouch is true.
+     * @param colour to set the handleThumb when unpressed.
      */
     public T setHandleOffColour(@ColorInt int colour){
         handleOffColour = colour;
         if(lightOnTouch){
-            handle.setBackgroundColor(handleOffColour);
+            handleThumb.setBackgroundColor(handleOffColour);
         }
         return (T)this;
     }
 
     /**
-     * Provides the ability to programmatically set the colour of the scrollbar handle when unpressed. Only applies if lightOnTouch is true.
-     * @param colourResId to set the handle when unpressed.
+     * Provides the ability to programmatically set the colour of the scrollbar handleThumb when unpressed. Only applies if lightOnTouch is true.
+     * @param colourResId to set the handleThumb when unpressed.
      */
     public T setHandleOffColourRes(@ColorRes int colourResId){
         handleOffColour = ContextCompat.getColor(getContext(), colourResId);
         if(lightOnTouch){
-            handle.setBackgroundColor(handleOffColour);
+            handleThumb.setBackgroundColor(handleOffColour);
         }
         return (T)this;
     }
@@ -442,7 +478,7 @@ abstract class MaterialScrollBar<T> extends RelativeLayout {
      * @param colour to set the bar.
      */
     public T setBarColour(String colour){
-        background.setBackgroundColor(Color.parseColor(colour));
+        handleTrack.setBackgroundColor(Color.parseColor(colour));
         return (T)this;
     }
 
@@ -451,7 +487,7 @@ abstract class MaterialScrollBar<T> extends RelativeLayout {
      * @param colour to set the bar.
      */
     public T setBarColour(@ColorInt int colour){
-        background.setBackgroundColor(colour);
+        handleTrack.setBackgroundColor(colour);
         return (T)this;
     }
 
@@ -460,7 +496,7 @@ abstract class MaterialScrollBar<T> extends RelativeLayout {
      * @param colourResId to set the bar.
      */
     public T setBarColourRes(@ColorRes int colourResId){
-        background.setBackgroundColor(ContextCompat.getColor(getContext(), colourResId));
+        handleTrack.setBackgroundColor(ContextCompat.getColor(getContext(), colourResId));
         return (T)this;
     }
 
@@ -505,6 +541,9 @@ abstract class MaterialScrollBar<T> extends RelativeLayout {
      * Removes any indicator.
      */
     public T removeIndicator(){
+        if(this.indicator != null){
+            this.indicator.removeAllViews();
+        }
         this.indicator = null;
         return (T)this;
     }
@@ -512,30 +551,35 @@ abstract class MaterialScrollBar<T> extends RelativeLayout {
     /**
      * Adds an indicator which accompanies this scroll bar.
      *
-     * @param addSpace Should space be put between the indicator and the bar or should they touch?
+     * @param addSpaceSide Should space be put between the indicator and the bar or should they touch?
      */
-    public T addIndicator(final Indicator indicator, final boolean addSpace) {
-
+    public T setIndicator(final Indicator indicator, final boolean addSpaceSide) {
         if(ViewCompat.isAttachedToWindow(this)){
-            this.indicator = indicator;
-            indicator.testAdapter(recyclerView.getAdapter());
-            indicator.linkToScrollBar(MaterialScrollBar.this, addSpace);
-            indicator.setTextColour(textColour);
+            setupIndicator(indicator, addSpaceSide);
         } else {
-            addOnLayoutChangeListener(new OnLayoutChangeListener()
+            removeOnLayoutChangeListener(indicatorLayoutListener);
+            indicatorLayoutListener = new OnLayoutChangeListener()
             {
                 @Override
-                public void onLayoutChange(View v, int left, int top, int right, int bottom, int oldLeft, int oldTop, int oldRight, int oldBottom)
-                {
-                    MaterialScrollBar.this.indicator = indicator;
-                    indicator.testAdapter(recyclerView.getAdapter());
-                    indicator.linkToScrollBar(MaterialScrollBar.this, addSpace);
-                    indicator.setTextColour(textColour);
+                public void onLayoutChange(View v, int left, int top, int right, int bottom, int oldLeft, int oldTop, int oldRight, int oldBottom){
+                    setupIndicator(indicator, addSpaceSide);
                     MaterialScrollBar.this.removeOnLayoutChangeListener(this);
                 }
-            });
+            };
+            addOnLayoutChangeListener(indicatorLayoutListener);
         }
         return (T)this;
+    }
+
+    /**
+     * Shared code for the above method.
+     */
+    private void setupIndicator(Indicator indicator, boolean addSpaceSide){
+        MaterialScrollBar.this.indicator = indicator;
+        indicator.testAdapter(recyclerView.getAdapter());
+        indicator.setRTL(rtl);
+        indicator.linkToScrollBar(MaterialScrollBar.this, addSpaceSide);
+        indicator.setTextColour(textColour);
     }
 
     /**
@@ -543,17 +587,22 @@ abstract class MaterialScrollBar<T> extends RelativeLayout {
      * @param thickness The desired bar thickness.
      */
     public T setBarThickness(int thickness){
-        LayoutParams layoutParams = (LayoutParams) handle.getLayoutParams();
+        LayoutParams layoutParams = (LayoutParams) handleThumb.getLayoutParams();
         layoutParams.width = thickness;
-        handle.setLayoutParams(layoutParams);
+        handleThumb.setLayoutParams(layoutParams);
 
-        layoutParams = (LayoutParams) background.getLayoutParams();
+        layoutParams = (LayoutParams) handleTrack.getLayoutParams();
         layoutParams.width = thickness;
-        background.setLayoutParams(layoutParams);
+        handleTrack.setLayoutParams(layoutParams);
 
         if(indicator != null){
             indicator.setSizeCustom(thickness);
         }
+
+        layoutParams = (LayoutParams) getLayoutParams();
+        layoutParams.width = thickness;
+        setLayoutParams(layoutParams);
+
         return (T)this;
     }
 
@@ -562,22 +611,44 @@ abstract class MaterialScrollBar<T> extends RelativeLayout {
      */
     public void setScrollBarHidden(boolean hidden){
         hiddenByUser = hidden;
-        fadeOut();
+        if(hiddenByUser){
+            setVisibility(GONE);
+        } else {
+            setVisibility(VISIBLE);
+        }
+    }
+
+    /**
+     * Overrides the right-to-left settings for the scroll bar.
+     */
+    public void setRightToLeft(boolean rtl){
+        this.rtl = rtl;
+        handleThumb.setRightToLeft(rtl);
+        if(indicator != null){
+            indicator.setRTL(rtl);
+            indicator.setLayoutParams(indicator.refreshMargins((LayoutParams) indicator.getLayoutParams()));
+        }
+    }
+
+    /**
+     * define if the scrollbar is draggable from anywhere or only from the handle itself
+     */
+    public void setDraggableFromAnywhere(boolean draggableFromAnywhere){
+        this.draggableFromAnywhere = draggableFromAnywhere;
     }
 
     //CHAPTER IV - MISC METHODS
 
-    //Fetch accent colour on devices running Lollipop or newer.
-    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-    private int fetchAccentColour(Context context) {
+    //Fetch accent colour.
+    static int fetchAccentColour(Context context) {
         TypedValue typedValue = new TypedValue();
 
-        TypedArray b = context.obtainStyledAttributes(typedValue.data, new int[] { android.R.attr.colorAccent });
-        int colour = b.getColor(0, 0);
+        TypedArray a = context.obtainStyledAttributes(typedValue.data, new int[] { R.attr.colorAccent });
+        int color = a.getColor(0, 0);
 
-        b.recycle();
+        a.recycle();
 
-        return colour;
+        return color;
     }
 
     /**
@@ -585,7 +656,11 @@ abstract class MaterialScrollBar<T> extends RelativeLayout {
      */
     void fadeOut(){
         if(!hidden){
-            TranslateAnimation anim = new TranslateAnimation(Animation.RELATIVE_TO_PARENT, 0.0f, Animation.RELATIVE_TO_SELF, getHideRatio(), Animation.RELATIVE_TO_PARENT, 0.0f, Animation.RELATIVE_TO_PARENT, 0.0f);
+            TranslateAnimation anim = new TranslateAnimation(
+                    Animation.RELATIVE_TO_PARENT, 0.0f,
+                    Animation.RELATIVE_TO_SELF, rtl ? -getHideRatio() : getHideRatio(),
+                    Animation.RELATIVE_TO_PARENT, 0.0f,
+                    Animation.RELATIVE_TO_PARENT, 0.0f);
             anim.setDuration(150);
             anim.setFillAfter(true);
             hidden = true;
@@ -593,7 +668,7 @@ abstract class MaterialScrollBar<T> extends RelativeLayout {
             postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    handle.expandHandle();
+                    handleThumb.expandHandle();
                 }
             }, anim.getDuration() / 3);
         }
@@ -605,16 +680,20 @@ abstract class MaterialScrollBar<T> extends RelativeLayout {
     void fadeIn(){
         if(hidden && getHide() && !hiddenByUser){
             hidden = false;
-            TranslateAnimation anim = new TranslateAnimation(Animation.RELATIVE_TO_SELF, getHideRatio(), Animation.RELATIVE_TO_SELF, 0.0f, Animation.RELATIVE_TO_PARENT, 0.0f, Animation.RELATIVE_TO_PARENT, 0.0f);
+            TranslateAnimation anim = new TranslateAnimation(
+                    Animation.RELATIVE_TO_SELF, rtl ? -getHideRatio() : getHideRatio(),
+                    Animation.RELATIVE_TO_SELF, 0.0f,
+                    Animation.RELATIVE_TO_PARENT, 0.0f,
+                    Animation.RELATIVE_TO_PARENT, 0.0f);
             anim.setDuration(150);
             anim.setFillAfter(true);
             startAnimation(anim);
-            handle.collapseHandle();
+            handleThumb.collapseHandle();
         }
     }
 
     protected void onDown(MotionEvent event){
-        if (indicator != null && indicator.getVisibility() == INVISIBLE) {
+        if (indicator != null && indicator.getVisibility() == INVISIBLE && recyclerView.getAdapter() != null) {
             indicator.setVisibility(VISIBLE);
             if(Build.VERSION.SDK_INT >= 12){
                 indicator.setAlpha(0F);
@@ -630,15 +709,21 @@ abstract class MaterialScrollBar<T> extends RelativeLayout {
             }
         }
 
-        int top = handle.getHeight() / 2;
+        int top = handleThumb.getHeight() / 2;
         int bottom = recyclerView.getHeight() - Utils.getDP(72, recyclerView.getContext());
         float boundedY = Math.max(top, Math.min(bottom, event.getY() - getHandleOffset()));
-        scrollUtils.scrollToPositionAtProgress((boundedY - top) / (bottom - top));
-        scrollUtils.scrollHandleAndIndicator();
-        recyclerView.onScrolled(0, 0);
+
+        float currentScrollPercent = (boundedY - top) / (bottom - top);
+        if (isScrollChangeLargeEnoughForFastScroll(currentScrollPercent) ||
+                currentScrollPercent == 0 || currentScrollPercent == 1) {
+            previousScrollPercent = currentScrollPercent;
+            scrollUtils.scrollToPositionAtProgress(currentScrollPercent);
+            scrollUtils.scrollHandleAndIndicator();
+            recyclerView.onScrolled(0, 0);
+        }
 
         if (lightOnTouch) {
-            handle.setBackgroundColor(handleColour);
+            handleThumb.setBackgroundColor(handleColour);
         }
     }
 
@@ -662,8 +747,13 @@ abstract class MaterialScrollBar<T> extends RelativeLayout {
         }
 
         if (lightOnTouch) {
-            handle.setBackgroundColor(handleOffColour);
+            handleThumb.setBackgroundColor(handleOffColour);
         }
+    }
+
+    //Tests to ensure that the touch is on the handleThumb depending on the user preference
+    protected boolean validTouch(MotionEvent event){
+        return draggableFromAnywhere || (event.getY() >= ViewCompat.getY(handleThumb) - Utils.getDP(20, recyclerView.getContext()) && event.getY() <= ViewCompat.getY(handleThumb) + handleThumb.getHeight());
     }
 
     class scrollListener extends RecyclerView.OnScrollListener {
@@ -677,7 +767,7 @@ abstract class MaterialScrollBar<T> extends RelativeLayout {
             }
 
             //Disables any swipeRefreshLayout parent if the recyclerview is not at the top and enables it if it is.
-            if(swipeRefreshLayout != null){
+            if(swipeRefreshLayout != null && !swipeRefreshLayout.isRefreshing()){
                 if(((LinearLayoutManager)recyclerView.getLayoutManager()).findFirstCompletelyVisibleItemPosition() == 0){
                     swipeRefreshLayout.setEnabled(true);
                 } else {

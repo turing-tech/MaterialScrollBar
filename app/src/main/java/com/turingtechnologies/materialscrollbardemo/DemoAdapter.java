@@ -16,7 +16,7 @@ import com.turingtechnologies.materialscrollbar.INameableAdapter;
 
 import java.util.Date;
 
-public class DemoAdapter extends RecyclerView.Adapter<DemoAdapter.ViewHolder> implements INameableAdapter, IDateableAdapter, ICustomAdapter {
+class DemoAdapter extends RecyclerView.Adapter<DemoAdapter.ViewHolder> implements INameableAdapter, IDateableAdapter, ICustomAdapter {
 
     private Activity act;
 
@@ -43,11 +43,11 @@ public class DemoAdapter extends RecyclerView.Adapter<DemoAdapter.ViewHolder> im
         return AppData.pkgLabelList.get(element);
     }
 
-    public static class ViewHolder extends RecyclerView.ViewHolder {
+    static class ViewHolder extends RecyclerView.ViewHolder {
         // each data item is just a string in this case
-        public TextView label;
-        public ImageView icon;
-        public ViewHolder(View v) {
+        TextView label;
+        ImageView icon;
+        ViewHolder(View v) {
             super(v);
             label = (TextView) v.findViewById(R.id.textView);
             icon = (ImageView) v.findViewById(R.id.imageView);

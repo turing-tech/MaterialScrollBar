@@ -1,10 +1,8 @@
 # MaterialScrollBar
 
-[![Apache 2.0](https://img.shields.io/hexpm/l/plug.svg)](http://www.apache.org/licenses/LICENSE-2.0) [![BinTray](https://img.shields.io/github/release/krimin-killr21/MaterialScrollBar.svg?label=jCenter)](https://bintray.com/krimin-killr21/maven/material-scroll-bar/view) [![Version](https://img.shields.io/badge/API-7%2B-blue.svg?style=flat)](https://android-arsenal.com/api?level=7) [![Android Arsenal](https://img.shields.io/badge/Android%20Arsenal-MaterialScrollBar-blue.svg?style=flat)](https://android-arsenal.com/details/1/2441)
+[![Apache 2.0](https://img.shields.io/hexpm/l/plug.svg)](http://www.apache.org/licenses/LICENSE-2.0) [![](https://jitpack.io/v/turing-tech/MaterialScrollBar.svg)](https://jitpack.io/#turing-tech/MaterialScrollBar) [![Version](https://img.shields.io/badge/API-11%2B-blue.svg?style=flat)](https://android-arsenal.com/api?level=7) [![Android Arsenal](https://img.shields.io/badge/Android%20Arsenal-MaterialScrollBar-blue.svg?style=flat)](https://android-arsenal.com/details/1/2441)
 
 An Android library that brings the Material Design 5.1 scrollbar to pre-5.1 devices. Designed for Android's `recyclerView`.
-
-Go see the wiki!
 
 ![](sample.png)
 
@@ -16,30 +14,39 @@ Go see the wiki!
 
 [Donate](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=UH23JHQ8K4U2C)
 
-###Gradle
+## Table of Contents
+1. [Gradle](https://github.com/turing-tech/MaterialScrollBar#gradle)
+2. [Documentation](https://github.com/turing-tech/MaterialScrollBar#documentation)
+    1. [How to use](https://github.com/turing-tech/MaterialScrollBar#how-to-use)
+    2. [My recyclerView elements aren't all the same size! What do I do?](https://github.com/turing-tech/MaterialScrollBar#my-recyclerview-elements-arent-all-the-same-size-what-do-i-do)
+    3. [Indicators](https://github.com/turing-tech/MaterialScrollBar#indicators)
+    4. [Specific Indicators](https://github.com/turing-tech/MaterialScrollBar#specific-indicators)
+3. [License](https://github.com/turing-tech/MaterialScrollBar#license)
+
+## Gradle
 
 ```gradle
-maven {
-    jcenter()
+allprojects {
+    repositories {
+        maven { url 'https://jitpack.io' }
+    }
 }
 ```
 
 ```gradle
 dependencies {
-    compile 'com.turingtechnologies.materialscrollbar:lib:10.+'
+    compile 'com.github.turing-tech:MaterialScrollBar:12.+'
 }
 ```
-###Documentation
+## Documentation
 
 Note: All customisation methods (`setAutoHide`, `setBarColour`, etc) return the `materialScrollBar`, so they can be chained together if wanted. Alternatively, you can just operate on a variable.
 
-####How to use - ScrollBar
+### How to use
 
-The 'scrollBar' can be implemented programatically or through XML.
+The library comes in two flavours, drag and touch. Try both out to see which you prefer.
 
-#####XML
-
-Option 1
+Option 1 - Drag
 
 ```xml
 <com.turingtechnologies.materialscrollbar.DragScrollBar
@@ -52,7 +59,7 @@ Option 1
 
 or
 
-Option 2
+Option 2 - Touch
 
 ```xml
 <com.turingtechnologies.materialscrollbar.TouchScrollBar
@@ -70,96 +77,73 @@ Additonal optional attributes:
 * msb_handleOffColour - Colour
 * msb_textColour - Colour
 * msb_barThickness - Integer
+* msb_rightToLeft - Boolean
 
 Please note that for both of these configurations, both recyclerView and lightOnTouch* must have a valid value. The recyclerView attribute should point to the id of the `recyclerView` to which you want to link the scrollbar.
 
-\* lightOnTouch behaves as follows. A value of true will cause the handle to be grey until pressed, when it will become the normal accent colour (as set). A value of false will cause the handle to always have the accent colour, even when not being pressed.
+\* lightOnTouch behaves like this: A value of true will cause the handle to be grey until pressed, when it will become the normal accent colour (as set). A value of false will cause the handle to always have the accent colour, even when not being pressed.
 
-#####Programmatically
+------
 
-Option 1
-
-```java
-DragScrollBar materialScrollBar = new DragScrollBar(this, recyclerView, {{lightOnTouch}});
-```
-
-or
-
-Option 2
-
-```java
-TouchScrollBar materialScrollBar = new TouchScrollBar(this, recyclerView, {{lightOnTouch}});
-```
-
-where "recyclerView" is the object of the `recyclerView` to which you want to link the `scrollBar`. The difference between the two options is that the touch option hides after a cooldown period and touches anywhere on the track, whether on the button or not, scroll the view. The drag option on the other hand hides using the animation seen in the video and will only respond to touches on the handle. "lightOnTouch" can either be true or false. A value of true will cause the handle to be grey until pressed, when it will become the normal accent colour (as set). A value of false will cause the handle to always have the accent colour, even when not being pressed.
-
-It is also strongly recommended that you provide the accent colour if your app supports devices below Lollipop. You can do this by invoking:
-
-```java
-materialScrollBar.setHandleColour([[Accent Colour]]);
-```
-
-For devices running Lollipop and above, the accent colour will be read automatically. If you fail to provide an accent colour, devices running version of Android below Lollipop will default to a usable but bland grey colour.
-
-####My recyclerView elements aren't all the same size! What do I do?
+### My recyclerView elements aren't all the same size! What do I do?
 
 If you are in the situation of using headers of one size and elements of another, we've developed a solution speicifcally for you. Please follow the tutorial [here](https://github.com/krimin-killr21/MaterialScrollBar/wiki/Header-Tutorial).
 
-####How to use - Indicator
+If you are in some other situation where you're elements are differently sized, implement [ICustomScroller](https://github.com/turing-tech/MaterialScrollBar/blob/master/lib/src/main/java/com/turingtechnologies/materialscrollbar/ICustomScroller.java) in your adapter and complete the included methods.
+
+------
+
+### Indicators
 
 To add an indicator, simply add the following line of code:
 
 ```java
-materialScrollBar.addIndicator({{Indicator}}, {{addSpace}});
+scrollBar.setIndicator({{Indicator}}, {{addSpace}});
 ```
-
-If you implemented the bar programmatically, simply get the object using `findViewById()` and then the scrollbar's id.
 
 The indicator should be either `AlphatbetIndicator`, `DateAndTimeIndicator`, or `CustomIndicator`. See below for specific instructions per indicator.
 
 `{{addSpace}}` is a boolean which indicates whether there should be space in between the indicator and the bar. True adds space, as in the latest version of the Google Launcher, while false adds no space, as in the Android 5.1 system scrollbars.
 
-To use an indicator, you **MUST** make your 'recyclerView''s adapter implement the relevant interface. If you do not, the library will throw a runtime error informing you of your mistake. See documentation for the relevant interface.
+To use an indicator, you **MUST** make your `recyclerView`'s adapter implement the relevant interface. If you do not, the library will throw a runtime error informing you of your mistake. See documentation for the relevant interface.
 
-####Indicators
-#####AlphabetIndicator
+------
+
+### Specific Indicators
+**AlphabetIndicator**
 
 **Required Interface:** `INameableAdapter`
 
-To implement an `AlphabetIndicator`, which displays one character usually corresponding to the first letter of each item, add the following to the end of your 'materialScrollBar' instantiation, or add it as a seperate line.
+To implement an `AlphabetIndicator`, which displays one character usually corresponding to the first letter of each item, add the following to the end of your scroll bar instantiation, or add it as a seperate line.
 ```java
-...addIndicator(new AlphabetIndicator(this));
+...setIndicator(new AlphabetIndicator(this));
 ```
 
-#####DateAndTimeIndicator
+**DateAndTimeIndicator**
 
 **Required Interface:** `IDateableAdapter`
 
-To implement a `DateAndTimeIndicator`, which displays any combination of time, day of the month, month, and year, add the following to the end of your `materialScrollBar` instantiation, or add it as a seperate line.
+To implement a `DateAndTimeIndicator`, which displays any combination of time, day of the month, month, and year, add the following to the end of your scroll bar instantiation, or add it as a seperate line.
 ```java
-...addIndicator(new DateAndTimeIndicator(this, {{includeYear}}, {{includeMonth}}, {{includeDay}}, {{includeTime}}));
+...setIndicator(new DateAndTimeIndicator(this, {{includeYear}}, {{includeMonth}}, {{includeDay}}, {{includeTime}}));
 ```
 
 All of the arguments are booleans (except for this first one obviously). The indicator will dynamically size, add punctuation, and localise for you. All you need to do is provide a `Date` object for each element in your adapter. You should almost always use miliseconds since the epoch unless you have a good reason not to. Otherwise, the library might crash.
 
-#####CustomIndicator
+**CustomIndicator**
 
 **Required Interface:** `ICustomAdapter`
 
-To implement a `CustomIndicator`, which displays any text you want, add the following to the end of your `materialScrollBar` instantiation, or add it as a seperate line.
+To implement a `CustomIndicator`, which displays any text you want, add the following to the end of your scroll bar instantiation, or add it as a seperate line.
 ```java
-...addIndicator(new CustomIndicator(this));
+...setIndicator(new CustomIndicator(this));
 ```
 
-####Customisation Options
-
-For info on other methods, see the detailed documentation from the wiki: https://github.com/krimin-killr21/MaterialScrollBar/wiki/Documentation
-
-###License
+## License
 
 Material Scroll Bar:
 
-    Copyright 2016 Turing Technologies, an unincorporated orginisation of Wynne Plaga.
+    Copyright 2016-2017 Turing Technologies, an unincorporated orginisation of Wynne Plaga.
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.

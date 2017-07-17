@@ -59,7 +59,7 @@ public class FastScrollerUtil
     // IHeaderAdapter - helper functions
     // --------------------
 
-    private static Integer getSpanSize(RecyclerView rv)
+    public static Integer getSpanSize(RecyclerView rv)
     {
         final RecyclerView.LayoutManager lm = rv.getLayoutManager();
         if (lm != null && lm instanceof GridLayoutManager)

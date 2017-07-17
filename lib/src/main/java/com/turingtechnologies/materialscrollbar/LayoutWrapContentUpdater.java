@@ -15,7 +15,7 @@ import android.view.ViewGroup.LayoutParams;
  *
  * @author Eric, April 2014
  */
-public class LayoutWrapContentUpdater
+class LayoutWrapContentUpdater
 {
     public static final String TAG = LayoutWrapContentUpdater.class.getName();
 
@@ -28,7 +28,7 @@ public class LayoutWrapContentUpdater
      *
      * @param subTreeRoot  root of the sub tree you want to recompute
      */
-    public static void wrapContentAgain(ViewGroup subTreeRoot )
+    static void wrapContentAgain(ViewGroup subTreeRoot)
     {
         wrapContentAgain( subTreeRoot, false, MeasureSpec.UNSPECIFIED, MeasureSpec.UNSPECIFIED );
     }
@@ -40,8 +40,8 @@ public class LayoutWrapContentUpdater
     /**
      * Same as previous, but with given size in case subTreeRoot itself has layout_width or layout_height = "wrap_content"
      */
-    public static void wrapContentAgain( ViewGroup subTreeRoot, boolean relayoutAllNodes,
-                                         int subTreeRootWidthMeasureSpec, int subTreeRootHeightMeasureSpec  )
+    private static void wrapContentAgain(ViewGroup subTreeRoot, boolean relayoutAllNodes,
+                                         int subTreeRootWidthMeasureSpec, int subTreeRootHeightMeasureSpec)
     {
         assert( "main".equals( Thread.currentThread().getName() ) );
 

@@ -1,28 +1,28 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 24
-    buildToolsVersion "${supportLibVersion}"
+    compileSdkVersion 25
+    buildToolsVersion '25.0.3'
 
     defaultConfig {
         applicationId "com.turingtechnologies.materialscrollbardemo"
         minSdkVersion 11
-        targetSdkVersion 24
-        versionCode 5
-        versionName "5.0"
+        targetSdkVersion 25
+        versionCode 6
+        versionName "6.0"
     }
     buildTypes {
         release {
-            minifyEnabled false
+            minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
 }
 
 dependencies {
-    compile project(':lib')
-    compile "com.android.support:recyclerview-v7:${supportLibVersion}"
-    compile 'com.pnikosis:materialish-progress:1.7'
-    compile "com.android.support:design:${supportLibVersion}"
-    compile "com.android.support:appcompat-v7:${supportLibVersion}"
+    implementation project(':lib')
+    implementation "com.android.support:recyclerview-v7:${supportLibVersion}"
+    implementation 'com.pnikosis:materialish-progress:1.7'
+    implementation "com.android.support:design:${supportLibVersion}"
+    implementation "com.android.support:appcompat-v7:${supportLibVersion}"
 }

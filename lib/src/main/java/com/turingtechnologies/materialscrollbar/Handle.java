@@ -16,6 +16,7 @@
 
 package com.turingtechnologies.materialscrollbar;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
@@ -24,6 +25,7 @@ import android.graphics.RectF;
 import android.graphics.Region;
 import android.view.View;
 
+@SuppressLint("ViewConstructor")
 public class Handle extends View {
 
     RectF rectF;
@@ -31,15 +33,18 @@ public class Handle extends View {
     Integer mode;
     boolean expanded = false;
     Context context;
-    Boolean programmatic;
+    Boolean rtl = false;
 
-    public Handle(Context c, int m, boolean pro){
+    public Handle(Context c, int m){
         super(c);
 
         context = c;
         mode = m;
         p.setFlags(Paint.ANTI_ALIAS_FLAG);
-        programmatic = pro;
+}
+
+    void setRightToLeft(boolean rtl){
+        this.rtl = rtl;
     }
 
     @Override
@@ -51,7 +56,7 @@ public class Handle extends View {
 
     public void collapseHandle(){
         expanded = true;
-        rectF = new RectF(new Rect(getLeft(),getTop(),getLeft(),getBottom()));
+        rectF = new RectF(new Rect(getRight(),getTop(),getRight(),getBottom()));
         invalidate();
     }
 
@@ -76,24 +81,26 @@ public class Handle extends View {
     }
 
     private RectF makeRect(){
-        if(programmatic){
-            return new RectF(new Rect(getLeft() - Utils.getDP(11, context),getTop(),getLeft()-Utils.getDP(4, context),getBottom()));
+        if(rtl){
+            return new RectF(new Rect(getRight() - Utils.getDP(6, context),getTop(),getRight()+Utils.getDP(4, context),getBottom()));
+
         } else {
-            return new RectF(new Rect(getLeft() - Utils.getDP(4, context),getTop(),getLeft()+Utils.getDP(6, context),getBottom()));
+            return new RectF(new Rect(getLeft() - Utils.getDP(4, context),getTop(),getLeft() + Utils.getDP(6, context),getBottom()));
         }
     }
 
+    Rect boundRect = new Rect();
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
 
         if(mode == 0 && !expanded){
-            Rect newRect = canvas.getClipBounds();
-            newRect.inset(getLeft() - Utils.getDP(30, context), 0); //make the rect larger
+            canvas.getClipBounds(boundRect);
+            boundRect.inset(-Utils.getDP(30, context), 0); //make the rect larger
 
-            canvas.clipRect(newRect, Region.Op.REPLACE);
+            canvas.clipRect(boundRect, Region.Op.REPLACE);
 
-            canvas.drawArc(rectF, 90F, 180F, false, p); //335
+            canvas.drawArc(rectF, rtl ? 270F : 90F, 180F, false, p); //335
         }
     }
 }

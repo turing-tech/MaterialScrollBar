@@ -7,21 +7,25 @@
     android:layout_height="56dp"
     android:focusableInTouchMode="false">
 
-            <ImageView
-                android:layout_width="35dp"
-                android:layout_height="35dp"
-                android:layout_marginTop="10.5dp"
-                android:id="@+id/imageView"
-                android:layout_marginLeft="16dp" />
+        <ImageView
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:layout_marginTop="10.5dp"
+            android:id="@+id/imageView"
+            android:layout_marginStart="16dp"
+            android:layout_marginLeft="16dp" />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="16sp"
-                android:text="Medium Text"
-                android:id="@+id/textView"
-                android:textColor="#212121"
-                android:layout_marginLeft="72dp"
-                android:layout_centerVertical="true" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="16sp"
+            android:text="Medium Text"
+            android:id="@+id/textView"
+            android:textColor="#212121"
+            android:layout_toRightOf="@id/imageView"
+            android:layout_toEndOf="@id/imageView"
+            android:layout_marginLeft="16dp"
+            android:layout_marginStart="16dp"
+            android:layout_centerVertical="true" />
 
 </RelativeLayout>

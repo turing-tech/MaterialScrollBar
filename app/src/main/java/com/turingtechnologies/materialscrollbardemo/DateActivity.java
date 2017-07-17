@@ -20,7 +20,7 @@ public class DateActivity extends AppCompatActivity {
         RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recyclerView);
         recyclerView.setAdapter(new DemoAdapter(this));
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        new TouchScrollBar(this, recyclerView, false).addIndicator(new DateAndTimeIndicator(this, false, true, true, true), true).setHandleColour(Utils.fetchAccentColor(this));
+        ((TouchScrollBar) findViewById(R.id.touchScrollBar)).setIndicator(new DateAndTimeIndicator(this, false, true, true, true), true);
     }
 
     @Override

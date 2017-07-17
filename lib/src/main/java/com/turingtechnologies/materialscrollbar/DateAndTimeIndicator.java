@@ -18,7 +18,6 @@ package com.turingtechnologies.materialscrollbar;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.support.v7.widget.RecyclerView;
 import android.text.format.DateFormat;
 
 import java.text.DateFormatSymbols;
@@ -29,7 +28,7 @@ import java.util.Date;
  * Indicator which should be used to display dates and/or times. Automatically sizes and localises.
  */
 @SuppressLint("ViewConstructor")
-public class DateAndTimeIndicator extends Indicator {
+public class DateAndTimeIndicator extends Indicator<IDateableAdapter, DateAndTimeIndicator> {
 
     private String[] months = new DateFormatSymbols().getMonths();
 
@@ -40,7 +39,7 @@ public class DateAndTimeIndicator extends Indicator {
     private Context context;
 
     public DateAndTimeIndicator(Context c, boolean includeYear, boolean includeMonth, boolean includeDay, boolean includeTime){
-        super(c);
+        super(c, IDateableAdapter.class);
         context = c;
         this.includeYear = includeYear;
         this.includeMonth = includeMonth;
@@ -49,8 +48,8 @@ public class DateAndTimeIndicator extends Indicator {
     }
 
     @Override
-    String getTextElement(Integer currentSection, RecyclerView.Adapter adapter) {
-        Date date = ((IDateableAdapter) adapter).getDateForElement(currentSection);
+    protected String getTextElement(Integer currentSection, IDateableAdapter adapter) {
+        Date date = adapter.getDateForElement(currentSection);
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(date);
         String text = "";
@@ -78,12 +77,12 @@ public class DateAndTimeIndicator extends Indicator {
     }
 
     @Override
-    int getIndicatorHeight() {
+    protected int getIndicatorHeight() {
         return 75;
     }
 
     @Override
-    int getIndicatorWidth() {
+    protected int getIndicatorWidth() {
         int width = 62;
         if(includeYear){
             if(includeDay){
@@ -108,14 +107,7 @@ public class DateAndTimeIndicator extends Indicator {
     }
 
     @Override
-    void testAdapter(RecyclerView.Adapter adapter) {
-        if(!(adapter instanceof IDateableAdapter)){
-            throw new CustomExceptions.AdapterNotSetupForIndicatorException(adapter.getClass(), "IDateableAdapter");
-        }
-    }
-
-    @Override
-    int getTextSize() {
+    protected int getTextSize() {
         return 28;
     }
 

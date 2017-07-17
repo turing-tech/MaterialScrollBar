@@ -1,5 +1,5 @@
 /*
- *  Copyright © 2016, Turing Technologies, an unincorporated organisation of Wynne Plaga
+ *  Copyright © 2016-2017, Turing Technologies, an unincorporated organisation of Wynne Plaga
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -19,6 +19,7 @@ package com.turingtechnologies.materialscrollbar;
 import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
+import android.util.Log;
 import android.view.View;
 
 /*
@@ -26,7 +27,7 @@ import android.view.View;
  */
 class ScrollingUtilities {
 
-    MaterialScrollBar materialScrollBar;
+    private MaterialScrollBar materialScrollBar;
 
     ScrollingUtilities(MaterialScrollBar msb){
         materialScrollBar = msb;
@@ -38,6 +39,8 @@ class ScrollingUtilities {
 
     private int constant;
 
+    private LinearLayoutManager layoutManager;
+
     private class ScrollPositionState {
         // The index of the first visible row
         private int rowIndex;
@@ -47,7 +50,7 @@ class ScrollingUtilities {
         private int rowHeight;
     }
 
-    protected void scrollHandleAndIndicator(){
+    void scrollHandleAndIndicator(){
         int scrollBarY;
         getCurScrollState();
         if(customScroller != null){
@@ -56,8 +59,8 @@ class ScrollingUtilities {
             constant = scrollPosState.rowHeight * scrollPosState.rowIndex;
         }
         scrollBarY = (int) getScrollPosition();
-        ViewCompat.setY(materialScrollBar.handle, scrollBarY);
-        materialScrollBar.handle.invalidate();
+        ViewCompat.setY(materialScrollBar.handleThumb, scrollBarY);
+        materialScrollBar.handleThumb.invalidate();
         if(materialScrollBar.indicator != null){
             int element;
             if (materialScrollBar.recyclerView.getLayoutManager() instanceof GridLayoutManager) {
@@ -71,13 +74,13 @@ class ScrollingUtilities {
         }
     }
 
-    float getScrollPosition(){
+    private float getScrollPosition(){
         getCurScrollState();
         int scrollY = materialScrollBar.getPaddingTop() + constant - scrollPosState.rowTopOffset;
         return ((float) scrollY / getAvailableScrollHeight()) * getAvailableScrollBarHeight();
     }
 
-    int getRowCount(){
+    private int getRowCount(){
         int rowCount = materialScrollBar.recyclerView.getLayoutManager().getItemCount();
         if (materialScrollBar.recyclerView.getLayoutManager() instanceof GridLayoutManager) {
             int spanCount = ((GridLayoutManager) materialScrollBar.recyclerView.getLayoutManager()).getSpanCount();
@@ -90,11 +93,11 @@ class ScrollingUtilities {
      * Returns the available scroll bar height:
      * AvailableScrollBarHeight = Total height of the visible view - thumb height
      */
-    protected int getAvailableScrollBarHeight() {
-        return materialScrollBar.getHeight() - materialScrollBar.handle.getHeight();
+    int getAvailableScrollBarHeight() {
+        return materialScrollBar.getHeight() - materialScrollBar.handleThumb.getHeight();
     }
 
-    public void scrollToPositionAtProgress(float touchFraction) {
+    void scrollToPositionAtProgress(float touchFraction) {
         if(customScroller == null) {
             int spanCount = 1;
             if (materialScrollBar.recyclerView.getLayoutManager() instanceof GridLayoutManager) {
@@ -116,12 +119,16 @@ class ScrollingUtilities {
             layoutManager.scrollToPositionWithOffset(spanCount * exactItemPos / scrollPosState.rowHeight,
                     -(exactItemPos % scrollPosState.rowHeight));
         } else {
-            LinearLayoutManager layoutManager = ((LinearLayoutManager) materialScrollBar.recyclerView.getLayoutManager());
-            layoutManager.scrollToPosition(customScroller.getItemIndexForScroll(touchFraction));
+            if(layoutManager == null){
+                layoutManager = ((LinearLayoutManager) materialScrollBar.recyclerView.getLayoutManager());
+            }
+            int position = customScroller.getItemIndexForScroll(touchFraction);
+            int offset = (int) (customScroller.getDepthForItem(position) - touchFraction * getAvailableScrollHeight());
+            layoutManager.scrollToPositionWithOffset(position, offset);
         }
     }
 
-    protected int getAvailableScrollHeight() {
+    int getAvailableScrollHeight() {
         int visibleHeight = materialScrollBar.getHeight();
         int scrollHeight;
         if(customScroller != null){
@@ -132,10 +139,16 @@ class ScrollingUtilities {
         return scrollHeight - visibleHeight;
     }
 
-    public void getCurScrollState() {
+    void getCurScrollState() {
         scrollPosState.rowIndex = -1;
         scrollPosState.rowTopOffset = -1;
         scrollPosState.rowHeight = -1;
+
+        if  (materialScrollBar.recyclerView.getAdapter() == null) {
+            Log.e("MaterialScrollBarLib", "The adapter for your recyclerView has not been set; " +
+                    "skipping layout.");
+            return;
+        }
 
         int itemCount = materialScrollBar.recyclerView.getAdapter().getItemCount();
 
@@ -149,8 +162,13 @@ class ScrollingUtilities {
         if (materialScrollBar.recyclerView.getLayoutManager() instanceof GridLayoutManager) {
             scrollPosState.rowIndex = scrollPosState.rowIndex / ((GridLayoutManager) materialScrollBar.recyclerView.getLayoutManager()).getSpanCount();
         }
-        scrollPosState.rowTopOffset = materialScrollBar.recyclerView.getLayoutManager().getDecoratedTop(child);
-        scrollPosState.rowHeight = child.getHeight();
+        if(child == null){
+            scrollPosState.rowTopOffset = 0;
+            scrollPosState.rowHeight = 0;
+        } else {
+            scrollPosState.rowTopOffset = materialScrollBar.recyclerView.getLayoutManager().getDecoratedTop(child);
+            scrollPosState.rowHeight = child.getHeight();
+        }
     }
 
 }

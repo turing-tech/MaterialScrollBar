@@ -18,43 +18,35 @@ package com.turingtechnologies.materialscrollbar;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.support.v7.widget.RecyclerView;
 
 /**
  * Indicator which should be used when only one character will be displayed at a time.
  */
 @SuppressLint("ViewConstructor")
-public class AlphabetIndicator extends Indicator{
+public class AlphabetIndicator extends Indicator<INameableAdapter, AlphabetIndicator>{
 
     public AlphabetIndicator (Context c){
-        super(c);
+        super(c, INameableAdapter.class);
     }
 
     @Override
-    String getTextElement(Integer currentSection, RecyclerView.Adapter adapter) {
-        Character provided = ((INameableAdapter) adapter).getCharacterForElement(currentSection);
+    protected String getTextElement(Integer currentSection, INameableAdapter adapter) {
+        Character provided = adapter.getCharacterForElement(currentSection);
         return String.valueOf(Character.toUpperCase(provided));
     }
 
     @Override
-    int getIndicatorHeight() {
+    protected int getIndicatorHeight() {
         return 75;
     }
 
     @Override
-    int getIndicatorWidth() {
+    protected int getIndicatorWidth() {
         return 75;
     }
 
     @Override
-    void testAdapter(RecyclerView.Adapter adapter) {
-        if(!(adapter instanceof INameableAdapter)){
-            throw new CustomExceptions.AdapterNotSetupForIndicatorException(adapter.getClass(), "INameableAdapter");
-        }
-    }
-
-    @Override
-    int getTextSize() {
+    protected int getTextSize() {
         return 40;
     }
 

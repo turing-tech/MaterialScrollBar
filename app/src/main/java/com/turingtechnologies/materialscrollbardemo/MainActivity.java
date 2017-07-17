@@ -21,7 +21,8 @@ public class MainActivity extends AppCompatActivity {
         RecyclerView recyclerView = ((RecyclerView)findViewById(R.id.recyclerView));
         recyclerView.setAdapter(new DemoAdapter(this));
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        ((DragScrollBar)findViewById(R.id.dragScrollBar)).addIndicator(new AlphabetIndicator(this), true).setHandleColour(Utils.fetchAccentColor(this));
+        ((DragScrollBar)findViewById(R.id.dragScrollBar))
+                .setIndicator(new AlphabetIndicator(this), true);
     }
 
     @Override
