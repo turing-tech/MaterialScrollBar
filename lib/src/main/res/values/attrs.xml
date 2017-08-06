@@ -20,10 +20,10 @@
     <declare-styleable name="MaterialScrollBar">
         <attr name="msb_recyclerView" format="reference"/>
         <attr name="msb_lightOnTouch" format="boolean|reference"/>
-        <attr name="msb_handleColour" format="color|reference"/>
-        <attr name="msb_barColour" format="color|reference"/>
-        <attr name="msb_handleOffColour" format="color|reference"/>
-        <attr name="msb_textColour" format="color|reference"/>
+        <attr name="msb_handleColor" format="color|reference"/>
+        <attr name="msb_barColor" format="color|reference"/>
+        <attr name="msb_handleOffColor" format="color|reference"/>
+        <attr name="msb_textColor" format="color|reference"/>
         <attr name="msb_barThickness" format="dimension|reference"/>
         <attr name="msb_rightToLeft" format="boolean|reference"/>
     </declare-styleable>

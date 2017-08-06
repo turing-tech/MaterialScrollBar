@@ -40,7 +40,7 @@ dependencies {
 ```
 ## Documentation
 
-Note: All customisation methods (`setAutoHide`, `setBarColour`, etc) return the `materialScrollBar`, so they can be chained together if wanted. Alternatively, you can just operate on a variable.
+Note: All customisation methods (`setAutoHide`, `setBarColor`, etc) return the `materialScrollBar`, so they can be chained together if wanted. Alternatively, you can just operate on a variable.
 
 ### How to use
 
@@ -72,16 +72,16 @@ Option 2 - Touch
 
 Additonal optional attributes:
 
-* msb_handleColour - Colour
-* msb_barColour - Colour
-* msb_handleOffColour - Colour
-* msb_textColour - Colour
+* msb_handleColor - Color
+* msb_barColor - Color
+* msb_handleOffColor - Color
+* msb_textColor - Color
 * msb_barThickness - Integer
 * msb_rightToLeft - Boolean
 
 Please note that for both of these configurations, both recyclerView and lightOnTouch* must have a valid value. The recyclerView attribute should point to the id of the `recyclerView` to which you want to link the scrollbar.
 
-\* lightOnTouch behaves like this: A value of true will cause the handle to be grey until pressed, when it will become the normal accent colour (as set). A value of false will cause the handle to always have the accent colour, even when not being pressed.
+\* lightOnTouch behaves like this: A value of true will cause the handle to be grey until pressed, when it will become the normal accent color (as set). A value of false will cause the handle to always have the accent color, even when not being pressed.
 
 ------
 
@@ -156,7 +156,7 @@ Material Scroll Bar:
     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
     See the License for the specific language governing permissions and
     limitations under the License.
-    
+
     This licensing is applicable to all code offered as part of this
     repository, which can be identified by the lisence notice preceding
     the content AND/OR by its inclusion in a package starting with "com.
@@ -165,7 +165,7 @@ Material Scroll Bar:
 RecyclerView-FastScroll:
 
      Copyright (C) 2016 Tim Malseed
-   
+
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
     You may obtain a copy of the License at
@@ -179,7 +179,7 @@ RecyclerView-FastScroll:
     limitations under the License.
 
 Launcher 3:
- 
+
      Copyright (C) 2010 The Android Open Source Project
 
     Licensed under the Apache License, Version 2.0 (the "License");
