@@ -178,17 +178,17 @@ public abstract class MaterialScrollBar<T> extends RelativeLayout {
 
     //Implements optional attributes.
     void implementPreferences(){
-        if(a.hasValue(R.styleable.MaterialScrollBar_msb_barColour)){
-            setBarColour(a.getColor(R.styleable.MaterialScrollBar_msb_barColour, 0));
+        if(a.hasValue(R.styleable.MaterialScrollBar_msb_barColor)){
+            setBarColour(a.getColor(R.styleable.MaterialScrollBar_msb_barColor, 0));
         }
-        if(a.hasValue(R.styleable.MaterialScrollBar_msb_handleColour)){
-            setHandleColour(a.getColor(R.styleable.MaterialScrollBar_msb_handleColour, 0));
+        if(a.hasValue(R.styleable.MaterialScrollBar_msb_handleColor)){
+            setHandleColour(a.getColor(R.styleable.MaterialScrollBar_msb_handleColor, 0));
         }
-        if(a.hasValue(R.styleable.MaterialScrollBar_msb_handleOffColour)){
-            setHandleOffColour(a.getColor(R.styleable.MaterialScrollBar_msb_handleOffColour, 0));
+        if(a.hasValue(R.styleable.MaterialScrollBar_msb_handleOffColor)){
+            setHandleOffColour(a.getColor(R.styleable.MaterialScrollBar_msb_handleOffColor, 0));
         }
-        if(a.hasValue(R.styleable.MaterialScrollBar_msb_textColour)){
-            setTextColour(a.getColor(R.styleable.MaterialScrollBar_msb_textColour, 0));
+        if(a.hasValue(R.styleable.MaterialScrollBar_msb_textColor)){
+            setTextColour(a.getColor(R.styleable.MaterialScrollBar_msb_textColor, 0));
         }
         if(a.hasValue(R.styleable.MaterialScrollBar_msb_barThickness)){
             setBarThickness(a.getDimensionPixelSize(R.styleable.MaterialScrollBar_msb_barThickness, 0));
