@@ -2,13 +2,15 @@
 apply plugin: 'com.github.ben-manes.versions'
 
 buildscript {
+//    ext.kotlin_version = '1.2.10'
     repositories {
         jcenter()
 		google()
     }
     dependencies {
         classpath 'com.github.ben-manes:gradle-versions-plugin:0.15.0'
-        classpath 'com.android.tools.build:gradle:2.3.3'
+        classpath 'com.android.tools.build:gradle:3.0.1'
+//        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
 
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
@@ -22,5 +24,5 @@ allprojects {
        google()
     }
 
-    project.ext.supportLibVersion = '26.0.0'
+    project.ext.supportLibVersion = '27.0.2'
 }
