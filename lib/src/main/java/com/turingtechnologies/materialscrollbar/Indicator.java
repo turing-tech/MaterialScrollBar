@@ -91,7 +91,7 @@ public abstract class Indicator<T, U extends Indicator> extends RelativeLayout{
 
         addView(textView, tvlp);
 
-        ((GradientDrawable)getBackground()).setColor(msb.handleColour);
+        ((GradientDrawable)getBackground()).setColor(msb.handleColor);
 
         if (rtl) {
             lp.addRule(ALIGN_LEFT, msb.getId());
@@ -174,11 +174,11 @@ public abstract class Indicator<T, U extends Indicator> extends RelativeLayout{
     }
 
     /**
-     * Used by the materialScrollBar to change the text colour for the indicator.
-     * @param colour The desired text colour.
+     * Used by the materialScrollBar to change the text color for the indicator.
+     * @param color The desired text color.
      */
-    void setTextColour(@ColorInt int colour){
-        textView.setTextColor(colour);
+    void setTextColor(@ColorInt int color){
+        textView.setTextColor(color);
     }
 
     /**

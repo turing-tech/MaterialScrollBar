@@ -72,10 +72,10 @@ public abstract class MaterialScrollBar<T> extends RelativeLayout {
     Indicator indicator;
 
     //Characteristics
-    int handleColour;
-    int handleOffColour = Color.parseColor("#9c9c9c");
+    int handleColor;
+    int handleOffColor = Color.parseColor("#9c9c9c");
     protected boolean hidden = true;
-    private int textColour = ContextCompat.getColor(getContext(), android.R.color.white);
+    private int textColor = ContextCompat.getColor(getContext(), android.R.color.white);
     boolean lightOnTouch;
     private TypedArray a; //XML attributes
     private Boolean rtl = false;
@@ -166,11 +166,11 @@ public abstract class MaterialScrollBar<T> extends RelativeLayout {
 
         this.lightOnTouch = lightOnTouch;
         int colorToSet;
-        handleColour = fetchAccentColour(context);
+        handleColor = fetchAccentColor(context);
         if(lightOnTouch){
             colorToSet = Color.parseColor("#9c9c9c");
         } else {
-            colorToSet = handleColour;
+            colorToSet = handleColor;
         }
         handleThumb.setBackgroundColor(colorToSet);
         return handleThumb;
@@ -179,16 +179,16 @@ public abstract class MaterialScrollBar<T> extends RelativeLayout {
     //Implements optional attributes.
     void implementPreferences(){
         if(a.hasValue(R.styleable.MaterialScrollBar_msb_barColor)){
-            setBarColour(a.getColor(R.styleable.MaterialScrollBar_msb_barColor, 0));
+            setBarColor(a.getColor(R.styleable.MaterialScrollBar_msb_barColor, 0));
         }
         if(a.hasValue(R.styleable.MaterialScrollBar_msb_handleColor)){
-            setHandleColour(a.getColor(R.styleable.MaterialScrollBar_msb_handleColor, 0));
+            setHandleColor(a.getColor(R.styleable.MaterialScrollBar_msb_handleColor, 0));
         }
         if(a.hasValue(R.styleable.MaterialScrollBar_msb_handleOffColor)){
-            setHandleOffColour(a.getColor(R.styleable.MaterialScrollBar_msb_handleOffColor, 0));
+            setHandleOffColor(a.getColor(R.styleable.MaterialScrollBar_msb_handleOffColor, 0));
         }
         if(a.hasValue(R.styleable.MaterialScrollBar_msb_textColor)){
-            setTextColour(a.getColor(R.styleable.MaterialScrollBar_msb_textColor, 0));
+            setTextColor(a.getColor(R.styleable.MaterialScrollBar_msb_textColor, 0));
         }
         if(a.hasValue(R.styleable.MaterialScrollBar_msb_barThickness)){
             setBarThickness(a.getDimensionPixelSize(R.styleable.MaterialScrollBar_msb_barThickness, 0));
@@ -412,9 +412,9 @@ public abstract class MaterialScrollBar<T> extends RelativeLayout {
      * Provides the ability to programmatically set the color of the scrollbar handleThumb.
      * @param color to set the handleThumb.
      */
-    public T setHandleColour(final String color){
-        handleColour = Color.parseColor(color);
-        setHandleColour();
+    public T setHandleColor(final String color){
+        handleColor = Color.parseColor(color);
+        setHandleColor();
         return (T)this;
     }
 
@@ -422,9 +422,9 @@ public abstract class MaterialScrollBar<T> extends RelativeLayout {
      * Provides the ability to programmatically set the color of the scrollbar handleThumb.
      * @param color to set the handleThumb.
      */
-    public T setHandleColour(@ColorInt final int color){
-        handleColour = color;
-        setHandleColour();
+    public T setHandleColor(@ColorInt final int color){
+        handleColor = color;
+        setHandleColor();
         return (T)this;
     }
 
@@ -432,18 +432,18 @@ public abstract class MaterialScrollBar<T> extends RelativeLayout {
      * Provides the ability to programmatically set the color of the scrollbar handleThumb.
      * @param colorResId to set the handleThumb.
      */
-    public T setHandleColourRes(@ColorRes final int colorResId){
-        handleColour = ContextCompat.getColor(getContext(), colorResId);
-        setHandleColour();
+    public T setHandleColorRes(@ColorRes final int colorResId){
+        handleColor = ContextCompat.getColor(getContext(), colorResId);
+        setHandleColor();
         return (T)this;
     }
 
-    private void setHandleColour(){
+    private void setHandleColor(){
         if(indicator != null){
-            ((GradientDrawable)indicator.getBackground()).setColor(handleColour);
+            ((GradientDrawable)indicator.getBackground()).setColor(handleColor);
         }
         if(!lightOnTouch){
-            handleThumb.setBackgroundColor(handleColour);
+            handleThumb.setBackgroundColor(handleColor);
         }
     }
 
@@ -451,10 +451,10 @@ public abstract class MaterialScrollBar<T> extends RelativeLayout {
      * Provides the ability to programmatically set the color of the scrollbar handleThumb when unpressed. Only applies if lightOnTouch is true.
      * @param color to set the handleThumb when unpressed.
      */
-    public T setHandleOffColour(final String color){
-        handleOffColour = Color.parseColor(color);
+    public T setHandleOffColor(final String color){
+        handleOffColor = Color.parseColor(color);
         if(lightOnTouch){
-            handleThumb.setBackgroundColor(handleOffColour);
+            handleThumb.setBackgroundColor(handleOffColor);
         }
         return (T)this;
     }
@@ -463,10 +463,10 @@ public abstract class MaterialScrollBar<T> extends RelativeLayout {
      * Provides the ability to programmatically set the color of the scrollbar handleThumb when unpressed. Only applies if lightOnTouch is true.
      * @param color to set the handleThumb when unpressed.
      */
-    public T setHandleOffColour(@ColorInt final int color){
-        handleOffColour = color;
+    public T setHandleOffColor(@ColorInt final int color){
+        handleOffColor = color;
         if(lightOnTouch){
-            handleThumb.setBackgroundColor(handleOffColour);
+            handleThumb.setBackgroundColor(handleOffColor);
         }
         return (T)this;
     }
@@ -475,10 +475,10 @@ public abstract class MaterialScrollBar<T> extends RelativeLayout {
      * Provides the ability to programmatically set the color of the scrollbar handleThumb when unpressed. Only applies if lightOnTouch is true.
      * @param colorResId to set the handleThumb when unpressed.
      */
-    public T setHandleOffColourRes(@ColorRes final int colorResId){
-        handleOffColour = ContextCompat.getColor(getContext(), colorResId);
+    public T setHandleOffColorRes(@ColorRes final int colorResId){
+        handleOffColor = ContextCompat.getColor(getContext(), colorResId);
         if(lightOnTouch){
-            handleThumb.setBackgroundColor(handleOffColour);
+            handleThumb.setBackgroundColor(handleOffColor);
         }
         return (T)this;
     }
@@ -487,7 +487,7 @@ public abstract class MaterialScrollBar<T> extends RelativeLayout {
      * Provides the ability to programmatically set the color of the scrollbar.
      * @param color to set the bar.
      */
-    public T setBarColour(final String color){
+    public T setBarColor(final String color){
         handleTrack.setBackgroundColor(Color.parseColor(color));
         return (T)this;
     }
@@ -496,7 +496,7 @@ public abstract class MaterialScrollBar<T> extends RelativeLayout {
      * Provides the ability to programmatically set the color of the scrollbar.
      * @param color to set the bar.
      */
-    public T setBarColour(@ColorInt final int color){
+    public T setBarColor(@ColorInt final int color){
         handleTrack.setBackgroundColor(color);
         return (T)this;
     }
@@ -505,7 +505,7 @@ public abstract class MaterialScrollBar<T> extends RelativeLayout {
      * Provides the ability to programmatically set the color of the scrollbar.
      * @param colorResId to set the bar.
      */
-    public T setBarColourRes(@ColorRes final int colorResId){
+    public T setBarColorRes(@ColorRes final int colorResId){
         handleTrack.setBackgroundColor(ContextCompat.getColor(getContext(), colorResId));
         return (T)this;
     }
@@ -514,10 +514,10 @@ public abstract class MaterialScrollBar<T> extends RelativeLayout {
      * Provides the ability to programmatically set the text color of the indicator. Will do nothing if there is no section indicator.
      * @param color to set the text of the indicator.
      */
-    public T setTextColour(@ColorInt final int color){
-        textColour = color;
+    public T setTextColor(@ColorInt final int color){
+        textColor = color;
         if(indicator != null){
-            indicator.setTextColour(textColour);
+            indicator.setTextColor(textColor);
         }
         return(T)this;
     }
@@ -527,10 +527,10 @@ public abstract class MaterialScrollBar<T> extends RelativeLayout {
      * Provides the ability to programmatically set the text color of the indicator. Will do nothing if there is no section indicator.
      * @param colorResId to set the text of the indicator.
      */
-    public T setTextColourRes(@ColorRes final int colorResId){
-        textColour = ContextCompat.getColor(getContext(), colorResId);
+    public T setTextColorRes(@ColorRes final int colorResId){
+        textColor = ContextCompat.getColor(getContext(), colorResId);
         if(indicator != null){
-            indicator.setTextColour(textColour);
+            indicator.setTextColor(textColor);
         }
         return (T)this;
     }
@@ -539,10 +539,10 @@ public abstract class MaterialScrollBar<T> extends RelativeLayout {
      * Provides the ability to programmatically set the text color of the indicator. Will do nothing if there is no section indicator.
      * @param color to set the text of the indicator.
      */
-    public T setTextColour(final String color){
-        textColour = Color.parseColor(color);
+    public T setTextColor(final String color){
+        textColor = Color.parseColor(color);
         if(indicator != null){
-            indicator.setTextColour(textColour);
+            indicator.setTextColor(textColor);
         }
         return (T)this;
     }
@@ -589,7 +589,7 @@ public abstract class MaterialScrollBar<T> extends RelativeLayout {
         indicator.testAdapter(recyclerView.getAdapter());
         indicator.setRTL(rtl);
         indicator.linkToScrollBar(MaterialScrollBar.this, addSpaceSide);
-        indicator.setTextColour(textColour);
+        indicator.setTextColor(textColor);
     }
 
     /**
@@ -658,7 +658,7 @@ public abstract class MaterialScrollBar<T> extends RelativeLayout {
     //CHAPTER IV - MISC METHODS
 
     //Fetch accent color.
-    static int fetchAccentColour(Context context) {
+    static int fetchAccentColor(Context context) {
         TypedValue typedValue = new TypedValue();
 
         TypedArray a = context.obtainStyledAttributes(typedValue.data, new int[] { R.attr.colorAccent });
@@ -741,7 +741,7 @@ public abstract class MaterialScrollBar<T> extends RelativeLayout {
         }
 
         if (lightOnTouch) {
-            handleThumb.setBackgroundColor(handleColour);
+            handleThumb.setBackgroundColor(handleColor);
         }
     }
 
@@ -765,7 +765,7 @@ public abstract class MaterialScrollBar<T> extends RelativeLayout {
         }
 
         if (lightOnTouch) {
-            handleThumb.setBackgroundColor(handleOffColour);
+            handleThumb.setBackgroundColor(handleOffColor);
         }
     }
 
