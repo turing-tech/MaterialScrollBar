@@ -58,7 +58,6 @@ class ScrollingUtilities {
             constant = scrollPosState.rowHeight * scrollPosState.rowIndex;
         }
         scrollBarY = (int) getScrollPosition();
-        System.out.println(scrollPosState.rowIndex + " " + getScrollPosition());
         materialScrollBar.handleThumb.setY(scrollBarY);
         materialScrollBar.handleThumb.invalidate();
         if(materialScrollBar.indicator != null){
