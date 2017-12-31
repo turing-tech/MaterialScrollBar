@@ -1,5 +1,6 @@
 package com.turingtechnologies.materialscrollbardemo;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
@@ -33,35 +34,33 @@ class AppData {
             }
         }
 
-        new AsyncTask<Void, Void, Void>() {
-
-            @Override
-            protected Void doInBackground(Void... params) {
-                Collections.sort(pkgAppsList, new Comparator<ApplicationInfo>() {
-                    @Override
-                    public int compare(ApplicationInfo o1, ApplicationInfo o2) {
-                        return o1.loadLabel(activity.getPackageManager()).toString().compareToIgnoreCase(o2.loadLabel(activity.getPackageManager()).toString());
-                    }
-                });
-                for(ApplicationInfo appInfo : pkgAppsList){
-                    pkgLabelList.add(appInfo.loadLabel(activity.getPackageManager()).toString());
-                    pkgIconList.add(appInfo.loadIcon(activity.getPackageManager()));
-                    try {
-                        pkgDateList.add(activity.getPackageManager().getPackageInfo(appInfo.packageName, 0).firstInstallTime);
-                    } catch (PackageManager.NameNotFoundException e) {
-                        e.printStackTrace();
-                    }
-                }
-                pkgAppsList = null;
-                return null;
-            }
-
-            @Override
-            protected void onPostExecute(Void aVoid) {
-                openMainActivity(activity);
-            }
-        }.execute();
+        new AppInfoTask().execute(activity);
     }
+
+    private static class AppInfoTask extends AsyncTask<AppCompatActivity, Void, AppCompatActivity> {
+
+        @Override
+        protected AppCompatActivity doInBackground(AppCompatActivity... acts) {
+            AppCompatActivity activity = acts[0];
+            Collections.sort(pkgAppsList, (o1, o2) -> o1.loadLabel(activity.getPackageManager()).toString().compareToIgnoreCase(o2.loadLabel(activity.getPackageManager()).toString()));
+            for(ApplicationInfo appInfo : pkgAppsList){
+                pkgLabelList.add(appInfo.loadLabel(activity.getPackageManager()).toString());
+                pkgIconList.add(appInfo.loadIcon(activity.getPackageManager()));
+                try {
+                    pkgDateList.add(activity.getPackageManager().getPackageInfo(appInfo.packageName, 0).firstInstallTime);
+                } catch (PackageManager.NameNotFoundException e) {
+                    e.printStackTrace();
+                }
+            }
+            pkgAppsList = null;
+            return activity;
+        }
+
+        @Override
+        protected void onPostExecute(AppCompatActivity activity) {
+            openMainActivity(activity);
+        }
+    };
 
     private static void openMainActivity(AppCompatActivity activity){
         Intent main = new Intent(activity.getApplicationContext(), MainActivity.class);

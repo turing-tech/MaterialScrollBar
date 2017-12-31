@@ -280,8 +280,6 @@ public abstract class MaterialScrollBar<T> extends RelativeLayout {
         return Math.abs(currentScrollPercent - previousScrollPercent) > fastScrollSnapPercent;
     }
 
-    boolean sizeUnchecked = true;
-
     //Checks each time the bar is laid out. If there are few enough view that
     //they all fit on the screen then the bar is hidden. If a view is added which doesn't fit on
     //the screen then the bar is unhidden.
@@ -293,7 +291,7 @@ public abstract class MaterialScrollBar<T> extends RelativeLayout {
             throw new RuntimeException("You need to set a recyclerView for the scroll bar, either in the XML or using setRecyclerView().");
         }
 
-        if(sizeUnchecked && !isInEditMode()){
+        if(!isInEditMode()){
             scrollUtils.getCurScrollState();
             if(scrollUtils.getAvailableScrollHeight() <= 0){
                 handleTrack.setVisibility(GONE);
@@ -301,7 +299,6 @@ public abstract class MaterialScrollBar<T> extends RelativeLayout {
             } else {
                 handleTrack.setVisibility(VISIBLE);
                 handleThumb.setVisibility(VISIBLE);
-                sizeUnchecked = false;
             }
         }
     }
@@ -567,13 +564,9 @@ public abstract class MaterialScrollBar<T> extends RelativeLayout {
             setupIndicator(indicator, addSpaceSide);
         } else {
             removeOnLayoutChangeListener(indicatorLayoutListener);
-            indicatorLayoutListener = new OnLayoutChangeListener()
-            {
-                @Override
-                public void onLayoutChange(View v, int left, int top, int right, int bottom, int oldLeft, int oldTop, int oldRight, int oldBottom){
+            indicatorLayoutListener = (a,b,c,d,e,f,g,h,i) -> {
                     setupIndicator(indicator, addSpaceSide);
-                    MaterialScrollBar.this.removeOnLayoutChangeListener(this);
-                }
+                    MaterialScrollBar.this.removeOnLayoutChangeListener(indicatorLayoutListener);
             };
             addOnLayoutChangeListener(indicatorLayoutListener);
         }
@@ -597,12 +590,7 @@ public abstract class MaterialScrollBar<T> extends RelativeLayout {
      */
     public T setBarThickness(final int thickness){
         if(!attached) {
-            onAttach.add(new Runnable() {
-                @Override
-                public void run() {
-                    setBarThickness(thickness);
-                }
-            });
+            onAttach.add(() -> setBarThickness(thickness));
         }
         LayoutParams layoutParams = (LayoutParams) handleThumb.getLayoutParams();
         layoutParams.width = thickness;
@@ -682,12 +670,7 @@ public abstract class MaterialScrollBar<T> extends RelativeLayout {
             anim.setFillAfter(true);
             hidden = true;
             startAnimation(anim);
-            postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    handleThumb.expandHandle();
-                }
-            }, anim.getDuration() / 3);
+            postDelayed(() -> handleThumb.expandHandle(), anim.getDuration() / 3);
         }
     }
 
@@ -712,18 +695,16 @@ public abstract class MaterialScrollBar<T> extends RelativeLayout {
     protected void onDown(MotionEvent event){
         if (indicator != null && indicator.getVisibility() == INVISIBLE && recyclerView.getAdapter() != null) {
             indicator.setVisibility(VISIBLE);
-            if(Build.VERSION.SDK_INT >= 12){
-                indicator.setAlpha(0F);
-                indicator.animate().alpha(1F).setDuration(150).setListener(new AnimatorListenerAdapter() {
-                    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
-                    @Override
-                    public void onAnimationEnd(Animator animation) {
-                        super.onAnimationEnd(animation);
+            indicator.setAlpha(0F);
+            indicator.animate().alpha(1F).setDuration(150).setListener(new AnimatorListenerAdapter() {
+                @TargetApi(Build.VERSION_CODES.HONEYCOMB)
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    super.onAnimationEnd(animation);
 
-                        indicator.setAlpha(1F);
-                    }
-                });
-            }
+                    indicator.setAlpha(1F);
+                }
+            });
         }
 
         int top = handleThumb.getHeight() / 2;
@@ -746,21 +727,14 @@ public abstract class MaterialScrollBar<T> extends RelativeLayout {
 
     protected void onUp(){
         if (indicator != null && indicator.getVisibility() == VISIBLE) {
-            if (Build.VERSION.SDK_INT <= 12) {
-                indicator.clearAnimation();
-            }
-            if(Build.VERSION.SDK_INT >= 12){
-                indicator.animate().alpha(0F).setDuration(150).setListener(new AnimatorListenerAdapter() {
-                    @Override
-                    public void onAnimationEnd(Animator animation) {
-                        super.onAnimationEnd(animation);
+            indicator.animate().alpha(0F).setDuration(150).setListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    super.onAnimationEnd(animation);
 
-                        indicator.setVisibility(INVISIBLE);
-                    }
-                });
-            } else {
-                indicator.setVisibility(INVISIBLE);
-            }
+                    indicator.setVisibility(INVISIBLE);
+                }
+            });
         }
 
         if (lightOnTouch) {
@@ -770,7 +744,7 @@ public abstract class MaterialScrollBar<T> extends RelativeLayout {
 
     //Tests to ensure that the touch is on the handleThumb depending on the user preference
     protected boolean validTouch(MotionEvent event){
-        return draggableFromAnywhere || (event.getY() >= ViewCompat.getY(handleThumb) - Utils.getDP(20, recyclerView.getContext()) && event.getY() <= ViewCompat.getY(handleThumb) + handleThumb.getHeight());
+        return draggableFromAnywhere || (event.getY() >= handleThumb.getY() - Utils.getDP(20, recyclerView.getContext()) && event.getY() <= handleThumb.getY() + handleThumb.getHeight());
     }
 
     class scrollListener extends RecyclerView.OnScrollListener {

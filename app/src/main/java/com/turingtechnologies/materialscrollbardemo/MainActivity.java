@@ -1,6 +1,7 @@
 package com.turingtechnologies.materialscrollbardemo;
 
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -18,11 +19,34 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        RecyclerView recyclerView = ((RecyclerView)findViewById(R.id.recyclerView));
-        recyclerView.setAdapter(new DemoAdapter(this));
+        RecyclerView recyclerView = findViewById(R.id.recyclerView);
+        DemoAdapter demoAdapter = new DemoAdapter(this);
+        recyclerView.setAdapter(demoAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         ((DragScrollBar)findViewById(R.id.dragScrollBar))
                 .setIndicator(new AlphabetIndicator(this), true);
+
+        new AsyncTask<Void, Void, Void>() {
+
+            @Override
+            protected Void doInBackground(Void... params) {
+                while(!AppData.pkgLabelList.isEmpty()) {
+                    AppData.pkgLabelList.remove(0);
+                    AppData.pkgIconList.remove(0);
+                    AppData.pkgDateList.remove(0);
+
+                    runOnUiThread(() -> demoAdapter.notifyDataSetChanged());
+
+                    try {
+                        Thread.sleep(100);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+                return null;
+            }
+
+        }.execute();
     }
 
     @Override

@@ -49,8 +49,8 @@ class DemoAdapter extends RecyclerView.Adapter<DemoAdapter.ViewHolder> implement
         ImageView icon;
         ViewHolder(View v) {
             super(v);
-            label = (TextView) v.findViewById(R.id.textView);
-            icon = (ImageView) v.findViewById(R.id.imageView);
+            label = v.findViewById(R.id.textView);
+            icon = v.findViewById(R.id.imageView);
         }
     }
 
