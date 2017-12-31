@@ -20,11 +20,9 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.os.Handler;
 import android.os.Looper;
-import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
-import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.TranslateAnimation;
 
@@ -35,13 +33,7 @@ public class TouchScrollBar extends MaterialScrollBar<TouchScrollBar>{
     private Handler uiHandler = new Handler(Looper.getMainLooper());
     private boolean respondToTouch = true;
 
-    private Runnable fadeBar = new Runnable() {
-
-        @Override
-        public void run() {
-            fadeOut();
-        }
-    };
+    private Runnable fadeBar = this::fadeOut;
 
     public TouchScrollBar(Context context, AttributeSet attributeSet){
         super(context, attributeSet);
@@ -62,44 +54,42 @@ public class TouchScrollBar extends MaterialScrollBar<TouchScrollBar>{
 
     @Override
     void setTouchIntercept() {
-        setOnTouchListener(new OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                if (!hiddenByUser) {
+        setOnTouchListener((v, event) -> {
+            if (!hiddenByUser) {
 
-                    boolean valid = validTouch(event);
+                boolean valid = validTouch(event);
 
-                    // check valid touch region only on action down => otherwise the check will fail if users scrolls very fast
-                    if (event.getAction() == MotionEvent.ACTION_DOWN && !valid) {
-                        return false;
-                    }
-
-                    //On Down
-                    if (event.getAction() != MotionEvent.ACTION_UP) {
-
-                        if(!hidden || respondToTouch){
-                            onDown(event);
-
-                            if(hide){
-                                uiHandler.removeCallbacks(fadeBar);
-                                fadeIn();
-                            }
-                        }
-
-                    //On Up
-                    } else {
-
-                        onUp();
-
-                        if (hide) {
-                            uiHandler.removeCallbacks(fadeBar);
-                            uiHandler.postDelayed(fadeBar, hideDuration);
-                        }
-                    }
-                    return true;
+                // check valid touch region only on action down => otherwise the check will fail if users scrolls very fast
+                if (event.getAction() == MotionEvent.ACTION_DOWN && !valid) {
+                    return false;
                 }
-                return false;
+
+                //On Down
+                if (event.getAction() != MotionEvent.ACTION_UP) {
+
+                    if(!hidden || respondToTouch){
+                        onDown(event);
+
+                        if(hide){
+                            uiHandler.removeCallbacks(fadeBar);
+                            fadeIn();
+                        }
+                    }
+
+                //On Up
+                } else {
+
+                    onUp();
+
+                    if (hide) {
+                        uiHandler.removeCallbacks(fadeBar);
+                        uiHandler.postDelayed(fadeBar, hideDuration);
+                    }
+                }
+                performClick();
+                return true;
             }
+            return false;
         });
     }
 

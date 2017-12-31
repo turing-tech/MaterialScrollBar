@@ -12,6 +12,10 @@ android {
         targetSdkVersion 27
         versionName libVersion
     }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
 }
 
 // build a jar with source files
@@ -41,7 +45,7 @@ artifacts {
 dependencies {
     compile "com.android.support:recyclerview-v7:${supportLibVersion}"
     compile "com.android.support:design:${supportLibVersion}"
-//    compile "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
+    //    compile "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
 }
 repositories {
     mavenCentral()

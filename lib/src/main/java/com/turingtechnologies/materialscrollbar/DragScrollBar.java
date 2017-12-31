@@ -18,11 +18,9 @@ package com.turingtechnologies.materialscrollbar;
 
 import android.content.Context;
 import android.content.res.TypedArray;
-import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
-import android.view.View;
 
 public class DragScrollBar extends MaterialScrollBar<DragScrollBar>{
 
@@ -46,11 +44,8 @@ public class DragScrollBar extends MaterialScrollBar<DragScrollBar>{
     @Override
     void setTouchIntercept() {
         final Handle handle = super.handleThumb;
-        OnTouchListener otl = new OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
+        OnTouchListener otl = (v, event) -> {
             if (!hiddenByUser) {
-
                 boolean valid = validTouch(event);
 
                 // check valid touch region only on action down => otherwise the check will fail if users scrolls very fast
@@ -78,10 +73,10 @@ public class DragScrollBar extends MaterialScrollBar<DragScrollBar>{
 
                     fadeOut();
                 }
+                performClick();
                 return true;
             }
             return false;
-            }
         };
         setOnTouchListener(otl);
     }

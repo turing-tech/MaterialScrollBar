@@ -152,7 +152,7 @@ public abstract class MaterialScrollBar<T> extends RelativeLayout {
         lp.addRule(ALIGN_PARENT_RIGHT);
         handleTrack.setLayoutParams(lp);
         handleTrack.setBackgroundColor(ContextCompat.getColor(context, android.R.color.darker_gray));
-        ViewCompat.setAlpha(handleTrack, 0.4F);
+        handleTrack.setAlpha(0.4F);
         return(handleTrack);
     }
 
@@ -394,18 +394,17 @@ public abstract class MaterialScrollBar<T> extends RelativeLayout {
      * The adapter must implement {@link ICustomScroller}.
      */
     private void checkCustomScrolling(){
-        if (ViewCompat.isAttachedToWindow(this))
+        if (ViewCompat.isAttachedToWindow(this)) {
             checkCustomScrollingInterface();
-        else
-            addOnLayoutChangeListener(new OnLayoutChangeListener()
-            {
+        } else {
+            addOnLayoutChangeListener(new OnLayoutChangeListener() {
                 @Override
-                public void onLayoutChange(View v, int left, int top, int right, int bottom, int oldLeft, int oldTop, int oldRight, int oldBottom)
-                {
+                public void onLayoutChange(View v, int left, int top, int right, int bottom, int oldLeft, int oldTop, int oldRight, int oldBottom) {
                     MaterialScrollBar.this.removeOnLayoutChangeListener(this);
                     checkCustomScrollingInterface();
                 }
             });
+        }
     }
 
     /**
