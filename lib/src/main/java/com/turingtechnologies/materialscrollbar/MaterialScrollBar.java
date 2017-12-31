@@ -87,6 +87,7 @@ public abstract class MaterialScrollBar<T> extends RelativeLayout {
     private int seekId = 0; //ID of the associated RecyclerView
     ScrollingUtilities scrollUtils = new ScrollingUtilities(this);
     SwipeRefreshLayout swipeRefreshLayout;
+    private ArrayList<RecyclerView.OnScrollListener> listeners = new ArrayList<>();
 
     //Misc
     private OnLayoutChangeListener indicatorLayoutListener;
@@ -226,7 +227,7 @@ public abstract class MaterialScrollBar<T> extends RelativeLayout {
     //General setup.
     private void generalSetup(){
         recyclerView.setVerticalScrollBarEnabled(false); // disable any existing scrollbars
-        recyclerView.addOnScrollListener(new scrollListener()); // lets us read when the recyclerView scrolls
+        recyclerView.addOnScrollListener(new ScrollListener()); // lets us read when the recyclerView scrolls
 
         implementPreferences();
 
@@ -643,6 +644,27 @@ public abstract class MaterialScrollBar<T> extends RelativeLayout {
         this.draggableFromAnywhere = draggableFromAnywhere;
     }
 
+    /**
+     * Add a listener for scroll events triggered by the scroll bar.
+     */
+    public void addScrollListener(RecyclerView.OnScrollListener scrollListener) {
+        listeners.add(scrollListener);
+    }
+
+    /**
+     * Remove a listener for scroll events triggered by the scroll bar.
+     */
+    public void removeScrollListener(RecyclerView.OnScrollListener scrollListener) {
+        listeners.remove(scrollListener);
+    }
+
+    /**
+     * Clear listeners for scroll events triggered by the scroll bar.
+     */
+    public void clearScrollListeners() {
+        listeners.clear();
+    }
+
     //CHAPTER IV - MISC METHODS
 
     //Fetch accent color.
@@ -716,9 +738,13 @@ public abstract class MaterialScrollBar<T> extends RelativeLayout {
         if (isScrollChangeLargeEnoughForFastScroll(currentScrollPercent) ||
                 currentScrollPercent == 0 || currentScrollPercent == 1) {
             previousScrollPercent = currentScrollPercent;
-            scrollUtils.scrollToPositionAtProgress(currentScrollPercent);
+            int dy = scrollUtils.scrollToPositionAtProgress(currentScrollPercent);
             scrollUtils.scrollHandleAndIndicator();
-            recyclerView.onScrolled(0, 0);
+            if(dy != 0) {
+                for(RecyclerView.OnScrollListener listener : listeners) {
+                    listener.onScrolled(recyclerView, 0, dy);
+                }
+            }
         }
 
         if (lightOnTouch) {
@@ -748,7 +774,7 @@ public abstract class MaterialScrollBar<T> extends RelativeLayout {
         return draggableFromAnywhere || (event.getY() >= handleThumb.getY() - Utils.getDP(20, recyclerView.getContext()) && event.getY() <= handleThumb.getY() + handleThumb.getHeight());
     }
 
-    class scrollListener extends RecyclerView.OnScrollListener {
+    class ScrollListener extends RecyclerView.OnScrollListener {
         @Override
         public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
             super.onScrolled(recyclerView, dx, dy);

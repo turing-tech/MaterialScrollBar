@@ -98,7 +98,16 @@ class ScrollingUtilities {
         return materialScrollBar.getHeight() - materialScrollBar.handleThumb.getHeight();
     }
 
-    void scrollToPositionAtProgress(float touchFraction) {
+    /**
+     * Scrolls to the specified fraction of the RV
+     *
+     * @param touchFraction the fraction of the RV to scroll through
+     * @return the distance traveled by the RV in the transformation applied by this method.
+     * + is downward, - upward.
+     */
+    int scrollToPositionAtProgress(float touchFraction) {
+        int priorPosition = materialScrollBar.recyclerView.computeVerticalScrollOffset();
+        int exactItemPos;
         if(customScroller == null) {
             int spanCount = 1;
             if (materialScrollBar.recyclerView.getLayoutManager() instanceof GridLayoutManager) {
@@ -111,7 +120,7 @@ class ScrollingUtilities {
             getCurScrollState();
 
             //The exact position of our desired item
-            int exactItemPos = (int) (getAvailableScrollHeight() * touchFraction);
+            exactItemPos = (int) (getAvailableScrollHeight() * touchFraction);
 
             //Scroll to the desired item. The offset used here is kind of hard to explain.
             //If the position we wish to scroll to is, say, position 10.5, we scroll to position 10,
@@ -123,10 +132,12 @@ class ScrollingUtilities {
             if(layoutManager == null){
                 layoutManager = ((LinearLayoutManager) materialScrollBar.recyclerView.getLayoutManager());
             }
-            int position = customScroller.getItemIndexForScroll(touchFraction);
-            int offset = (int) (customScroller.getDepthForItem(position) - touchFraction * getAvailableScrollHeight());
-            layoutManager.scrollToPositionWithOffset(position, offset);
+            exactItemPos = customScroller.getItemIndexForScroll(touchFraction);
+            int offset = (int) (customScroller.getDepthForItem(exactItemPos) - touchFraction * getAvailableScrollHeight());
+            layoutManager.scrollToPositionWithOffset(exactItemPos, offset);
+            return 0;
         }
+        return exactItemPos - priorPosition;
     }
 
     int getAvailableScrollHeight() {
