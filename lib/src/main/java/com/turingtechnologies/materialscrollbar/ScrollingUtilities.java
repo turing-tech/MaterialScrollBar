@@ -16,7 +16,6 @@
 
 package com.turingtechnologies.materialscrollbar;
 
-import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.util.Log;
@@ -59,7 +58,8 @@ class ScrollingUtilities {
             constant = scrollPosState.rowHeight * scrollPosState.rowIndex;
         }
         scrollBarY = (int) getScrollPosition();
-        ViewCompat.setY(materialScrollBar.handleThumb, scrollBarY);
+        System.out.println(scrollPosState.rowIndex + " " + getScrollPosition());
+        materialScrollBar.handleThumb.setY(scrollBarY);
         materialScrollBar.handleThumb.invalidate();
         if(materialScrollBar.indicator != null){
             int element;
@@ -77,7 +77,9 @@ class ScrollingUtilities {
     private float getScrollPosition(){
         getCurScrollState();
         int scrollY = materialScrollBar.getPaddingTop() + constant - scrollPosState.rowTopOffset;
-        return ((float) scrollY / getAvailableScrollHeight()) * getAvailableScrollBarHeight();
+        int scrollHeight = getAvailableScrollHeight();
+        int barHeight = getAvailableScrollBarHeight();
+        return ((float) scrollY / scrollHeight) * barHeight;
     }
 
     private int getRowCount(){

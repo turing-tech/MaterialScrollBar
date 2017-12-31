@@ -292,7 +292,7 @@ public abstract class MaterialScrollBar<T> extends RelativeLayout {
         }
 
         if(!isInEditMode()){
-            scrollUtils.getCurScrollState();
+            scrollUtils.scrollHandleAndIndicator();
             if(scrollUtils.getAvailableScrollHeight() <= 0){
                 handleTrack.setVisibility(GONE);
                 handleThumb.setVisibility(GONE);
@@ -591,6 +591,7 @@ public abstract class MaterialScrollBar<T> extends RelativeLayout {
     public T setBarThickness(final int thickness){
         if(!attached) {
             onAttach.add(() -> setBarThickness(thickness));
+            return (T) this;
         }
         LayoutParams layoutParams = (LayoutParams) handleThumb.getLayoutParams();
         layoutParams.width = thickness;
