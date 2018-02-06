@@ -15,24 +15,25 @@
   -->
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".MainActivity">
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                xmlns:tools="http://schemas.android.com/tools"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                tools:context=".MainActivity">
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recyclerView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"/>
 
     <com.turingtechnologies.materialscrollbar.TouchScrollBar
-        app:msb_lightOnTouch="false"
-        app:msb_recyclerView="@id/recyclerView"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"
         android:id="@+id/touchScrollBar"
         android:layout_width="wrap_content"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        app:msb_barThickness="@dimen/scrollbar_thickness"
+        app:msb_lightOnTouch="false"
+        app:msb_recyclerView="@id/recyclerView"/>
 
 </RelativeLayout>
