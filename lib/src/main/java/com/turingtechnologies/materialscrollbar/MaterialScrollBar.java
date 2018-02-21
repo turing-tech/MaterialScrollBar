@@ -231,7 +231,7 @@ public abstract class MaterialScrollBar<T> extends RelativeLayout {
 
         implementPreferences();
 
-        implementFlavourPreferences(a);
+        implementFlavourPreferences();
 
         a.recycle();
 
@@ -358,7 +358,7 @@ public abstract class MaterialScrollBar<T> extends RelativeLayout {
 
     abstract boolean getHide();
 
-    abstract void implementFlavourPreferences(TypedArray a);
+    abstract void implementFlavourPreferences();
 
     abstract float getHandleOffset();
 
@@ -566,8 +566,8 @@ public abstract class MaterialScrollBar<T> extends RelativeLayout {
         } else {
             removeOnLayoutChangeListener(indicatorLayoutListener);
             indicatorLayoutListener = (a,b,c,d,e,f,g,h,i) -> {
-                    setupIndicator(indicator, addSpaceSide);
-                    MaterialScrollBar.this.removeOnLayoutChangeListener(indicatorLayoutListener);
+                setupIndicator(indicator, addSpaceSide);
+                MaterialScrollBar.this.removeOnLayoutChangeListener(indicatorLayoutListener);
             };
             addOnLayoutChangeListener(indicatorLayoutListener);
         }

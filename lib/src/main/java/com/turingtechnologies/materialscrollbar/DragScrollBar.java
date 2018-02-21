@@ -17,7 +17,6 @@
 package com.turingtechnologies.materialscrollbar;
 
 import android.content.Context;
-import android.content.res.TypedArray;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
@@ -65,7 +64,7 @@ public class DragScrollBar extends MaterialScrollBar<DragScrollBar>{
                 if ((event.getAction() == MotionEvent.ACTION_MOVE || event.getAction() == MotionEvent.ACTION_DOWN) && held) {
                     onDown(event);
                     fadeIn();
-                //On Up
+                    //On Up
                 } else {
                     onUp();
 
@@ -100,7 +99,7 @@ public class DragScrollBar extends MaterialScrollBar<DragScrollBar>{
     }
 
     @Override
-    void implementFlavourPreferences(TypedArray a) {}
+    void implementFlavourPreferences() {}
 
     @Override
     float getHandleOffset(){
