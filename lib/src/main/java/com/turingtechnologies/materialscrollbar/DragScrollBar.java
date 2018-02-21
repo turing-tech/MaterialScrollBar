@@ -26,15 +26,15 @@ public class DragScrollBar extends MaterialScrollBar<DragScrollBar>{
     float handleOffset = 0;
     float indicatorOffset = 0;
 
-    public DragScrollBar(Context context, AttributeSet attributeSet, int defStyle){
+    public DragScrollBar(Context context, AttributeSet attributeSet, int defStyle) {
         super(context, attributeSet, defStyle);
     }
 
-    public DragScrollBar(Context context, AttributeSet attributeSet){
+    public DragScrollBar(Context context, AttributeSet attributeSet) {
         super(context, attributeSet);
     }
 
-    public DragScrollBar(Context context, RecyclerView recyclerView, boolean lightOnTouch){
+    public DragScrollBar(Context context, RecyclerView recyclerView, boolean lightOnTouch) {
         super(context, recyclerView, lightOnTouch);
     }
 
@@ -52,7 +52,7 @@ public class DragScrollBar extends MaterialScrollBar<DragScrollBar>{
                     return false;
                 }
 
-                if(event.getAction() == MotionEvent.ACTION_DOWN && valid){
+                if(event.getAction() == MotionEvent.ACTION_DOWN && valid) {
                     held = true;
 
                     indicatorOffset = event.getY() - handle.getY() - handle.getLayoutParams().height / 2;
@@ -102,12 +102,12 @@ public class DragScrollBar extends MaterialScrollBar<DragScrollBar>{
     void implementFlavourPreferences() {}
 
     @Override
-    float getHandleOffset(){
+    float getHandleOffset() {
         return draggableFromAnywhere ? 0 : handleOffset;
     }
 
     @Override
-    float getIndicatorOffset(){
+    float getIndicatorOffset() {
         return draggableFromAnywhere ? 0 : indicatorOffset;
     }
 }

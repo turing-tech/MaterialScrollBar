@@ -15,7 +15,7 @@ class IconAdapter extends RecyclerView.Adapter<IconAdapter.ViewHolder> implement
 
     private Activity act;
 
-    IconAdapter(Activity a){
+    IconAdapter(Activity a) {
         act = a;
     }
 
@@ -48,7 +48,7 @@ class IconAdapter extends RecyclerView.Adapter<IconAdapter.ViewHolder> implement
     public int getItemCount() {
         try{
             return AppData.pkgLabelList.size();
-        } catch (NullPointerException e){
+        } catch (NullPointerException e) {
             Intent i = new Intent(act, SplashActivity.class);
             i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             act.startActivity(i);

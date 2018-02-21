@@ -20,14 +20,14 @@ class DemoAdapter extends RecyclerView.Adapter<DemoAdapter.ViewHolder> implement
 
     private Activity act;
 
-    DemoAdapter(Activity a){
+    DemoAdapter(Activity a) {
         act = a;
     }
 
     @Override
     public Character getCharacterForElement(int element) {
         Character c = AppData.pkgLabelList.get(element).charAt(0);
-        if(Character.isDigit(c)){
+        if(Character.isDigit(c)) {
             c = '#';
         }
         return c;
@@ -70,7 +70,7 @@ class DemoAdapter extends RecyclerView.Adapter<DemoAdapter.ViewHolder> implement
     public int getItemCount() {
         try{
             return AppData.pkgLabelList.size();
-        } catch (NullPointerException e){
+        } catch (NullPointerException e) {
             Intent i = new Intent(act, SplashActivity.class);
             i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             act.startActivity(i);

@@ -20,15 +20,15 @@ class AppData {
     static ArrayList<Drawable> pkgIconList = new ArrayList<>();
     static ArrayList<Long> pkgDateList = new ArrayList<>();
 
-    static void processApps(final AppCompatActivity activity){
-        if(!pkgLabelList.isEmpty()){
+    static void processApps(final AppCompatActivity activity) {
+        if(!pkgLabelList.isEmpty()) {
             openMainActivity(activity);
             return;
         }
         //noinspection WrongConstant
         pkgAppsList = activity.getPackageManager().getInstalledApplications(PackageManager.GET_ACTIVITIES);
-        for(int i = 0; i < pkgAppsList.size(); i++){
-            if(activity.getPackageManager().getLaunchIntentForPackage(pkgAppsList.get(i).packageName) == null || (!BuildConfig.DEBUG && pkgAppsList.get(i).packageName.contains(AppData.class.getPackage().getName()))){
+        for(int i = 0; i < pkgAppsList.size(); i++) {
+            if(activity.getPackageManager().getLaunchIntentForPackage(pkgAppsList.get(i).packageName) == null || (!BuildConfig.DEBUG && pkgAppsList.get(i).packageName.contains(AppData.class.getPackage().getName()))) {
                 pkgAppsList.remove(i);
                 i--;
             }
@@ -43,7 +43,7 @@ class AppData {
         protected AppCompatActivity doInBackground(AppCompatActivity... acts) {
             AppCompatActivity activity = acts[0];
             Collections.sort(pkgAppsList, (o1, o2) -> o1.loadLabel(activity.getPackageManager()).toString().compareToIgnoreCase(o2.loadLabel(activity.getPackageManager()).toString()));
-            for(ApplicationInfo appInfo : pkgAppsList){
+            for(ApplicationInfo appInfo : pkgAppsList) {
                 pkgLabelList.add(appInfo.loadLabel(activity.getPackageManager()).toString());
                 pkgIconList.add(appInfo.loadIcon(activity.getPackageManager()));
                 try {
@@ -62,7 +62,7 @@ class AppData {
         }
     };
 
-    private static void openMainActivity(AppCompatActivity activity){
+    private static void openMainActivity(AppCompatActivity activity) {
         Intent main = new Intent(activity.getApplicationContext(), MainActivity.class);
         activity.startActivity(main);
     }

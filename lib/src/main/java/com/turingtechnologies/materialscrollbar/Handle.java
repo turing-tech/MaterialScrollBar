@@ -35,7 +35,7 @@ public class Handle extends View {
     Context context;
     Boolean rtl = false;
 
-    public Handle(Context c, int m){
+    public Handle(Context c, int m) {
         super(c);
 
         context = c;
@@ -43,7 +43,7 @@ public class Handle extends View {
         p.setFlags(Paint.ANTI_ALIAS_FLAG);
 }
 
-    void setRightToLeft(boolean rtl){
+    void setRightToLeft(boolean rtl) {
         this.rtl = rtl;
     }
 
@@ -54,7 +54,7 @@ public class Handle extends View {
         p.setColor(color);
     }
 
-    public void collapseHandle(){
+    public void collapseHandle() {
         expanded = true;
         rectF = new RectF(new Rect(getRight(),getTop(),getRight(),getBottom()));
         invalidate();
@@ -65,7 +65,7 @@ public class Handle extends View {
         super.onAnimationEnd();
     }
 
-    public void expandHandle(){
+    public void expandHandle() {
         expanded = false;
         rectF = makeRect();
         invalidate();
@@ -75,13 +75,13 @@ public class Handle extends View {
     protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
         super.onLayout(changed, left, top, right, bottom);
 
-        if(mode == 0){
+        if(mode == 0) {
             rectF = makeRect();
         }
     }
 
-    private RectF makeRect(){
-        if(rtl){
+    private RectF makeRect() {
+        if(rtl) {
             return new RectF(new Rect(getRight() - Utils.getDP(6, context),getTop(),getRight()+Utils.getDP(4, context),getBottom()));
 
         } else {
@@ -94,7 +94,7 @@ public class Handle extends View {
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
 
-        if(mode == 0 && !expanded){
+        if(mode == 0 && !expanded) {
             canvas.getClipBounds(boundRect);
             boundRect.inset(-Utils.getDP(30, context), 0); //make the rect larger
 

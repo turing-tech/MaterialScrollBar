@@ -38,7 +38,7 @@ public class DateAndTimeIndicator extends Indicator<IDateableAdapter, DateAndTim
     private Boolean includeTime;
     private Context context;
 
-    public DateAndTimeIndicator(Context c, boolean includeYear, boolean includeMonth, boolean includeDay, boolean includeTime){
+    public DateAndTimeIndicator(Context c, boolean includeYear, boolean includeMonth, boolean includeDay, boolean includeTime) {
         super(c, IDateableAdapter.class);
         context = c;
         this.includeYear = includeYear;
@@ -53,22 +53,22 @@ public class DateAndTimeIndicator extends Indicator<IDateableAdapter, DateAndTim
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(date);
         String text = "";
-        if(includeTime){
+        if(includeTime) {
             text += DateFormat.getTimeFormat(context).format(date);
         }
-        if(includeMonth){
+        if(includeMonth) {
             text += " " + months[calendar.get(Calendar.MONTH)].substring(0, 3);
         }
-        if(includeDay){
+        if(includeDay) {
             int day = calendar.get(Calendar.DAY_OF_MONTH);
-            if(String.valueOf(day).length() == 1){
+            if(String.valueOf(day).length() == 1) {
                 text += " 0" + day;
             } else {
                 text += " " + day;
             }
         }
-        if(includeYear){
-            if(includeDay){
+        if(includeYear) {
+            if(includeDay) {
                 text += ",";
             }
             text += " " + calendar.get(Calendar.YEAR);
@@ -84,20 +84,20 @@ public class DateAndTimeIndicator extends Indicator<IDateableAdapter, DateAndTim
     @Override
     protected int getIndicatorWidth() {
         int width = 62;
-        if(includeYear){
-            if(includeDay){
+        if(includeYear) {
+            if(includeDay) {
                 width += 14;
             }
             width += 56;
         }
-        if(includeMonth){
+        if(includeMonth) {
             width += 43;
         }
-        if(includeDay){
+        if(includeDay) {
             width += 28;
         }
-        if(includeTime){
-            if(DateFormat.is24HourFormat(context)){
+        if(includeTime) {
+            if(DateFormat.is24HourFormat(context)) {
                 width += 70;
             } else {
                 width += 115;

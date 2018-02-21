@@ -57,8 +57,8 @@ public abstract class Indicator<T, U extends Indicator> extends RelativeLayout{
         adapterClass = adapter;
     }
 
-    void setSizeCustom(int size){
-        if(addSpace){
+    void setSizeCustom(int size) {
+        if(addSpace) {
            this.size =  size + Utils.getDP(10, this);
         } else {
             this.size =  size;
@@ -66,15 +66,15 @@ public abstract class Indicator<T, U extends Indicator> extends RelativeLayout{
         setLayoutParams(refreshMargins((LayoutParams) getLayoutParams()));
     }
 
-    void setRTL(boolean rtl){
+    void setRTL(boolean rtl) {
         this.rtl = rtl;
     }
 
-    void linkToScrollBar(MaterialScrollBar msb, boolean addSpace){
+    void linkToScrollBar(MaterialScrollBar msb, boolean addSpace) {
         this.addSpace = addSpace;
         materialScrollBar = msb;
 
-        if(addSpace){
+        if(addSpace) {
             size = Utils.getDP(15, this)  + materialScrollBar.handleThumb.getWidth();
         } else {
             size = Utils.getDP(2, this)  + materialScrollBar.handleThumb.getWidth();
@@ -101,7 +101,7 @@ public abstract class Indicator<T, U extends Indicator> extends RelativeLayout{
         ((ViewGroup)msb.getParent()).addView(this, lp);
     }
 
-    LayoutParams refreshMargins(LayoutParams lp){
+    LayoutParams refreshMargins(LayoutParams lp) {
         if(rtl) {
             lp.setMargins(size, 0, 0, 0);
         } else {
@@ -114,11 +114,11 @@ public abstract class Indicator<T, U extends Indicator> extends RelativeLayout{
      * Used by the materialScrollBar to move the indicator with the handleThumb
      * @param y Position to which the indicator should move.
      */
-    void setScroll(float y){
-        if(getVisibility() == VISIBLE){
+    void setScroll(float y) {
+        if(getVisibility() == VISIBLE) {
             y -= 75 - materialScrollBar.getIndicatorOffset() + Utils.getDP(getIndicatorHeight() / 2, this);
 
-            if(y < 5){
+            if(y < 5) {
                 y = 5;
             }
 
@@ -129,7 +129,7 @@ public abstract class Indicator<T, U extends Indicator> extends RelativeLayout{
     /**
      * Sets the content text for the indicator and resizes if needed
      */
-    void setText(int section){
+    void setText(int section) {
         String newText;
         try{
             T adapter = (T) materialScrollBar.recyclerView.getAdapter();
@@ -139,10 +139,10 @@ public abstract class Indicator<T, U extends Indicator> extends RelativeLayout{
                 return;
             }
             newText = getTextElement(section, adapter);
-        } catch (ArrayIndexOutOfBoundsException e){
+        } catch (ArrayIndexOutOfBoundsException e) {
             newText = "Error";
         }
-        if (!textView.getText().equals(newText)){
+        if (!textView.getText().equals(newText)) {
             textView.setText(newText);
 
             LayoutWrapContentUpdater.wrapContentAgain(this);
@@ -160,7 +160,7 @@ public abstract class Indicator<T, U extends Indicator> extends RelativeLayout{
                     "skipping indicator layout.");
             return;
         }
-        if(!adapterClass.isInstance(adapter)){
+        if(!adapterClass.isInstance(adapter)) {
             throw new IllegalArgumentException(
                     "In order to add this indicator, the adapter for your recyclerView, "
                             + adapter.getClass().getName()
@@ -168,7 +168,7 @@ public abstract class Indicator<T, U extends Indicator> extends RelativeLayout{
         }
     }
 
-    public U setTypeface(Typeface typeface){
+    public U setTypeface(Typeface typeface) {
         textView.setTypeface(typeface);
         return (U)this;
     }
@@ -177,7 +177,7 @@ public abstract class Indicator<T, U extends Indicator> extends RelativeLayout{
      * Used by the materialScrollBar to change the text color for the indicator.
      * @param color The desired text color.
      */
-    void setTextColor(@ColorInt int color){
+    void setTextColor(@ColorInt int color) {
         textView.setTextColor(color);
     }
 

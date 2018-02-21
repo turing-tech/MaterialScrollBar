@@ -31,7 +31,7 @@ class Utils {
      * @param v View
      * @return Number of corresponding density-dependent pixels for the given device
      */
-    static int getDP(int dp, View v){
+    static int getDP(int dp, View v) {
         return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, v.getResources().getDisplayMetrics());
     }
 
@@ -40,7 +40,7 @@ class Utils {
      * @param c Context
      * @return Number of corresponding density-dependent pixels for the given device
      */
-    static int getDP(int dp, Context c){
+    static int getDP(int dp, Context c) {
         return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, c.getResources().getDisplayMetrics());
     }
 
@@ -54,7 +54,7 @@ class Utils {
                 c.getResources().getConfiguration().getLayoutDirection() == LayoutDirection.RTL;
     }
 
-    static <T> String getGenericName(T object){
+    static <T> String getGenericName(T object) {
         return ((Class<T>) ((ParameterizedType) object.getClass().getGenericSuperclass()).getActualTypeArguments()[0]).getSimpleName();
     }
 }

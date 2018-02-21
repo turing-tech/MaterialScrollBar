@@ -25,7 +25,7 @@ import android.content.Context;
 @SuppressLint("ViewConstructor")
 public class AlphabetIndicator extends Indicator<INameableAdapter, AlphabetIndicator>{
 
-    public AlphabetIndicator (Context c){
+    public AlphabetIndicator (Context c) {
         super(c, INameableAdapter.class);
     }
 
