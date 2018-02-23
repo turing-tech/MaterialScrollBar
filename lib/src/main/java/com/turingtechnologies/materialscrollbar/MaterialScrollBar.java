@@ -297,9 +297,11 @@ public abstract class MaterialScrollBar<T> extends RelativeLayout {
             if(scrollUtils.getAvailableScrollHeight() <= 0) {
                 handleTrack.setVisibility(GONE);
                 handleThumb.setVisibility(GONE);
+                if(indicator != null) indicator.setVisibility(GONE);
             } else {
                 handleTrack.setVisibility(VISIBLE);
                 handleThumb.setVisibility(VISIBLE);
+                if(indicator != null) indicator.setVisibility(VISIBLE);
             }
         }
     }

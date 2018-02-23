@@ -1,6 +1,5 @@
 package com.turingtechnologies.materialscrollbardemo;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
@@ -10,7 +9,6 @@ import android.support.v7.app.AppCompatActivity;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 class AppData {
@@ -44,6 +42,7 @@ class AppData {
             AppCompatActivity activity = acts[0];
             Collections.sort(pkgAppsList, (o1, o2) -> o1.loadLabel(activity.getPackageManager()).toString().compareToIgnoreCase(o2.loadLabel(activity.getPackageManager()).toString()));
             for(ApplicationInfo appInfo : pkgAppsList) {
+                if(pkgLabelList.size() > 5) break;
                 pkgLabelList.add(appInfo.loadLabel(activity.getPackageManager()).toString());
                 pkgIconList.add(appInfo.loadIcon(activity.getPackageManager()));
                 try {
