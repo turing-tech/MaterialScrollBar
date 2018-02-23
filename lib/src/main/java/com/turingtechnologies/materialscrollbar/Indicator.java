@@ -122,7 +122,7 @@ public abstract class Indicator<T, U extends Indicator> extends RelativeLayout{
                 y = 5;
             }
 
-            ViewCompat.setY(this, y);
+            setY(y);
         }
     }
 
