@@ -42,7 +42,6 @@ class AppData {
             AppCompatActivity activity = acts[0];
             Collections.sort(pkgAppsList, (o1, o2) -> o1.loadLabel(activity.getPackageManager()).toString().compareToIgnoreCase(o2.loadLabel(activity.getPackageManager()).toString()));
             for(ApplicationInfo appInfo : pkgAppsList) {
-                if(pkgLabelList.size() > 5) break;
                 pkgLabelList.add(appInfo.loadLabel(activity.getPackageManager()).toString());
                 pkgIconList.add(appInfo.loadIcon(activity.getPackageManager()));
                 try {
