@@ -76,10 +76,11 @@ public abstract class MaterialScrollBar<T> extends RelativeLayout {
     int handleOffColor = Color.parseColor("#9c9c9c");
     protected boolean hidden = true;
     private int textColor = ContextCompat.getColor(getContext(), android.R.color.white);
-    boolean lightOnTouch;
+    private boolean lightOnTouch;
     private TypedArray a; //XML attributes
     private Boolean rtl = false;
     boolean hiddenByUser = false;
+    private boolean hiddenByNotEnoughElements = false;
     private float fastScrollSnapPercent = 0;
 
     //Associated Objects
@@ -294,14 +295,12 @@ public abstract class MaterialScrollBar<T> extends RelativeLayout {
 
         if(!isInEditMode()) {
             scrollUtils.scrollHandleAndIndicator();
-            if(scrollUtils.getAvailableScrollHeight() <= 0) {
+            if(hiddenByNotEnoughElements = (scrollUtils.getAvailableScrollHeight() <= 0)) {
                 handleTrack.setVisibility(GONE);
                 handleThumb.setVisibility(GONE);
-                if(indicator != null) indicator.setVisibility(GONE);
             } else {
                 handleTrack.setVisibility(VISIBLE);
                 handleThumb.setVisibility(VISIBLE);
-                if(indicator != null) indicator.setVisibility(VISIBLE);
             }
         }
     }
@@ -718,7 +717,7 @@ public abstract class MaterialScrollBar<T> extends RelativeLayout {
     }
 
     protected void onDown(MotionEvent event) {
-        if (indicator != null && indicator.getVisibility() == INVISIBLE && recyclerView.getAdapter() != null) {
+        if (indicator != null && indicator.getVisibility() == INVISIBLE && recyclerView.getAdapter() != null && !hiddenByNotEnoughElements) {
             indicator.setVisibility(VISIBLE);
             indicator.setAlpha(0F);
             indicator.animate().alpha(1F).setDuration(150).setListener(new AnimatorListenerAdapter() {
