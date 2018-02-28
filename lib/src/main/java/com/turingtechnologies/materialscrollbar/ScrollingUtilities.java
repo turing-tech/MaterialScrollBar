@@ -62,7 +62,7 @@ class ScrollingUtilities {
         materialScrollBar.handleThumb.invalidate();
         if(materialScrollBar.indicator != null) {
             int element;
-            if (materialScrollBar.recyclerView.getLayoutManager() instanceof GridLayoutManager) {
+            if(materialScrollBar.recyclerView.getLayoutManager() instanceof GridLayoutManager) {
                 element = scrollPosState.rowIndex * ((GridLayoutManager)materialScrollBar.recyclerView.getLayoutManager()).getSpanCount();
             } else {
                 element = scrollPosState.rowIndex;
@@ -83,7 +83,7 @@ class ScrollingUtilities {
 
     private int getRowCount() {
         int rowCount = materialScrollBar.recyclerView.getLayoutManager().getItemCount();
-        if (materialScrollBar.recyclerView.getLayoutManager() instanceof GridLayoutManager) {
+        if(materialScrollBar.recyclerView.getLayoutManager() instanceof GridLayoutManager) {
             int spanCount = ((GridLayoutManager) materialScrollBar.recyclerView.getLayoutManager()).getSpanCount();
             rowCount = (int) Math.ceil((double) rowCount / spanCount);
         }
@@ -110,7 +110,7 @@ class ScrollingUtilities {
         int exactItemPos;
         if(customScroller == null) {
             int spanCount = 1;
-            if (materialScrollBar.recyclerView.getLayoutManager() instanceof GridLayoutManager) {
+            if(materialScrollBar.recyclerView.getLayoutManager() instanceof GridLayoutManager) {
                 spanCount = ((GridLayoutManager) materialScrollBar.recyclerView.getLayoutManager()).getSpanCount();
             }
 
@@ -165,13 +165,13 @@ class ScrollingUtilities {
         int itemCount = materialScrollBar.recyclerView.getAdapter().getItemCount();
 
         // Return early if there are no items
-        if (itemCount == 0) {
+        if(itemCount == 0) {
             return;
         }
         View child = materialScrollBar.recyclerView.getChildAt(0);
 
         scrollPosState.rowIndex = materialScrollBar.recyclerView.getChildAdapterPosition(child);
-        if (materialScrollBar.recyclerView.getLayoutManager() instanceof GridLayoutManager) {
+        if(materialScrollBar.recyclerView.getLayoutManager() instanceof GridLayoutManager) {
             scrollPosState.rowIndex = scrollPosState.rowIndex / ((GridLayoutManager) materialScrollBar.recyclerView.getLayoutManager()).getSpanCount();
         }
         if(child == null) {

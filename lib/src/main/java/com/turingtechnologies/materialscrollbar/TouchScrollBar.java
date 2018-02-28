@@ -63,22 +63,22 @@ public class TouchScrollBar extends MaterialScrollBar<TouchScrollBar> {
     @Override
     void setTouchIntercept() {
         setOnTouchListener((v, event) -> {
-            if (!hiddenByUser) {
+            if(!hiddenByUser) {
 
                 boolean valid = validTouch(event);
 
                 // check valid touch region only on action down => otherwise the check will fail if users scrolls very fast
-                if (event.getAction() == MotionEvent.ACTION_DOWN && !valid) {
+                if(event.getAction() == MotionEvent.ACTION_DOWN && !valid) {
                     return false;
                 }
 
                 //On Down
-                if (event.getAction() != MotionEvent.ACTION_UP) {
+                if(event.getAction() != MotionEvent.ACTION_UP) {
 
-                    if (!hidden || respondToTouch) {
+                    if(!hidden || respondToTouch) {
                         onDown(event);
 
-                        if (hide) {
+                        if(hide) {
                             uiHandler.removeCallbacks(fadeBar);
                             fadeIn();
                         }
@@ -89,7 +89,7 @@ public class TouchScrollBar extends MaterialScrollBar<TouchScrollBar> {
 
                     onUp();
 
-                    if (hide) {
+                    if(hide) {
                         uiHandler.removeCallbacks(fadeBar);
                         uiHandler.postDelayed(fadeBar, hideDuration);
                     }
@@ -113,7 +113,7 @@ public class TouchScrollBar extends MaterialScrollBar<TouchScrollBar> {
 
     @Override
     void onScroll() {
-        if (hide) {
+        if(hide) {
             uiHandler.removeCallbacks(fadeBar);
             uiHandler.postDelayed(fadeBar, hideDuration);
             fadeIn();
@@ -128,10 +128,10 @@ public class TouchScrollBar extends MaterialScrollBar<TouchScrollBar> {
 
     @Override
     void implementFlavourPreferences() {
-        if (flavourAttributes.hasValue(R.styleable.TouchScrollBar_msb_autoHide)) {
+        if(flavourAttributes.hasValue(R.styleable.TouchScrollBar_msb_autoHide)) {
             setAutoHide(flavourAttributes.getBoolean(R.styleable.TouchScrollBar_msb_autoHide, true));
         }
-        if (flavourAttributes.hasValue(R.styleable.TouchScrollBar_msb_hideDelayInMilliseconds)) {
+        if(flavourAttributes.hasValue(R.styleable.TouchScrollBar_msb_hideDelayInMilliseconds)) {
             hideDuration = (flavourAttributes.getInteger(R.styleable.TouchScrollBar_msb_hideDelayInMilliseconds, 2500));
         }
     }
@@ -154,7 +154,7 @@ public class TouchScrollBar extends MaterialScrollBar<TouchScrollBar> {
      *             This method is experimental
      */
     public TouchScrollBar setAutoHide(Boolean hide) {
-        if (!hide) {
+        if(!hide) {
             TranslateAnimation anim = new TranslateAnimation(Animation.RELATIVE_TO_PARENT, 0.0f,
                     Animation.RELATIVE_TO_SELF, 0.0f, Animation.RELATIVE_TO_PARENT, 0.0f, Animation.RELATIVE_TO_PARENT, 0.0f);
             anim.setFillAfter(true);

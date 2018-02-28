@@ -44,11 +44,11 @@ public class DragScrollBar extends MaterialScrollBar<DragScrollBar>{
     void setTouchIntercept() {
         final Handle handle = super.handleThumb;
         OnTouchListener otl = (v, event) -> {
-            if (!hiddenByUser) {
+            if(!hiddenByUser) {
                 boolean valid = validTouch(event);
 
                 // check valid touch region only on action down => otherwise the check will fail if users scrolls very fast
-                if (event.getAction() == MotionEvent.ACTION_DOWN && !valid) {
+                if(event.getAction() == MotionEvent.ACTION_DOWN && !valid) {
                     return false;
                 }
 
@@ -61,7 +61,7 @@ public class DragScrollBar extends MaterialScrollBar<DragScrollBar>{
                     handleOffset = (offset2 * balance) + (indicatorOffset * (1 - balance));
                 }
                 //On Down
-                if ((event.getAction() == MotionEvent.ACTION_MOVE || event.getAction() == MotionEvent.ACTION_DOWN) && held) {
+                if((event.getAction() == MotionEvent.ACTION_MOVE || event.getAction() == MotionEvent.ACTION_DOWN) && held) {
                     onDown(event);
                     fadeIn();
                     //On Up

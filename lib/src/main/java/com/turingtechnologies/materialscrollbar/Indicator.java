@@ -93,7 +93,7 @@ public abstract class Indicator<T, U extends Indicator> extends RelativeLayout{
 
         ((GradientDrawable)getBackground()).setColor(msb.handleColor);
 
-        if (rtl) {
+        if(rtl) {
             lp.addRule(ALIGN_LEFT, msb.getId());
         } else {
             lp.addRule(ALIGN_RIGHT, msb.getId());
@@ -142,7 +142,7 @@ public abstract class Indicator<T, U extends Indicator> extends RelativeLayout{
         } catch (ArrayIndexOutOfBoundsException e) {
             newText = "Error";
         }
-        if (!textView.getText().equals(newText)) {
+        if(!textView.getText().equals(newText)) {
             textView.setText(newText);
 
             LayoutWrapContentUpdater.wrapContentAgain(this);

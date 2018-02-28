@@ -40,7 +40,7 @@ public class MainActivity extends AppCompatActivity {
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_toDate) {
+        if(id == R.id.action_toDate) {
             Intent i = new Intent(this, DateActivity.class);
             i.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
             startActivity(i);

@@ -45,18 +45,18 @@ class LayoutWrapContentUpdater
     {
         assert( "main".equals( Thread.currentThread().getName() ) );
 
-        if (subTreeRoot == null)
+        if(subTreeRoot == null)
             return;
         LayoutParams layoutParams = subTreeRoot.getLayoutParams();
 
         // --- First, we force measure on the subTree
         int widthMeasureSpec 	= subTreeRootWidthMeasureSpec;
         // When LayoutParams.MATCH_PARENT and Width > 0, we apply measured width to avoid getting dimensions too big
-        if ( layoutParams.width  != LayoutParams.WRAP_CONTENT && subTreeRoot.getWidth() > 0 )
+        if( layoutParams.width  != LayoutParams.WRAP_CONTENT && subTreeRoot.getWidth() > 0 )
             widthMeasureSpec 	=  MeasureSpec.makeMeasureSpec( subTreeRoot.getWidth(), MeasureSpec.EXACTLY );
         int heightMeasureSpec 	= subTreeRootHeightMeasureSpec;
         // When LayoutParams.MATCH_PARENT and Height > 0, we apply measured height to avoid getting dimensions too big
-        if ( layoutParams.height != LayoutParams.WRAP_CONTENT && subTreeRoot.getHeight() > 0 )
+        if( layoutParams.height != LayoutParams.WRAP_CONTENT && subTreeRoot.getHeight() > 0 )
             heightMeasureSpec 	=  MeasureSpec.makeMeasureSpec( subTreeRoot.getHeight(), MeasureSpec.EXACTLY );
         // This measure recursively the whole sub-tree
         subTreeRoot.measure( widthMeasureSpec, heightMeasureSpec );
@@ -75,7 +75,7 @@ class LayoutWrapContentUpdater
     private static void recurseWrapContent( View nodeView, boolean relayoutAllNodes )
     {
         // Does not recurse when visibility GONE
-        if ( nodeView.getVisibility() == View.GONE ) {
+        if( nodeView.getVisibility() == View.GONE ) {
             // nodeView.layout( nodeView.getLeft(), nodeView.getTop(), 0, 0 );		// No need
             return;
         }
@@ -84,30 +84,30 @@ class LayoutWrapContentUpdater
         boolean isWrapWidth  = ( layoutParams.width  == LayoutParams.WRAP_CONTENT ) || relayoutAllNodes;
         boolean isWrapHeight = ( layoutParams.height == LayoutParams.WRAP_CONTENT ) || relayoutAllNodes;
 
-        if ( isWrapWidth || isWrapHeight ) {
+        if( isWrapWidth || isWrapHeight ) {
 
             boolean changed = false;
             int right  = nodeView.getRight();
             int bottom = nodeView.getBottom();
 
-            if ( isWrapWidth  && nodeView.getMeasuredWidth() > 0 ) {
+            if( isWrapWidth  && nodeView.getMeasuredWidth() > 0 ) {
                 right = nodeView.getLeft() + nodeView.getMeasuredWidth();
                 changed = true;
             }
-            if ( isWrapHeight && nodeView.getMeasuredHeight() > 0 ) {
+            if( isWrapHeight && nodeView.getMeasuredHeight() > 0 ) {
                 bottom = nodeView.getTop() + nodeView.getMeasuredHeight();
                 changed = true;
             }
 
-            if (changed) {
+            if(changed) {
                 nodeView.layout( nodeView.getLeft(), nodeView.getTop(), right, bottom );
             }
         }
 
         // --- Recurse
-        if ( nodeView instanceof ViewGroup ) {
+        if( nodeView instanceof ViewGroup ) {
             ViewGroup nodeGroup = (ViewGroup)nodeView;
-            for (int i = 0; i < nodeGroup.getChildCount(); i++) {
+            for(int i = 0; i < nodeGroup.getChildCount(); i++) {
                 recurseWrapContent( nodeGroup.getChildAt(i), relayoutAllNodes );
             }
         }

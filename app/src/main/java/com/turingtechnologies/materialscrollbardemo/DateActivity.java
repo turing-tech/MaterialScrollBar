@@ -38,7 +38,7 @@ public class DateActivity extends AppCompatActivity {
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_toName) {
+        if(id == R.id.action_toName) {
             Intent i = new Intent(this, NameActivity.class);
             i.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
             startActivity(i);

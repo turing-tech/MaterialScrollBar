@@ -48,7 +48,7 @@ public class FastScrollerUtil
     public static void initHeaderScroller(RecyclerView rv)
     {
         RecyclerView.Adapter adapter = rv.getAdapter();
-        if (adapter instanceof IHeaderAdapter)
+        if(adapter instanceof IHeaderAdapter)
         {
             ((IHeaderAdapter) adapter).initScrollManager(getSpanSize(rv));
             initSpanSizeLookup(rv, (IHeaderAdapter)adapter);
@@ -62,7 +62,7 @@ public class FastScrollerUtil
     public static Integer getSpanSize(RecyclerView rv)
     {
         final RecyclerView.LayoutManager lm = rv.getLayoutManager();
-        if (lm != null && lm instanceof GridLayoutManager)
+        if(lm != null && lm instanceof GridLayoutManager)
             return ((GridLayoutManager)lm).getSpanCount();
         return 1;
     }
@@ -70,12 +70,12 @@ public class FastScrollerUtil
     public static boolean initSpanSizeLookup(final RecyclerView rv, final IHeaderAdapter adapter)
     {
         final RecyclerView.LayoutManager lm = rv.getLayoutManager();
-        if (lm != null && lm instanceof GridLayoutManager)
+        if(lm != null && lm instanceof GridLayoutManager)
         {
             ((GridLayoutManager)lm).setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
                 @Override
                 public int getSpanSize(int position) {
-                    if (rv == null)
+                    if(rv == null)
                         return 1;
                     return adapter.isHeader(position) ? ((GridLayoutManager) lm).getSpanCount() : 1;
                 }
@@ -113,7 +113,7 @@ public class FastScrollerUtil
         public int getFirstItemIndex(int rowsBeforeThisHeader, int span, int row)
         {
             int relativeRowIndex = row - rowsBeforeThisHeader - 1;
-            if (relativeRowIndex == 0)
+            if(relativeRowIndex == 0)
                 return headerIndex;
             return headerIndex + relativeRowIndex * span - (span - 1);
         }
@@ -125,7 +125,7 @@ public class FastScrollerUtil
 
         public int getRelativeRowIndex(int span, int index)
         {
-            if (index - headerIndex == 0)
+            if(index - headerIndex == 0)
                 return 0;
             return (int)Math.ceil((float)(index - headerIndex) / (float)span);
         }
@@ -163,13 +163,13 @@ public class FastScrollerUtil
             // 2) How many rows do we have? + fill map with index of header and items under this header + calc rows
             mRows = 0;
             int itemsAddedToHeaders = 0;
-            for (int i = 1; i < mCount; i++)
+            for(int i = 1; i < mCount; i++)
             {
-                if (adapter.isHeader(i) || i == mCount - 1)
+                if(adapter.isHeader(i) || i == mCount - 1)
                 {
                     // current header group end found => save the data
                     int itemsUnderneathHeader = i - itemsAddedToHeaders;
-                    if (i != mCount - 1)
+                    if(i != mCount - 1)
                         itemsUnderneathHeader -= 1; // remove next header item from count
                     HeaderData headerData = new HeaderData(itemsAddedToHeaders, itemsUnderneathHeader);
                     mHeaderData.add(headerData);
@@ -183,19 +183,19 @@ public class FastScrollerUtil
 
             // 3) calc total height
             mTotalHeight = mHeaderData.size() * mHeaderHeight;
-            for (int i = 0; i < mHeaderData.size(); i++)
+            for(int i = 0; i < mHeaderData.size(); i++)
                 mTotalHeight += (mHeaderData.get(i).getRows(mSpan) - 1) * mRowHeight;
 
-            if (DEBUG)
+            if(DEBUG)
             {
-                for (int i = 0; i < mHeaderData.size(); i++)
+                for(int i = 0; i < mHeaderData.size(); i++)
                     Log.d(TAG, "Header data " + i + ": headerIndex=" + mHeaderData.get(i).headerIndex + " | items=" + mHeaderData.get(i).items + " | rows=" + mHeaderData.get(i).getRows(mSpan));
-                for (int i = 0; i <= mCount; i++)
+                for(int i = 0; i <= mCount; i++)
                 {
                     float progress = (float) i / (float) mCount;
                     getItemIndexForScroll(progress);
                 }
-                for (int i = 0; i < mCount; i++)
+                for(int i = 0; i < mCount; i++)
                     getDepthForItem(i);
             }
         }
@@ -210,16 +210,16 @@ public class FastScrollerUtil
             // 1) calculate row of this index
             int row = 0;
             int headersAbove = 0;
-            for (int i = 0; i < mHeaderData.size(); i++)
+            for(int i = 0; i < mHeaderData.size(); i++)
             {
                 HeaderData headerData = mHeaderData.get(i);
                 headersAbove++;
-                if (headerData.containsIndex(index))
+                if(headerData.containsIndex(index))
                 {
                     int relRow = headerData.getRelativeRowIndex(mSpan, index);
                     row += relRow + 1;
                     // remove header itself from headersAbove count if row is a header
-                    if (relRow == 0)
+                    if(relRow == 0)
                         headersAbove--;
 //                    L.d(this, "index => Header Data Index: " + index + " => " + i);
                     break;
@@ -230,7 +230,7 @@ public class FastScrollerUtil
 
             int totalOffset = headersAbove * mHeaderHeight + (row - headersAbove - 1) * mRowHeight;
 
-            if (DEBUG)
+            if(DEBUG)
                 Log.d(TAG, "index => row=" + row + " of " + mRows + ", headersAbove=" + headersAbove + " (totalOffset=" + totalOffset + ")");
 
             return totalOffset;
@@ -238,9 +238,9 @@ public class FastScrollerUtil
 
         public int getItemIndexForScroll(float scrollBarPos)
         {
-            if (scrollBarPos < 0)
+            if(scrollBarPos < 0)
                 scrollBarPos = 0;
-            else if (scrollBarPos > 1)
+            else if(scrollBarPos > 1)
                 scrollBarPos = 1;
 
             // 1) calculate row that corresponds to scrollBarPos
@@ -249,14 +249,14 @@ public class FastScrollerUtil
 
             // 2) find header that contains this row
             int rows = 0;
-            for (int i = 0; i < mHeaderData.size(); i++)
+            for(int i = 0; i < mHeaderData.size(); i++)
             {
                 HeaderData headerData = mHeaderData.get(i);
-                if (headerData.containsRow(rows, mSpan, row))
+                if(headerData.containsRow(rows, mSpan, row))
                 {
                     int index = headerData.getFirstItemIndex(rows, mSpan, row);
 
-                    if (DEBUG)
+                    if(DEBUG)
                         Log.d(TAG, "scrollBarPos=" + scrollBarPos + " => row " + row + " of " + mRows + " (item " + (index + 1) + " of " + mCount + ")");
 
                     return index;

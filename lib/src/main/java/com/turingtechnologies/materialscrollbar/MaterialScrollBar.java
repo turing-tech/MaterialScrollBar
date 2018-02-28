@@ -203,7 +203,7 @@ public abstract class MaterialScrollBar<T> extends RelativeLayout {
     public T setRecyclerView(RecyclerView rv) {
         if(seekId != 0) {
             throw new IllegalStateException("There is already a recyclerView set by XML.");
-        } else if (recyclerView != null) {
+        } else if(recyclerView != null) {
             throw new IllegalStateException("There is already a recyclerView set.");
         }
         recyclerView = rv;
@@ -320,10 +320,10 @@ public abstract class MaterialScrollBar<T> extends RelativeLayout {
         int height;
 
         //Measure Width
-        if (widthMode == MeasureSpec.EXACTLY) {
+        if(widthMode == MeasureSpec.EXACTLY) {
             //Must be this size
             width = widthSize;
-        } else if (widthMode == MeasureSpec.AT_MOST) {
+        } else if(widthMode == MeasureSpec.AT_MOST) {
             //Can't be bigger than...
             width = Math.min(desiredWidth, widthSize);
         } else {
@@ -332,10 +332,10 @@ public abstract class MaterialScrollBar<T> extends RelativeLayout {
         }
 
         //Measure Height
-        if (heightMode == MeasureSpec.EXACTLY) {
+        if(heightMode == MeasureSpec.EXACTLY) {
             //Must be this size
             height = heightSize;
-        } else if (heightMode == MeasureSpec.AT_MOST) {
+        } else if(heightMode == MeasureSpec.AT_MOST) {
             //Can't be bigger than...
             height = Math.min(desiredHeight, heightSize);
         } else {
@@ -393,7 +393,7 @@ public abstract class MaterialScrollBar<T> extends RelativeLayout {
      * The adapter must implement {@link ICustomScroller}.
      */
     private void checkCustomScrolling() {
-        if (ViewCompat.isAttachedToWindow(this)) {
+        if(ViewCompat.isAttachedToWindow(this)) {
             checkCustomScrollingInterface();
         } else {
             addOnLayoutChangeListener(new OnLayoutChangeListener() {
@@ -717,7 +717,7 @@ public abstract class MaterialScrollBar<T> extends RelativeLayout {
     }
 
     protected void onDown(MotionEvent event) {
-        if (indicator != null && indicator.getVisibility() == INVISIBLE && recyclerView.getAdapter() != null && !hiddenByNotEnoughElements) {
+        if(indicator != null && indicator.getVisibility() == INVISIBLE && recyclerView.getAdapter() != null && !hiddenByNotEnoughElements) {
             indicator.setVisibility(VISIBLE);
             indicator.setAlpha(0F);
             indicator.animate().alpha(1F).setDuration(150).setListener(new AnimatorListenerAdapter() {
@@ -736,7 +736,7 @@ public abstract class MaterialScrollBar<T> extends RelativeLayout {
         float boundedY = Math.max(top, Math.min(bottom, event.getY() - getHandleOffset()));
 
         float currentScrollPercent = (boundedY - top) / (bottom - top);
-        if (isScrollChangeLargeEnoughForFastScroll(currentScrollPercent) ||
+        if(isScrollChangeLargeEnoughForFastScroll(currentScrollPercent) ||
                 currentScrollPercent == 0 || currentScrollPercent == 1) {
             previousScrollPercent = currentScrollPercent;
             int dy = scrollUtils.scrollToPositionAtProgress(currentScrollPercent);
@@ -748,13 +748,13 @@ public abstract class MaterialScrollBar<T> extends RelativeLayout {
             }
         }
 
-        if (lightOnTouch) {
+        if(lightOnTouch) {
             handleThumb.setBackgroundColor(handleColor);
         }
     }
 
     protected void onUp() {
-        if (indicator != null && indicator.getVisibility() == VISIBLE) {
+        if(indicator != null && indicator.getVisibility() == VISIBLE) {
             indicator.animate().alpha(0F).setDuration(150).setListener(new AnimatorListenerAdapter() {
                 @Override
                 public void onAnimationEnd(Animator animation) {
@@ -765,7 +765,7 @@ public abstract class MaterialScrollBar<T> extends RelativeLayout {
             });
         }
 
-        if (lightOnTouch) {
+        if(lightOnTouch) {
             handleThumb.setBackgroundColor(handleOffColor);
         }
     }
