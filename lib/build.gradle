@@ -50,3 +50,5 @@ dependencies {
 repositories {
     mavenCentral()
 }
+
+apply plugin: 'me.tatarka.retrolambda'
