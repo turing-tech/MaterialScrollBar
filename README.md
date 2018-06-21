@@ -35,7 +35,7 @@ allprojects {
 
 ```gradle
 dependencies {
-    compile 'com.github.turing-tech:MaterialScrollBar:12.+'
+    implementation 'com.github.turing-tech:MaterialScrollBar:13.+'
 }
 ```
 ## Documentation
