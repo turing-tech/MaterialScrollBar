@@ -87,7 +87,7 @@ public class DragScrollBar extends MaterialScrollBar<DragScrollBar>{
 
     @Override
     float getHideRatio() {
-        return .65F;
+        return .4F;
     }
 
     @Override

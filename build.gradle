@@ -9,7 +9,7 @@ buildscript {
     }
     dependencies {
         classpath 'com.github.ben-manes:gradle-versions-plugin:0.15.0'
-        classpath 'com.android.tools.build:gradle:3.0.1'
+        classpath 'com.android.tools.build:gradle:3.2.0-alpha18'
         classpath 'me.tatarka:gradle-retrolambda:3.7.0'
 //        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
 
@@ -25,5 +25,5 @@ allprojects {
        google()
     }
 
-    project.ext.supportLibVersion = '27.1.0'
+    project.ext.supportLibVersion = '27.1.1'
 }

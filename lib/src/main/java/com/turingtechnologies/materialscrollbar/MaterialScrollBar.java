@@ -105,10 +105,10 @@ public abstract class MaterialScrollBar<T> extends RelativeLayout {
 
         this.recyclerView = recyclerView;
 
+        setRightToLeft(Utils.isRightToLeft(context)); //Detects and applies the Right-To-Left status of the app
+
         addView(setUpHandleTrack(context)); //Adds the handle track
         addView(setUpHandle(context, lightOnTouch)); //Adds the handle
-
-        setRightToLeft(Utils.isRightToLeft(context)); //Detects and applies the Right-To-Left status of the app
 
         generalSetup();
     }
@@ -122,12 +122,12 @@ public abstract class MaterialScrollBar<T> extends RelativeLayout {
     MaterialScrollBar(Context context, AttributeSet attributeSet, int defStyle) {
         super(context, attributeSet, defStyle);
 
+        setRightToLeft(Utils.isRightToLeft(context)); //Detects and applies the Right-To-Left status of the app
+
         setUpProps(context, attributeSet); //Discovers and applies some XML attributes
 
         addView(setUpHandleTrack(context)); //Adds the handle track
         addView(setUpHandle(context, a.getBoolean(R.styleable.MaterialScrollBar_msb_lightOnTouch, true))); //Adds the handle
-
-        setRightToLeft(Utils.isRightToLeft(context)); //Detects and applies the Right-To-Left status of the app
     }
 
     //Unpacks XML attributes and ensures that no mandatory attributes are missing, then applies them.
@@ -150,8 +150,8 @@ public abstract class MaterialScrollBar<T> extends RelativeLayout {
     //Sets up bar.
     View setUpHandleTrack(Context context) {
         handleTrack = new View(context);
-        LayoutParams lp = new RelativeLayout.LayoutParams(Utils.getDP(12, this), LayoutParams.MATCH_PARENT);
-        lp.addRule(ALIGN_PARENT_RIGHT);
+        LayoutParams lp = new RelativeLayout.LayoutParams(Utils.getDP(14, this), LayoutParams.MATCH_PARENT);
+        lp.addRule(rtl ? ALIGN_PARENT_LEFT : ALIGN_PARENT_RIGHT);
         handleTrack.setLayoutParams(lp);
         handleTrack.setBackgroundColor(ContextCompat.getColor(context, android.R.color.darker_gray));
         handleTrack.setAlpha(0.4F);
@@ -161,9 +161,10 @@ public abstract class MaterialScrollBar<T> extends RelativeLayout {
     //Sets up handleThumb.
     Handle setUpHandle(Context context, Boolean lightOnTouch) {
         handleThumb = new Handle(context, getMode());
-        RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(Utils.getDP(12, this),
+        handleThumb.rtl = rtl;
+        RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(Utils.getDP(18, this),
                 Utils.getDP(72, this));
-        lp.addRule(ALIGN_PARENT_RIGHT);
+        lp.addRule(rtl ? ALIGN_PARENT_LEFT : ALIGN_PARENT_RIGHT);
         handleThumb.setLayoutParams(lp);
 
         this.lightOnTouch = lightOnTouch;
@@ -308,7 +309,7 @@ public abstract class MaterialScrollBar<T> extends RelativeLayout {
     // Makes the bar render correctly for XML
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        int desiredWidth = Utils.getDP(12, this);
+        int desiredWidth = Utils.getDP(18, this);
         int desiredHeight = 100;
 
         int widthMode = MeasureSpec.getMode(widthMeasureSpec);
@@ -631,7 +632,9 @@ public abstract class MaterialScrollBar<T> extends RelativeLayout {
      */
     public void setRightToLeft(boolean rtl) {
         this.rtl = rtl;
-        handleThumb.setRightToLeft(rtl);
+        if (handleThumb != null) {
+            handleThumb.setRightToLeft(rtl);
+        }
         if(indicator != null) {
             indicator.setRTL(rtl);
             indicator.setLayoutParams(indicator.refreshMargins((LayoutParams) indicator.getLayoutParams()));

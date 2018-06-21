@@ -43,8 +43,8 @@ artifacts {
 }
 
 dependencies {
-    compile "com.android.support:recyclerview-v7:${supportLibVersion}"
-    compile "com.android.support:design:${supportLibVersion}"
+    implementation "com.android.support:recyclerview-v7:${supportLibVersion}"
+    implementation "com.android.support:design:${supportLibVersion}"
     //    compile "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
 }
 repositories {
