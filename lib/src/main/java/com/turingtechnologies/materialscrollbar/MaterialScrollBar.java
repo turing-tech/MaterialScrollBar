@@ -221,7 +221,14 @@ public abstract class MaterialScrollBar<T> extends RelativeLayout {
         attached = true;
 
         if(seekId != 0) {
-            recyclerView = getRootView().findViewById(seekId);
+            try {
+                recyclerView = (RecyclerView) Utils.findNearestNeighborWithID(seekId, this);
+                if (recyclerView == null) {
+                    throw new RuntimeException("The id given for the recyclerView did not refer to a sibling of the bar or one of its ascendants");
+                }
+            } catch (ClassCastException e) {
+                throw new RuntimeException("The id given for the recyclerView did not refer to a RecyclerView", e);
+            }
             generalSetup();
         }
     }

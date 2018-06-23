@@ -18,9 +18,11 @@ package com.turingtechnologies.materialscrollbar;
 
 import android.content.Context;
 import android.os.Build;
+import android.support.annotation.IdRes;
 import android.util.LayoutDirection;
 import android.util.TypedValue;
 import android.view.View;
+import android.view.ViewGroup;
 
 import java.lang.reflect.ParameterizedType;
 
@@ -57,4 +59,33 @@ class Utils {
     static <T> String getGenericName(T object) {
         return ((Class<T>) ((ParameterizedType) object.getClass().getGenericSuperclass()).getActualTypeArguments()[0]).getSimpleName();
     }
+
+    /**
+     * Like findViewById(), but traverses upwards from the view given instead of downwards,
+     * ignores the view itself and its direct ascendants, and prefers siblings of the initial
+     * view over the siblings of one of its ascendants.
+     *
+     * @param id the id to search for.
+     * @param viewToStartFrom the view whose siblings (and whose parents' siblings) should be searched.
+     * @return the view found, or null if none could be located.
+     */
+    static View findNearestNeighborWithID(@IdRes int id, View viewToStartFrom) {
+        if (viewToStartFrom == null) return null;
+
+        ViewGroup parent;
+        try {
+            parent = (ViewGroup) viewToStartFrom.getParent();
+        } catch (ClassCastException e) {
+            return null;
+        }
+        for (int i = 0; i < parent.getChildCount(); i++) { // Checks the children of the given view's parent
+            if (viewToStartFrom == parent.getChildAt(i)) continue; // Excluding the given view itself
+            View result = parent.getChildAt(i).findViewById(id);
+            if (result != null) {
+                return result;
+            }
+        }
+        return findNearestNeighborWithID(id, parent); // If the view could not be found, check the next higher generation
+    }
+
 }
