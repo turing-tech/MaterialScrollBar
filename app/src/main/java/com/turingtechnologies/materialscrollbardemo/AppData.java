@@ -7,18 +7,20 @@ import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 
+import com.turingtechnologies.materialscrollbardemo.Activities.MainActivity;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-class AppData {
+public class AppData {
 
     private static List<ApplicationInfo> pkgAppsList;
     static ArrayList<String> pkgLabelList = new ArrayList<>();
     static ArrayList<Drawable> pkgIconList = new ArrayList<>();
     static ArrayList<Long> pkgDateList = new ArrayList<>();
 
-    static void processApps(final AppCompatActivity activity) {
+    public static void processApps(final AppCompatActivity activity) {
         if(!pkgLabelList.isEmpty()) {
             openMainActivity(activity);
             return;

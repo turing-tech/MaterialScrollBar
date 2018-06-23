@@ -1,4 +1,4 @@
-package com.turingtechnologies.materialscrollbardemo;
+package com.turingtechnologies.materialscrollbardemo.Activities;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -10,6 +10,8 @@ import android.view.MenuItem;
 
 import com.turingtechnologies.materialscrollbar.DateAndTimeIndicator;
 import com.turingtechnologies.materialscrollbar.TouchScrollBar;
+import com.turingtechnologies.materialscrollbardemo.DemoAdapter;
+import com.turingtechnologies.materialscrollbardemo.R;
 
 public class DateActivity extends AppCompatActivity {
 

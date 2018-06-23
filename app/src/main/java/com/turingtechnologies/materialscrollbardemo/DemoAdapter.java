@@ -13,14 +13,15 @@ import android.widget.TextView;
 import com.turingtechnologies.materialscrollbar.ICustomAdapter;
 import com.turingtechnologies.materialscrollbar.IDateableAdapter;
 import com.turingtechnologies.materialscrollbar.INameableAdapter;
+import com.turingtechnologies.materialscrollbardemo.Activities.SplashActivity;
 
 import java.util.Date;
 
-class DemoAdapter extends RecyclerView.Adapter<DemoAdapter.ViewHolder> implements INameableAdapter, IDateableAdapter, ICustomAdapter {
+public class DemoAdapter extends RecyclerView.Adapter<DemoAdapter.ViewHolder> implements INameableAdapter, IDateableAdapter, ICustomAdapter {
 
     private Activity act;
 
-    DemoAdapter(Activity a) {
+    public DemoAdapter(Activity a) {
         act = a;
     }
 

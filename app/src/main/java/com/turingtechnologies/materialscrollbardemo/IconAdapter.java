@@ -10,12 +10,13 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.turingtechnologies.materialscrollbar.ICustomAdapter;
+import com.turingtechnologies.materialscrollbardemo.Activities.SplashActivity;
 
-class IconAdapter extends RecyclerView.Adapter<IconAdapter.ViewHolder> implements ICustomAdapter {
+public class IconAdapter extends RecyclerView.Adapter<IconAdapter.ViewHolder> implements ICustomAdapter {
 
     private Activity act;
 
-    IconAdapter(Activity a) {
+    public IconAdapter(Activity a) {
         act = a;
     }
 

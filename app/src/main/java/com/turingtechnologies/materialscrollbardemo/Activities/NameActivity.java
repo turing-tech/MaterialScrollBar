@@ -1,4 +1,4 @@
-package com.turingtechnologies.materialscrollbardemo;
+package com.turingtechnologies.materialscrollbardemo.Activities;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -8,27 +8,27 @@ import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import com.turingtechnologies.materialscrollbar.AlphabetIndicator;
-import com.turingtechnologies.materialscrollbar.DragScrollBar;
+import com.turingtechnologies.materialscrollbar.CustomIndicator;
+import com.turingtechnologies.materialscrollbar.TouchScrollBar;
+import com.turingtechnologies.materialscrollbardemo.DemoAdapter;
+import com.turingtechnologies.materialscrollbardemo.R;
 
-public class MainActivity extends AppCompatActivity {
+public class NameActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-
-        RecyclerView recyclerView = findViewById(R.id.recyclerView);
+        setContentView(R.layout.activity_others);
+        RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recyclerView);
         recyclerView.setAdapter(new DemoAdapter(this));
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        ((DragScrollBar)findViewById(R.id.dragScrollBar))
-                .setIndicator(new AlphabetIndicator(this), true);
+        ((TouchScrollBar) findViewById(R.id.touchScrollBar)).setIndicator(new CustomIndicator(this), true);
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_norm, menu);
+        getMenuInflater().inflate(R.menu.menu_name, menu);
         return true;
     }
 
@@ -40,8 +40,8 @@ public class MainActivity extends AppCompatActivity {
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if(id == R.id.action_toDate) {
-            Intent i = new Intent(this, DateActivity.class);
+        if(id == R.id.action_toIcon) {
+            Intent i = new Intent(this, IconActivity.class);
             i.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
             startActivity(i);
             return true;

@@ -2,13 +2,16 @@
  * Copyright © 2015, Turing Technologies, an unincorporated organisation of Wynne Plaga
  */
 
-package com.turingtechnologies.materialscrollbardemo;
+package com.turingtechnologies.materialscrollbardemo.Activities;
 
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+
+import com.turingtechnologies.materialscrollbardemo.AppData;
+import com.turingtechnologies.materialscrollbardemo.R;
 
 public class SplashActivity extends AppCompatActivity {
 

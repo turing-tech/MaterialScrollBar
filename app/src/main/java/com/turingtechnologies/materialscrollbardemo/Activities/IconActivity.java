@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-package com.turingtechnologies.materialscrollbardemo;
+package com.turingtechnologies.materialscrollbardemo.Activities;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -26,6 +26,8 @@ import android.view.MenuItem;
 
 import com.turingtechnologies.materialscrollbar.CustomIndicator;
 import com.turingtechnologies.materialscrollbar.TouchScrollBar;
+import com.turingtechnologies.materialscrollbardemo.IconAdapter;
+import com.turingtechnologies.materialscrollbardemo.R;
 
 public class IconActivity extends AppCompatActivity {
 
@@ -55,8 +57,8 @@ public class IconActivity extends AppCompatActivity {
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if(id == R.id.action_toNorm) {
-            Intent i = new Intent(this, MainActivity.class);
+        if(id == R.id.action_toFrags) {
+            Intent i = new Intent(this, MultiFragmentActivity.class);
             i.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
             startActivity(i);
             return true;

@@ -9,12 +9,12 @@
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
         <activity
-            android:name=".MainActivity"
+            android:name=".Activities.MainActivity"
             android:label="AlphabetActivity"
             android:noHistory="true" >
         </activity>
         <activity
-            android:name=".SplashActivity"
+            android:name=".Activities.SplashActivity"
             android:label="@string/app_name"
             android:noHistory="true" >
             <intent-filter>
@@ -24,16 +24,20 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".DateActivity"
+            android:name=".Activities.DateActivity"
             android:label="@string/title_activity_date" >
         </activity>
         <activity
-            android:name=".NameActivity"
+            android:name=".Activities.NameActivity"
             android:label="NameActivity" >
         </activity>
         <activity
-            android:name=".IconActivity"
+            android:name=".Activities.IconActivity"
             android:label="IconActivity" >
+        </activity>
+        <activity
+            android:name=".Activities.MultiFragmentActivity"
+            android:label="MultiFragmentActivity" >
         </activity>
     </application>
 

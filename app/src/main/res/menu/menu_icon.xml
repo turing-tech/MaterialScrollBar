@@ -18,6 +18,6 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="com.turingtechnologies.materialscrollbardemo.MaibActivity">
-    <item android:id="@+id/action_toNorm" android:title="Alphabet"
+    <item android:id="@+id/action_toFrags" android:title="Fragments"
         android:orderInCategory="100" app:showAsAction="always" />
 </menu>

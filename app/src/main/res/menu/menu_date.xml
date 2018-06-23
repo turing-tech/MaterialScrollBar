@@ -1,7 +1,7 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context="com.turingtechnologies.materialscrollbardemo.DateActivity">
+    tools:context="com.turingtechnologies.materialscrollbardemo.Activities.DateActivity">
     <item android:id="@+id/action_toName" android:title="Custom"
         android:orderInCategory="100" app:showAsAction="always" />
 </menu>
