@@ -96,6 +96,8 @@ public abstract class MaterialScrollBar<T> extends RelativeLayout {
     Boolean draggableFromAnywhere = false;
     ArrayList<Runnable> onAttach = new ArrayList<>();
     private boolean attached = false;
+    ScrollMode scrollMode;
+    float currentScrollPercent = 0F;
 
     //CHAPTER I - INITIAL SETUP
 
@@ -145,6 +147,8 @@ public abstract class MaterialScrollBar<T> extends RelativeLayout {
         if(!isInEditMode()) {
             seekId = a.getResourceId(R.styleable.MaterialScrollBar_msb_recyclerView, 0); //Discovers and saves the ID of the recyclerView
         }
+
+        scrollMode = a.getInt(R.styleable.MaterialScrollBar_msb_scrollMode, 0) == 0 ? ScrollMode.FIRST_VISIBLE : ScrollMode.LAST_ELEMENT;
     }
 
     //Sets up bar.
@@ -745,7 +749,7 @@ public abstract class MaterialScrollBar<T> extends RelativeLayout {
         int bottom = recyclerView.getHeight() - Utils.getDP(72, recyclerView.getContext());
         float boundedY = Math.max(top, Math.min(bottom, event.getY() - getHandleOffset()));
 
-        float currentScrollPercent = (boundedY - top) / (bottom - top);
+        currentScrollPercent = (boundedY - top) / (bottom - top);
         if(isScrollChangeLargeEnoughForFastScroll(currentScrollPercent) ||
                 currentScrollPercent == 0 || currentScrollPercent == 1) {
             previousScrollPercent = currentScrollPercent;
@@ -806,4 +810,8 @@ public abstract class MaterialScrollBar<T> extends RelativeLayout {
         }
     }
 
+    enum ScrollMode {
+        FIRST_VISIBLE,
+        LAST_ELEMENT
+    }
 }
