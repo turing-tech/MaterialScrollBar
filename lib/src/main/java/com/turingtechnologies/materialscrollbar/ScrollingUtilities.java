@@ -47,6 +47,7 @@ class ScrollingUtilities {
         private int rowTopOffset;
         // The height of a given row (they are currently all the same height)
         private int rowHeight;
+        private int indicatorPosition;
     }
 
     void scrollHandleAndIndicator() {
@@ -65,7 +66,7 @@ class ScrollingUtilities {
             if(materialScrollBar.recyclerView.getLayoutManager() instanceof GridLayoutManager) {
                 element = scrollPosState.rowIndex * ((GridLayoutManager)materialScrollBar.recyclerView.getLayoutManager()).getSpanCount();
             } else {
-                element = scrollPosState.rowIndex;
+                element = scrollPosState.indicatorPosition;
             }
             materialScrollBar.indicator.setText(element);
 
@@ -170,9 +171,12 @@ class ScrollingUtilities {
         if(itemCount == 0) {
             return;
         }
+
         View child = materialScrollBar.recyclerView.getChildAt(0);
 
         scrollPosState.rowIndex = materialScrollBar.recyclerView.getChildAdapterPosition(child);
+        scrollPosState.indicatorPosition = getIndicatorPosition();
+
         if(materialScrollBar.recyclerView.getLayoutManager() instanceof GridLayoutManager) {
             scrollPosState.rowIndex = scrollPosState.rowIndex / ((GridLayoutManager) materialScrollBar.recyclerView.getLayoutManager()).getSpanCount();
         }
@@ -185,4 +189,13 @@ class ScrollingUtilities {
         }
     }
 
+    private int getIndicatorPosition(){
+        if(materialScrollBar.scrollMode == MaterialScrollBar.ScrollMode.FIRST_VISIBLE) {
+            return scrollPosState.rowIndex;
+        } else {
+            int itemCount = materialScrollBar.recyclerView.getAdapter().getItemCount();
+            int itemIndex = ((int) (itemCount * materialScrollBar.currentScrollPercent));
+            return itemIndex > 0 ? itemIndex - 1 : itemIndex;
+        }
+    }
 }
