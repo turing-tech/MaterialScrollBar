@@ -22,7 +22,7 @@ import android.util.Log;
 import android.view.View;
 
 /*
- * Lots of complicated maths taken mostly from Google. Abandon all hope, ye who enter here.
+ * Lots of complicated maths taken mostly from Google.
  */
 class ScrollingUtilities {
 

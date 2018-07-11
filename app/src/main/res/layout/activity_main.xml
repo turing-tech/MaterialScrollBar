@@ -15,6 +15,7 @@
         android:layout_width="wrap_content"
         app:msb_recyclerView="@id/recyclerView"
         app:msb_lightOnTouch="false"
+        app:msb_scrollMode="lastElement"
         android:layout_height="match_parent"
         android:layout_alignParentTop="true"
         android:layout_alignParentRight="true"
