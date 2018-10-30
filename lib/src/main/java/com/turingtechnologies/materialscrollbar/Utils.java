@@ -18,7 +18,7 @@ package com.turingtechnologies.materialscrollbar;
 
 import android.content.Context;
 import android.os.Build;
-import android.support.annotation.IdRes;
+import androidx.annotation.IdRes;
 import android.util.LayoutDirection;
 import android.util.TypedValue;
 import android.view.View;

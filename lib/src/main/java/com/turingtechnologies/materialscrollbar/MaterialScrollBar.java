@@ -24,13 +24,13 @@ import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Build;
-import android.support.annotation.ColorInt;
-import android.support.annotation.ColorRes;
-import android.support.v4.content.ContextCompat;
-import android.support.v4.view.ViewCompat;
-import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import androidx.annotation.ColorInt;
+import androidx.annotation.ColorRes;
+import androidx.core.content.ContextCompat;
+import androidx.core.view.ViewCompat;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.view.MotionEvent;
@@ -233,6 +233,12 @@ public abstract class MaterialScrollBar<T> extends RelativeLayout {
             } catch (ClassCastException e) {
                 throw new RuntimeException("The id given for the recyclerView did not refer to a RecyclerView", e);
             }
+            implementPreferences();
+
+            implementFlavourPreferences();
+
+            a.recycle();
+
             generalSetup();
         }
     }
@@ -241,12 +247,6 @@ public abstract class MaterialScrollBar<T> extends RelativeLayout {
     private void generalSetup() {
         recyclerView.setVerticalScrollBarEnabled(false); // disable any existing scrollbars
         recyclerView.addOnScrollListener(new ScrollListener()); // lets us read when the recyclerView scrolls
-
-        implementPreferences();
-
-        implementFlavourPreferences();
-
-        a.recycle();
 
         setTouchIntercept(); // catches touches on the bar
 
