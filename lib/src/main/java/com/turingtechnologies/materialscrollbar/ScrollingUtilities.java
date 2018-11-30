@@ -20,6 +20,7 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 
 /*
  * Lots of complicated maths taken mostly from Google.
@@ -58,6 +59,7 @@ class ScrollingUtilities {
         } else {
             constant = scrollPosState.rowHeight * scrollPosState.rowIndex;
         }
+        constant += + materialScrollBar.recyclerView.getPaddingTop();
         scrollBarY = (int) getScrollPosition();
         materialScrollBar.handleThumb.setY(scrollBarY);
         materialScrollBar.handleThumb.invalidate();
@@ -144,12 +146,12 @@ class ScrollingUtilities {
     }
 
     int getAvailableScrollHeight() {
-        int visibleHeight = materialScrollBar.getHeight();
+        int visibleHeight = materialScrollBar.recyclerView.getHeight();
         int scrollHeight;
         if(customScroller != null) {
-            scrollHeight = materialScrollBar.getPaddingTop() + customScroller.getTotalDepth() + materialScrollBar.getPaddingBottom();
+            scrollHeight = materialScrollBar.recyclerView.getPaddingTop() + customScroller.getTotalDepth() + materialScrollBar.recyclerView.getPaddingBottom();
         } else {
-            scrollHeight = materialScrollBar.getPaddingTop() + getRowCount() * scrollPosState.rowHeight + materialScrollBar.getPaddingBottom();
+            scrollHeight = materialScrollBar.recyclerView.getPaddingTop() + getRowCount() * scrollPosState.rowHeight + materialScrollBar.recyclerView.getPaddingBottom();
         }
         return scrollHeight - visibleHeight;
     }
@@ -186,6 +188,11 @@ class ScrollingUtilities {
         } else {
             scrollPosState.rowTopOffset = materialScrollBar.recyclerView.getLayoutManager().getDecoratedTop(child);
             scrollPosState.rowHeight = child.getHeight();
+            if (child.getLayoutParams() instanceof ViewGroup.MarginLayoutParams) {
+                scrollPosState.rowHeight += ((ViewGroup.MarginLayoutParams)child.getLayoutParams()).topMargin;
+                scrollPosState.rowHeight += ((ViewGroup.MarginLayoutParams)child.getLayoutParams()).bottomMargin;
+            }
+            System.out.println(child.getHeight());
         }
     }
 
