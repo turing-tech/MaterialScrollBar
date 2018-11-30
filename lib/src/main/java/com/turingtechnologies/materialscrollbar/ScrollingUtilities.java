@@ -192,7 +192,6 @@ class ScrollingUtilities {
                 scrollPosState.rowHeight += ((ViewGroup.MarginLayoutParams)child.getLayoutParams()).topMargin;
                 scrollPosState.rowHeight += ((ViewGroup.MarginLayoutParams)child.getLayoutParams()).bottomMargin;
             }
-            System.out.println(child.getHeight());
         }
     }
 
