@@ -19,15 +19,16 @@ package com.turingtechnologies.materialscrollbar;
 import android.content.Context;
 import android.graphics.Typeface;
 import android.graphics.drawable.GradientDrawable;
-import androidx.annotation.ColorInt;
-import androidx.core.content.ContextCompat;
-import androidx.core.view.ViewCompat;
-import androidx.recyclerview.widget.RecyclerView;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+
+import androidx.annotation.ColorInt;
+import androidx.core.content.ContextCompat;
+import androidx.core.view.ViewCompat;
+import androidx.recyclerview.widget.RecyclerView;
 
 /**
  * Devs should not normally need to extend this class. Just use {@link CustomIndicator} instead.
@@ -139,7 +140,7 @@ public abstract class Indicator<T, U extends Indicator> extends RelativeLayout{
                 return;
             }
             newText = getTextElement(section, adapter);
-        } catch (ArrayIndexOutOfBoundsException e) {
+        } catch (IndexOutOfBoundsException e) {
             newText = "Error";
         }
         if(!textView.getText().equals(newText)) {
