@@ -26,7 +26,7 @@ public class AppData {
             return;
         }
         //noinspection WrongConstant
-        pkgAppsList = activity.getPackageManager().getInstalledApplications(PackageManager.GET_ACTIVITIES);
+        pkgAppsList = activity.getPackageManager().getInstalledApplications(PackageManager.GET_META_DATA);
         for(int i = 0; i < pkgAppsList.size(); i++) {
             if(activity.getPackageManager().getLaunchIntentForPackage(pkgAppsList.get(i).packageName) == null || (!BuildConfig.DEBUG && pkgAppsList.get(i).packageName.contains(AppData.class.getPackage().getName()))) {
                 pkgAppsList.remove(i);
