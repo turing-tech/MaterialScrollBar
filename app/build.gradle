@@ -1,13 +1,13 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 29
-    buildToolsVersion '29.0.3'
+    compileSdkVersion 30
+    buildToolsVersion '30.0.3'
 
     defaultConfig {
         applicationId "com.turingtechnologies.materialscrollbardemo"
         minSdkVersion 14
-        targetSdkVersion 29
+        targetSdkVersion 30
         versionCode 7
         versionName "7.0"
     }
@@ -27,6 +27,6 @@ dependencies {
     implementation project(':lib')
     implementation 'androidx.recyclerview:recyclerview:1.1.0'
     implementation 'com.pnikosis:materialish-progress:1.7'
-    implementation 'com.google.android.material:material:1.1.0'
-    implementation 'androidx.appcompat:appcompat:1.1.0'
+    implementation 'com.google.android.material:material:1.2.1'
+    implementation 'androidx.appcompat:appcompat:1.2.0'
 }

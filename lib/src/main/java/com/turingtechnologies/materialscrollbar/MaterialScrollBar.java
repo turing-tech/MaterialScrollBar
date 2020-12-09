@@ -82,6 +82,7 @@ public abstract class MaterialScrollBar<T> extends RelativeLayout {
     boolean hiddenByUser = false;
     private boolean hiddenByNotEnoughElements = false;
     private float fastScrollSnapPercent = 0;
+    private Boolean isDragging = false;
 
     //Associated Objects
     RecyclerView recyclerView;
@@ -680,6 +681,10 @@ public abstract class MaterialScrollBar<T> extends RelativeLayout {
         listeners.clear();
     }
 
+    public boolean isDragging() {
+        return isDragging;
+    }
+
     //CHAPTER IV - MISC METHODS
 
     //Fetch accent color.
@@ -765,6 +770,8 @@ public abstract class MaterialScrollBar<T> extends RelativeLayout {
         if(lightOnTouch) {
             handleThumb.setBackgroundColor(handleColor);
         }
+
+        isDragging = true;
     }
 
     protected void onUp() {
@@ -782,6 +789,8 @@ public abstract class MaterialScrollBar<T> extends RelativeLayout {
         if(lightOnTouch) {
             handleThumb.setBackgroundColor(handleOffColor);
         }
+
+        isDragging = false;
     }
 
     //Tests to ensure that the touch is on the handleThumb depending on the user preference
