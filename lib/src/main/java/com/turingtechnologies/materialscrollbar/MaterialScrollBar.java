@@ -306,6 +306,8 @@ public abstract class MaterialScrollBar<T> extends RelativeLayout {
             throw new RuntimeException("You need to set a recyclerView for the scroll bar, either in the XML or using setRecyclerView().");
         }
 
+        scrollUtils.scrollHandleAndIndicator();
+
         if(!isInEditMode()) {
             scrollUtils.scrollHandleAndIndicator();
             if(hiddenByNotEnoughElements = (scrollUtils.getAvailableScrollHeight() <= 0)) {
@@ -810,11 +812,7 @@ public abstract class MaterialScrollBar<T> extends RelativeLayout {
 
             //Disables any swipeRefreshLayout parent if the recyclerview is not at the top and enables it if it is.
             if(swipeRefreshLayout != null && !swipeRefreshLayout.isRefreshing()) {
-                if(((LinearLayoutManager)recyclerView.getLayoutManager()).findFirstCompletelyVisibleItemPosition() == 0) {
-                    swipeRefreshLayout.setEnabled(true);
-                } else {
-                    swipeRefreshLayout.setEnabled(false);
-                }
+                swipeRefreshLayout.setEnabled(((LinearLayoutManager) recyclerView.getLayoutManager()).findFirstCompletelyVisibleItemPosition() == 0);
             }
         }
     }
