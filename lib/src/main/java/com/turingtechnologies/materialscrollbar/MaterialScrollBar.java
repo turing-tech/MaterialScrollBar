@@ -306,6 +306,9 @@ public abstract class MaterialScrollBar<T> extends RelativeLayout {
             throw new RuntimeException("You need to set a recyclerView for the scroll bar, either in the XML or using setRecyclerView().");
         }
 
+        if (recyclerView.getLayoutManager() == null && !isInEditMode())
+            return;
+
         scrollUtils.scrollHandleAndIndicator();
 
         if(!isInEditMode()) {
