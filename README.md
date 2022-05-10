@@ -35,6 +35,8 @@ allprojects {
 
 ```gradle
 dependencies {
+    // Will be moved to 'com.github.wynneplaga:MaterialScrollBar:13.+' on July 1, 2022
+    // If it is after the date, update the line below
     implementation 'com.github.turing-tech:MaterialScrollBar:13.+'
 }
 ```
