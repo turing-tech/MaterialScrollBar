@@ -1,5 +1,19 @@
 # MaterialScrollBar
 
+# DEPRECIATED
+
+MaterialScrollBar has been moved to [MaterialScrollbar2](https://github.com/wynneplaga/materialScrollbar2). MaterialScrollbar2 has been re-written in Kotlin and should be generally faster and easier to use. This repo will be moved over to that address in the coming months. See you there!
+
+-
+-
+-
+-
+-
+-
+-
+-
+-
+
 [![Apache 2.0](https://img.shields.io/hexpm/l/plug.svg)](http://www.apache.org/licenses/LICENSE-2.0) [![](https://jitpack.io/v/turing-tech/MaterialScrollBar.svg)](https://jitpack.io/#turing-tech/MaterialScrollBar) [![Version](https://img.shields.io/badge/API-11%2B-blue.svg?style=flat)](https://android-arsenal.com/api?level=7) [![Android Arsenal](https://img.shields.io/badge/Android%20Arsenal-MaterialScrollBar-blue.svg?style=flat)](https://android-arsenal.com/details/1/2441)
 
 An Android library that brings the Material Design 5.1 scrollbar to pre-5.1 devices. Designed for Android's `recyclerView`.
